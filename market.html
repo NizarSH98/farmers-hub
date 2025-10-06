@@ -489,12 +489,12 @@
         </div>
         <div class="filter-group">
           <label>Sort By</label>
-          <select id="sort">
+      <select id="sort">
             <option value="newest">Newest First</option>
             <option value="priceAsc">Price: Low to High</option>
             <option value="priceDesc">Price: High to Low</option>
             <option value="nameAsc">Name: A to Z</option>
-          </select>
+      </select>
         </div>
         <button class="btn-clear" id="clearFilters">Clear All</button>
       </div>
@@ -513,7 +513,7 @@
 
 <script>
 // === CONFIG ===
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxo2Bqi2hodICB9cALbSNhvuB83h5XfNaxK9pw7bcEAgIR7LuTl7LOqh82Cn5jetl60-w/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfacDvVNdckNqa-kzz-se8Nx9_ceaogIDYQNbVwtNlzaV0QvZiGWjTRMyAfKTAbPNfPw/exec";
 
 // === STATE ===
 let ROWS = [];
@@ -586,7 +586,7 @@ function render(items) {
     const wa = phone ? phoneToWhatsApp(phone, `Hello ${name}, I'm interested in your ${product}.`) : null;
     const call = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
     const mail = email ? `mailto:${email}?subject=Interested in your ${encodeURIComponent(product)}` : null;
-    
+
     const priceQty = [qty, price].filter(Boolean).join(' • ');
     
     return `
@@ -610,7 +610,7 @@ function render(items) {
           <div class="card-footer">
             <span class="seller-name">${name}</span>
             <span>${date}</span>
-          </div>
+        </div>
         </div>
       </div>
     `;
@@ -697,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clearFilters').addEventListener('click', clearFilters);
   
   // Initial load
-  fetchData();
+fetchData();
   
   // Auto-refresh every 30 seconds
   setInterval(fetchData, 30000);

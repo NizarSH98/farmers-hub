@@ -15,7 +15,6 @@
 const SHEET_ID = '1nB7frPW70jBULKBo_ssunnEip1QtfapMUzHeymvUW54';
 const SHEET_NAME = 'Listings';
 const SHARED_SECRET = 'farmer_hub_secret_2024_xyz';
-const ALLOWED_ORIGINS = ['*']; // You can restrict to your domain(s) once deployed
 
 function _sheet(){
   const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -26,10 +25,6 @@ function _sheet(){
     sh.getRange(1,1,1,header.length).setValues([header]);
   }
   return sh;
-}
-
-function doOptions(e){
-  return _cors_({ ok:true, methods:['GET','POST','OPTIONS'] });
 }
 
 function doGet(e){
@@ -46,25 +41,25 @@ function doGet(e){
         product: r[4], quantity: r[5], price: r[6],
         location: r[7], harvest_date: r[8], image_url: r[9], description: r[10],
       }));
-    return _cors_({ ok:true, rows:data });
+    return _jsonResponse({ ok:true, rows:data });
   }
-  return _cors_({ ok:true, message:'Farmer Hub API. Use POST to submit or GET ?list=1 to fetch.' });
+  return _jsonResponse({ ok:true, message:'Farmer Hub API. Use POST to submit or GET ?list=1 to fetch.' });
 }
 
 function doPost(e){
   try{
     const body = e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : {};
-    if (!body) return _cors_({ ok:false, message:'Invalid JSON' }, 400);
+    if (!body) return _jsonResponse({ ok:false, message:'Invalid JSON' }, 400);
 
     // Basic validation
     const required = ['name','phone','product','location'];
     for (let k of required){
-      if (!body[k]) return _cors_({ ok:false, message:`Missing field: ${k}` }, 400);
+      if (!body[k]) return _jsonResponse({ ok:false, message:`Missing field: ${k}` }, 400);
     }
 
     // Simple shared secret check to reduce spam
     if (body.secret !== SHARED_SECRET){
-      return _cors_({ ok:false, message:'Unauthorized' }, 401);
+      return _jsonResponse({ ok:false, message:'Unauthorized' }, 401);
     }
 
     const sh = _sheet();
@@ -77,22 +72,16 @@ function doPost(e){
       SHARED_SECRET
     ];
     sh.appendRow(row);
-    return _cors_({ ok:true });
+    return _jsonResponse({ ok:true });
   } catch (err){
-    return _cors_({ ok:false, message: String(err) }, 500);
+    return _jsonResponse({ ok:false, message: String(err) }, 500);
   }
 }
 
 function _s(x){ return (x === undefined || x === null) ? '' : (''+x).trim(); }
 
-function _cors_(obj, status){
-  const out = ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
-  const resp = out;
-  const headers = {
-    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.join(','),
-    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  };
-  // Apps Script doesn't let us set status code directly with ContentService. We'll just return JSON.
-  return out;
+function _jsonResponse(obj, status){
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }

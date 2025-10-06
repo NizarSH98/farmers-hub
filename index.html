@@ -468,14 +468,14 @@
         <!-- Consent -->
         <div class="full">
           <div class="checkbox-wrapper">
-            <input id="consent" type="checkbox" required />
+          <input id="consent" type="checkbox" required />
             <label for="consent">I agree to publish my name and contact information for buyers to reach me on the public marketplace.</label>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="full">
-          <div class="actions">
+        <div class="actions">
             <button class="btn btn-primary" type="submit">✓ Submit Listing</button>
             <button class="btn btn-secondary" type="button" id="fillTestData">🧪 Fill Test Data</button>
             <button class="btn btn-secondary" type="reset">↺ Clear Form</button>
@@ -492,7 +492,7 @@
 
 <script>
 // === CONFIG ===
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxo2Bqi2hodICB9cALbSNhvuB83h5XfNaxK9pw7bcEAgIR7LuTl7LOqh82Cn5jetl60-w/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfacDvVNdckNqa-kzz-se8Nx9_ceaogIDYQNbVwtNlzaV0QvZiGWjTRMyAfKTAbPNfPw/exec";
 const SHARED_SECRET = "farmer_hub_secret_2024_xyz";
 
 // === STATE ===
@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   new Autocomplete('location', 'location-suggestions', 'locations');
   
   // Setup form submission
-  document.getElementById('listingForm').addEventListener('submit', submitListing);
+document.getElementById('listingForm').addEventListener('submit', submitListing);
   
   // Setup test data button
   document.getElementById('fillTestData').addEventListener('click', fillTestData);
