@@ -477,6 +477,7 @@
         <div class="full">
           <div class="actions">
             <button class="btn btn-primary" type="submit">✓ Submit Listing</button>
+            <button class="btn btn-secondary" type="button" id="fillTestData">🧪 Fill Test Data</button>
             <button class="btn btn-secondary" type="reset">↺ Clear Form</button>
           </div>
           <div id="status" class="notice"></div>
@@ -676,6 +677,88 @@ async function submitListing(evt) {
   }
 }
 
+// === TEST DATA FILLER ===
+function fillTestData() {
+  const testData = [
+    {
+      name: 'Ahmad Khoury',
+      phone: '+9611234567',
+      email: 'ahmad@example.com',
+      product: 'Olive Oil',
+      quantity: '50 L',
+      price: '12 USD/L',
+      location: 'Bekaa Valley',
+      description: 'Extra virgin olive oil, cold-pressed, organic certified. Available for delivery throughout Lebanon.'
+    },
+    {
+      name: 'Sara Mansour',
+      phone: '+9617654321',
+      email: 'sara.farm@example.com',
+      product: 'Fresh Apples',
+      quantity: '100 kg',
+      price: '2.5 USD/kg',
+      location: 'Zahle',
+      description: 'Red delicious apples, freshly harvested. Sweet and crispy, perfect for fresh eating.'
+    },
+    {
+      name: 'Karim Hassan',
+      phone: '+9619876543',
+      email: 'karim@example.com',
+      product: 'Wild Thyme',
+      quantity: '10 kg',
+      price: '15 USD/kg',
+      location: 'Mount Lebanon',
+      description: 'Premium wild mountain thyme (zaatar), hand-picked and sun-dried. Strong aroma and flavor.'
+    },
+    {
+      name: 'Layla Mahmoud',
+      phone: '+9615551234',
+      email: 'layla@example.com',
+      product: 'Honey',
+      quantity: '30 jars (500g each)',
+      price: '8 USD/jar',
+      location: 'Tripoli',
+      description: 'Pure natural honey from mountain flowers. No additives or processing.'
+    },
+    {
+      name: 'Youssef Abed',
+      phone: '+9614443333',
+      email: 'youssef.farm@example.com',
+      product: 'Cherry Tomatoes',
+      quantity: '50 kg',
+      price: '1.8 USD/kg',
+      location: 'Bekaa',
+      description: 'Organic cherry tomatoes, vine-ripened. Perfect for salads and cooking.'
+    }
+  ];
+  
+  // Pick a random test entry
+  const data = testData[Math.floor(Math.random() * testData.length)];
+  
+  // Fill the form
+  document.getElementById('name').value = data.name;
+  document.getElementById('phone').value = data.phone;
+  document.getElementById('email').value = data.email;
+  document.getElementById('product').value = data.product;
+  document.getElementById('quantity').value = data.quantity;
+  document.getElementById('price').value = data.price;
+  document.getElementById('location').value = data.location;
+  document.getElementById('description').value = data.description;
+  
+  // Set today's date for harvest
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('harvest_date').value = today;
+  
+  // Check the consent box
+  document.getElementById('consent').checked = true;
+  
+  // Show notification
+  const status = document.getElementById('status');
+  status.textContent = '🧪 Test data filled! Ready to submit.';
+  status.className = 'notice loading show';
+  setTimeout(() => status.classList.remove('show'), 3000);
+}
+
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', async () => {
   // Load existing data for autocomplete
@@ -687,6 +770,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Setup form submission
   document.getElementById('listingForm').addEventListener('submit', submitListing);
+  
+  // Setup test data button
+  document.getElementById('fillTestData').addEventListener('click', fillTestData);
 });
 </script>
 </body>
