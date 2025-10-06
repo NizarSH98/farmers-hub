@@ -28,8 +28,10 @@ function _sheet(){
 }
 
 function doGet(e){
-  const list = e.parameter && e.parameter.list;
-  if (list){
+  const params = e.parameter || {};
+  
+  // Handle listing request
+  if (params.list) {
     const sh = _sheet();
     const rows = sh.getDataRange().getValues();
     const header = rows.shift();
@@ -43,12 +45,55 @@ function doGet(e){
       }));
     return _jsonResponse({ ok:true, rows:data });
   }
-  return _jsonResponse({ ok:true, message:'Farmer Hub API. Use POST to submit or GET ?list=1 to fetch.' });
+  
+  // Handle form submission via GET
+  if (params.action === 'submit') {
+    try {
+      // Basic validation
+      const required = ['name','phone','product','location'];
+      for (let k of required){
+        if (!params[k]) return _jsonResponse({ ok:false, message:`Missing field: ${k}` }, 400);
+      }
+
+      // Simple shared secret check to reduce spam
+      if (params.secret !== SHARED_SECRET){
+        return _jsonResponse({ ok:false, message:'Unauthorized' }, 401);
+      }
+
+      const sh = _sheet();
+      const now = new Date();
+      const row = [
+        now,
+        _s(params.name), _s(params.phone), _s(params.email),
+        _s(params.product), _s(params.quantity), _s(params.price),
+        _s(params.location), _s(params.harvest_date), _s(params.image_url), _s(params.description),
+        SHARED_SECRET
+      ];
+      sh.appendRow(row);
+      return _jsonResponse({ ok:true });
+    } catch (err){
+      return _jsonResponse({ ok:false, message: String(err) }, 500);
+    }
+  }
+  
+  return _jsonResponse({ ok:true, message:'Farmer Hub API. Use GET with ?list=1 to fetch or ?action=submit to add.' });
 }
 
 function doPost(e){
   try{
-    const body = e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : {};
+    // Handle URL-encoded form data with 'data' parameter
+    let body;
+    
+    if (e.parameter && e.parameter.data) {
+      // URL-encoded form data - Google Apps Script already decodes it
+      body = JSON.parse(e.parameter.data);
+    } else if (e.postData && e.postData.contents) {
+      // Direct JSON POST (fallback)
+      body = JSON.parse(e.postData.contents);
+    } else {
+      return _jsonResponse({ ok:false, message:'No data received' }, 400);
+    }
+    
     if (!body) return _jsonResponse({ ok:false, message:'Invalid JSON' }, 400);
 
     // Basic validation

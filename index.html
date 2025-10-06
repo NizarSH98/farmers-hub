@@ -644,12 +644,21 @@ async function submitListing(evt) {
   payload.secret = SHARED_SECRET;
   
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      mode: "cors",
-      cache: "no-store",
+    // Use GET request with query parameters - no CORS preflight!
+    const params = new URLSearchParams();
+    params.append('action', 'submit');
+    
+    // Add all form fields as separate parameters
+    Object.keys(payload).forEach(key => {
+      if (payload[key]) {
+        params.append(key, payload[key]);
+      }
+    });
+    
+    const url = `${APPS_SCRIPT_URL}?${params.toString()}`;
+    const res = await fetch(url, {
+      method: "GET",
+      cache: "no-store"
     });
     
     if (!res.ok) throw new Error("Network error " + res.status);
