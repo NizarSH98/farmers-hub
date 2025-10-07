@@ -9,22 +9,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
-      --bg-primary:#0a0e1a; 
-      --bg-secondary:#111827; 
-      --card-bg:rgba(17,24,39,0.7);
+      /* Light Mode (Default) */
+      --bg-primary:#ffffff;
+      --bg-secondary:#f9fafb;
+      --card-bg:rgba(255,255,255,0.9);
       --card-border:rgba(99,102,241,0.2);
-      --muted:#9ca3af; 
-      --text:#f3f4f6; 
-      --text-bright:#ffffff;
-      --accent:#6366f1; 
+      --muted:#6b7280;
+      --text:#1f2937;
+      --text-bright:#000000;
+      --accent:#6366f1;
       --accent-hover:#4f46e5;
       --accent-light:rgba(99,102,241,0.1);
-      --success:#10b981; 
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --input-bg:#ffffff;
+      --input-border:#d1d5db;
+      --input-focus:rgba(99,102,241,0.3);
+      --shadow:rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg-primary:#0a0e1a;
+      --bg-secondary:#111827;
+      --card-bg:rgba(17,24,39,0.7);
+      --card-border:rgba(99,102,241,0.2);
+      --muted:#9ca3af;
+      --text:#f3f4f6;
+      --text-bright:#ffffff;
+      --accent:#6366f1;
+      --accent-hover:#4f46e5;
+      --accent-light:rgba(99,102,241,0.1);
+      --success:#10b981;
       --danger:#ef4444;
       --warning:#f59e0b;
       --input-bg:rgba(31,41,55,0.8);
       --input-border:rgba(75,85,99,0.5);
       --input-focus:rgba(99,102,241,0.5);
+      --shadow:rgba(0,0,0,0.3);
     }
     
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -32,11 +54,16 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text);
-      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
-      background-attachment: fixed;
+      background: var(--bg-primary);
       min-height: 100vh;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
+      background-attachment: fixed;
     }
     
     .container {
@@ -90,13 +117,32 @@
       color: var(--text-bright);
     }
     
+    .theme-toggle {
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
       border-radius: 24px;
       padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 100px rgba(99,102,241,0.1);
+      box-shadow: 0 20px 60px var(--shadow);
     }
     
     .card-header {
@@ -183,7 +229,6 @@
     
     input:focus, select:focus, textarea:focus {
       border-color: var(--accent);
-      background: rgba(31,41,55,0.95);
       box-shadow: 0 0 0 3px var(--input-focus);
     }
     
@@ -198,7 +243,6 @@
       line-height: 1.6;
     }
     
-    /* Autocomplete dropdown styling */
     .autocomplete-wrapper {
       position: relative;
     }
@@ -215,7 +259,7 @@
       max-height: 200px;
       overflow-y: auto;
       z-index: 1000;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px var(--shadow);
       margin-top: -12px;
       padding-top: 12px;
     }
@@ -266,6 +310,52 @@
       cursor: pointer;
     }
     
+    .month-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    
+    .month-btn {
+      padding: 12px 8px;
+      border: 2px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    
+    .month-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    
+    .month-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    
+    .month-btn.all-year {
+      grid-column: 1 / -1;
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+    
+    .month-btn.all-year:hover {
+      background: #059669;
+    }
+    
+    .month-btn.all-year.selected {
+      background: #047857;
+    }
+    
     .actions {
       display: flex;
       gap: 16px;
@@ -287,7 +377,7 @@
     
     .btn-primary {
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-      color: var(--text-bright);
+      color: white;
       box-shadow: 0 4px 16px rgba(99,102,241,0.3);
     }
     
@@ -308,6 +398,10 @@
     
     .btn-secondary:hover {
       border-color: var(--text);
+      background: rgba(0,0,0,0.05);
+    }
+    
+    [data-theme="dark"] .btn-secondary:hover {
       background: rgba(255,255,255,0.05);
     }
     
@@ -385,7 +479,6 @@
     
     .image-upload-area:hover {
       border-color: var(--accent);
-      background: rgba(31,41,55,0.95);
     }
     
     .image-upload-area.drag-over {
@@ -434,6 +527,7 @@
       form { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
       .topnav { flex-direction: column; gap: 16px; text-align: center; }
+      .month-selector { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
     }
   </style>
 </head>
@@ -444,7 +538,10 @@
         <div class="brand-icon">🌾</div>
         <span>Farmer Hub</span>
       </div>
-      <div style="display: flex; gap: 12px; align-items: center;">
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
         <div style="display: flex; gap: 8px;">
           <a href="index.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">English</a>
           <a href="index-ar.html" class="nav-link">العربية</a>
@@ -510,10 +607,17 @@
           </div>
         </div>
         
-        <div class="full form-group autocomplete-wrapper">
-          <label class="required">Product Name</label>
-          <input name="product" id="product" required placeholder="e.g. Olive Oil, Apples, Thyme..." />
-          <div class="helper-text">💡 Start typing to see suggestions from previous listings</div>
+        <div class="form-group autocomplete-wrapper">
+          <label class="required">Product Name (Arabic)</label>
+          <input name="product_ar" id="product_ar" required placeholder="مثال: زيت زيتون، تفاح، زعتر..." />
+          <div class="helper-text">💡 Arabic name is required</div>
+          <div id="product-ar-suggestions" class="autocomplete-list" style="display:none;"></div>
+        </div>
+        
+        <div class="form-group autocomplete-wrapper">
+          <label>Product Name (English - Optional)</label>
+          <input name="product" id="product" placeholder="e.g. Olive Oil, Apples, Thyme..." />
+          <div class="helper-text">💡 English name is optional</div>
           <div id="product-suggestions" class="autocomplete-list" style="display:none;"></div>
         </div>
         
@@ -539,6 +643,26 @@
         </div>
         
         <div class="full form-group">
+          <label class="required">Availability</label>
+          <div class="helper-text" style="margin-bottom: 12px;">📅 Select the months when this product is available</div>
+          <div class="month-selector" id="monthSelector">
+            <button type="button" class="month-btn" data-month="1">Jan</button>
+            <button type="button" class="month-btn" data-month="2">Feb</button>
+            <button type="button" class="month-btn" data-month="3">Mar</button>
+            <button type="button" class="month-btn" data-month="4">Apr</button>
+            <button type="button" class="month-btn" data-month="5">May</button>
+            <button type="button" class="month-btn" data-month="6">Jun</button>
+            <button type="button" class="month-btn" data-month="7">Jul</button>
+            <button type="button" class="month-btn" data-month="8">Aug</button>
+            <button type="button" class="month-btn" data-month="9">Sep</button>
+            <button type="button" class="month-btn" data-month="10">Oct</button>
+            <button type="button" class="month-btn" data-month="11">Nov</button>
+            <button type="button" class="month-btn" data-month="12">Dec</button>
+            <button type="button" class="month-btn all-year" id="allYearBtn">All Year</button>
+          </div>
+        </div>
+        
+        <div class="full form-group">
           <label>Product Image</label>
           <input name="image" id="image" type="file" accept="image/*" style="display:none;" />
           <div class="image-upload-area" id="imageUploadArea">
@@ -561,14 +685,14 @@
         <!-- Consent -->
         <div class="full">
           <div class="checkbox-wrapper">
-          <input id="consent" type="checkbox" required />
+            <input id="consent" type="checkbox" required />
             <label for="consent">I agree to publish my name and contact information for buyers to reach me on the public marketplace.</label>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="full">
-        <div class="actions">
+          <div class="actions">
             <button class="btn btn-primary" type="submit">✓ Submit Listing</button>
             <button class="btn btn-secondary" type="button" id="fillTestData">🧪 Fill Test Data</button>
             <button class="btn btn-secondary" type="reset">↺ Clear Form</button>
@@ -586,15 +710,72 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // === CONFIG ===
-// 🔧 REPLACE THESE WITH YOUR SUPABASE CREDENTIALS
 const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
 
-// Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// === THEME MANAGEMENT ===
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const htmlEl = document.documentElement;
+
+// Load saved theme or default to light
+const savedTheme = localStorage.getItem('theme') || 'light';
+htmlEl.setAttribute('data-theme', savedTheme);
+updateThemeIcon(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = htmlEl.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  htmlEl.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon(newTheme);
+});
+
+function updateThemeIcon(theme) {
+  themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+}
+
 // === STATE ===
-let existingData = { products: [], locations: [], units: [] };
+let existingData = { products: [], productsAr: [], locations: [], units: [] };
+let selectedMonths = new Set();
+
+// === MONTH SELECTOR ===
+function setupMonthSelector() {
+  const monthBtns = document.querySelectorAll('.month-btn:not(.all-year)');
+  const allYearBtn = document.getElementById('allYearBtn');
+  
+  monthBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const month = btn.dataset.month;
+      if (selectedMonths.has('all')) {
+        selectedMonths.clear();
+        allYearBtn.classList.remove('selected');
+      }
+      
+      if (selectedMonths.has(month)) {
+        selectedMonths.delete(month);
+        btn.classList.remove('selected');
+      } else {
+        selectedMonths.add(month);
+        btn.classList.add('selected');
+      }
+    });
+  });
+  
+  allYearBtn.addEventListener('click', () => {
+    if (selectedMonths.has('all')) {
+      selectedMonths.clear();
+      allYearBtn.classList.remove('selected');
+    } else {
+      selectedMonths.clear();
+      monthBtns.forEach(btn => btn.classList.remove('selected'));
+      selectedMonths.add('all');
+      allYearBtn.classList.add('selected');
+    }
+  });
+}
 
 // === AUTOCOMPLETE SYSTEM ===
 class Autocomplete {
@@ -621,7 +802,7 @@ class Autocomplete {
     
     const suggestions = existingData[this.dataKey]
       .filter(item => item.value.toLowerCase().includes(value))
-      .slice(0, 8); // Limit to 8 suggestions
+      .slice(0, 8);
     
     if (suggestions.length === 0) {
       this.hide();
@@ -642,7 +823,6 @@ class Autocomplete {
     this.suggestionsBox.style.display = 'block';
     this.activeIndex = -1;
     
-    // Add click handlers
     this.suggestionsBox.querySelectorAll('.autocomplete-item').forEach(el => {
       el.addEventListener('click', () => {
         this.input.value = el.dataset.value;
@@ -693,14 +873,14 @@ async function loadExistingData() {
   try {
     const { data: rows, error } = await supabase
       .from('listings')
-      .select('product, location')
+      .select('product, product_ar, location')
       .order('created_at', { ascending: false })
       .limit(1000);
     
     if (error) throw error;
     
-    // Extract and count unique values
     const productMap = {};
+    const productArMap = {};
     const locationMap = {};
     
     (rows || []).forEach(row => {
@@ -708,16 +888,23 @@ async function loadExistingData() {
         const product = row.product.trim();
         productMap[product] = (productMap[product] || 0) + 1;
       }
+      if (row.product_ar) {
+        const productAr = row.product_ar.trim();
+        productArMap[productAr] = (productArMap[productAr] || 0) + 1;
+      }
       if (row.location) {
         const location = row.location.trim();
         locationMap[location] = (locationMap[location] || 0) + 1;
       }
     });
     
-    // Convert to sorted arrays
     existingData.products = Object.entries(productMap)
       .map(([value, count]) => ({ value, count }))
-      .sort((a, b) => b.count - a.count); // Most used first
+      .sort((a, b) => b.count - a.count);
+    
+    existingData.productsAr = Object.entries(productArMap)
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => b.count - a.count);
     
     existingData.locations = Object.entries(locationMap)
       .map(([value, count]) => ({ value, count }))
@@ -738,20 +925,17 @@ function setupImageUpload() {
   const preview = document.getElementById('imagePreview');
   const removeBtn = document.getElementById('removeImage');
   
-  // Click to upload
   uploadArea.addEventListener('click', (e) => {
     if (e.target !== removeBtn) {
       imageInput.click();
     }
   });
   
-  // File selected
   imageInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) handleImageFile(file);
   });
   
-  // Drag and drop
   uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadArea.classList.add('drag-over');
@@ -770,7 +954,6 @@ function setupImageUpload() {
     }
   });
   
-  // Remove image
   removeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     selectedImageFile = null;
@@ -783,13 +966,11 @@ function setupImageUpload() {
 }
 
 function handleImageFile(file) {
-  // Validate file size (5MB max)
   if (file.size > 5 * 1024 * 1024) {
     alert('Image too large! Please choose an image under 5MB.');
     return;
   }
   
-  // Validate file type
   if (!file.type.startsWith('image/')) {
     alert('Please select a valid image file.');
     return;
@@ -797,7 +978,6 @@ function handleImageFile(file) {
   
   selectedImageFile = file;
   
-  // Show preview
   const reader = new FileReader();
   reader.onload = (e) => {
     const preview = document.getElementById('imagePreview');
@@ -826,7 +1006,6 @@ async function uploadImage(file, listingId) {
   
   if (error) throw error;
   
-  // Get public URL
   const { data: urlData } = supabase.storage
     .from('product-images')
     .getPublicUrl(filePath);
@@ -840,11 +1019,18 @@ async function submitListing(evt) {
   const form = evt.target;
   const status = document.getElementById('status');
   
+  // Check availability selection
+  if (selectedMonths.size === 0) {
+    status.textContent = "❌ Please select availability months";
+    status.className = "notice err show";
+    setTimeout(() => status.classList.remove('show'), 3000);
+    return;
+  }
+  
   status.textContent = "Verifying credentials...";
   status.className = "notice loading show";
   
   try {
-    // Get and verify user credentials
     const formData = new FormData(form);
     const username = formData.get('username')?.trim();
     const password = formData.get('user_password')?.trim();
@@ -853,7 +1039,6 @@ async function submitListing(evt) {
       throw new Error('Please enter your username and password');
     }
     
-    // Verify user credentials
     const { data: user, error: authError } = await supabase
       .from('verified_users')
       .select('id, username, full_name, is_active')
@@ -871,27 +1056,28 @@ async function submitListing(evt) {
     
     status.textContent = "Credentials verified. Submitting listing...";
     
-    // Prepare data
+    const availability = selectedMonths.has('all') ? 'all' : JSON.stringify(Array.from(selectedMonths).map(Number));
+    
     const payload = {
       user_id: user.id,
       name: formData.get('name')?.trim(),
       phone: formData.get('phone')?.trim(),
       email: formData.get('email')?.trim() || null,
-      product: formData.get('product')?.trim(),
+      product_ar: formData.get('product_ar')?.trim(),
+      product: formData.get('product')?.trim() || null,
       quantity: formData.get('quantity')?.trim() || null,
       price: formData.get('price')?.trim() || null,
       location: formData.get('location')?.trim(),
       harvest_date: formData.get('harvest_date') || null,
       description: formData.get('description')?.trim() || null,
+      availability: availability,
       image_url: null
     };
     
-    // Validate required fields
-    if (!payload.name || !payload.phone || !payload.product || !payload.location) {
+    if (!payload.name || !payload.phone || !payload.product_ar || !payload.location) {
       throw new Error('Please fill in all required fields');
     }
     
-    // Insert listing first (without image)
     const { data: listing, error: insertError } = await supabase
       .from('listings')
       .insert([payload])
@@ -900,12 +1086,10 @@ async function submitListing(evt) {
     
     if (insertError) throw insertError;
     
-    // Upload image if present
     if (selectedImageFile) {
       status.textContent = "Uploading image...";
       const imageUrl = await uploadImage(selectedImageFile, listing.id);
       
-      // Update listing with image URL
       const { error: updateError } = await supabase
         .from('listings')
         .update({ image_url: imageUrl })
@@ -917,17 +1101,16 @@ async function submitListing(evt) {
     status.textContent = "✅ Listing submitted successfully!";
     status.className = "notice ok show";
     
-    // Reset form
     form.reset();
     selectedImageFile = null;
+    selectedMonths.clear();
+    document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
     document.getElementById('imagePreview').style.display = 'none';
     document.getElementById('removeImage').style.display = 'none';
     document.getElementById('uploadPlaceholder').style.display = 'block';
     
-    // Reload suggestions for next submission
     await loadExistingData();
     
-    // Hide success message after 5 seconds
     setTimeout(() => {
       status.classList.remove('show');
     }, 5000);
@@ -947,74 +1130,64 @@ function fillTestData() {
       phone: '+9611234567',
       email: 'ahmad@example.com',
       product: 'Olive Oil',
+      product_ar: 'زيت زيتون',
       quantity: '50 L',
       price: '12 USD/L',
       location: 'Bekaa Valley',
-      description: 'Extra virgin olive oil, cold-pressed, organic certified. Available for delivery throughout Lebanon.'
+      description: 'Extra virgin olive oil, cold-pressed, organic certified. Available for delivery throughout Lebanon.',
+      months: ['1', '2', '3', '11', '12']
     },
     {
       name: 'Sara Mansour',
       phone: '+9617654321',
       email: 'sara.farm@example.com',
       product: 'Fresh Apples',
+      product_ar: 'تفاح طازج',
       quantity: '100 kg',
       price: '2.5 USD/kg',
       location: 'Zahle',
-      description: 'Red delicious apples, freshly harvested. Sweet and crispy, perfect for fresh eating.'
+      description: 'Red delicious apples, freshly harvested. Sweet and crispy, perfect for fresh eating.',
+      months: ['9', '10', '11']
     },
     {
       name: 'Karim Hassan',
       phone: '+9619876543',
       email: 'karim@example.com',
       product: 'Wild Thyme',
+      product_ar: 'زعتر بري',
       quantity: '10 kg',
       price: '15 USD/kg',
       location: 'Mount Lebanon',
-      description: 'Premium wild mountain thyme (zaatar), hand-picked and sun-dried. Strong aroma and flavor.'
-    },
-    {
-      name: 'Layla Mahmoud',
-      phone: '+9615551234',
-      email: 'layla@example.com',
-      product: 'Honey',
-      quantity: '30 jars (500g each)',
-      price: '8 USD/jar',
-      location: 'Tripoli',
-      description: 'Pure natural honey from mountain flowers. No additives or processing.'
-    },
-    {
-      name: 'Youssef Abed',
-      phone: '+9614443333',
-      email: 'youssef.farm@example.com',
-      product: 'Cherry Tomatoes',
-      quantity: '50 kg',
-      price: '1.8 USD/kg',
-      location: 'Bekaa',
-      description: 'Organic cherry tomatoes, vine-ripened. Perfect for salads and cooking.'
+      description: 'Premium wild mountain thyme (zaatar), hand-picked and sun-dried. Strong aroma and flavor.',
+      months: ['5', '6', '7', '8']
     }
   ];
   
-  // Pick a random test entry
   const data = testData[Math.floor(Math.random() * testData.length)];
   
-  // Fill the form
   document.getElementById('name').value = data.name;
   document.getElementById('phone').value = data.phone;
   document.getElementById('email').value = data.email;
   document.getElementById('product').value = data.product;
+  document.getElementById('product_ar').value = data.product_ar;
   document.getElementById('quantity').value = data.quantity;
   document.getElementById('price').value = data.price;
   document.getElementById('location').value = data.location;
   document.getElementById('description').value = data.description;
   
-  // Set today's date for harvest
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('harvest_date').value = today;
   
-  // Check the consent box
   document.getElementById('consent').checked = true;
   
-  // Show notification
+  // Set months
+  selectedMonths.clear();
+  document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
+  data.months.forEach(month => {
+    selectedMonths.add(month);
+    document.querySelector(`[data-month="${month}"]`).classList.add('selected');
+  });
+  
   const status = document.getElementById('status');
   status.textContent = '🧪 Test data filled! Ready to submit.';
   status.className = 'notice loading show';
@@ -1023,20 +1196,16 @@ function fillTestData() {
 
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load existing data for autocomplete
   await loadExistingData();
   
-  // Initialize autocomplete
   new Autocomplete('product', 'product-suggestions', 'products');
+  new Autocomplete('product_ar', 'product-ar-suggestions', 'productsAr');
   new Autocomplete('location', 'location-suggestions', 'locations');
   
-  // Setup image upload
   setupImageUpload();
+  setupMonthSelector();
   
-  // Setup form submission
   document.getElementById('listingForm').addEventListener('submit', submitListing);
-  
-  // Setup test data button
   document.getElementById('fillTestData').addEventListener('click', fillTestData);
 });
 </script>
