@@ -444,7 +444,10 @@
         <div class="brand-icon">🌾</div>
         <span>Farmer Hub</span>
       </div>
-      <a href="market.html" class="nav-link">Browse Marketplace</a>
+      <div style="display: flex; gap: 12px;">
+        <a href="market.html" class="nav-link">Browse Marketplace</a>
+        <a href="admin.html" class="nav-link">Admin Panel</a>
+      </div>
     </div>
 
     <div class="card">
@@ -454,6 +457,25 @@
       </div>
 
       <form id="listingForm" autocomplete="off">
+        <!-- User Authentication -->
+        <div class="full">
+          <div class="section-divider">
+            <span class="section-title">🔐 User Authentication</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="required">Username</label>
+          <input name="username" id="username" required placeholder="Your assigned username" autocomplete="off" />
+          <div class="helper-text">🔑 Enter the username provided by admin</div>
+        </div>
+        
+        <div class="form-group">
+          <label class="required">Password</label>
+          <input name="user_password" id="user_password" type="password" required placeholder="Your password" autocomplete="off" />
+          <div class="helper-text">🔒 Enter the password provided by admin</div>
+        </div>
+        
         <!-- Contact Information -->
         <div class="full">
           <div class="section-divider">
@@ -814,13 +836,40 @@ async function submitListing(evt) {
   const form = evt.target;
   const status = document.getElementById('status');
   
-  status.textContent = "Submitting...";
+  status.textContent = "Verifying credentials...";
   status.className = "notice loading show";
   
   try {
-    // Prepare data
+    // Get and verify user credentials
     const formData = new FormData(form);
+    const username = formData.get('username')?.trim();
+    const password = formData.get('user_password')?.trim();
+    
+    if (!username || !password) {
+      throw new Error('Please enter your username and password');
+    }
+    
+    // Verify user credentials
+    const { data: user, error: authError } = await supabase
+      .from('verified_users')
+      .select('id, username, full_name, is_active')
+      .eq('username', username)
+      .eq('password', password)
+      .single();
+    
+    if (authError || !user) {
+      throw new Error('Invalid username or password. Please contact admin for access.');
+    }
+    
+    if (!user.is_active) {
+      throw new Error('Your account has been deactivated. Please contact admin.');
+    }
+    
+    status.textContent = "Credentials verified. Submitting listing...";
+    
+    // Prepare data
     const payload = {
+      user_id: user.id,
       name: formData.get('name')?.trim(),
       phone: formData.get('phone')?.trim(),
       email: formData.get('email')?.trim() || null,
