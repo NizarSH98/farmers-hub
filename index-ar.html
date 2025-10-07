@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Farmer Hub — Submit Your Product Listing</title>
+  <title>مركز المزارعين — إضافة منتج</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
       --bg-primary:#0a0e1a; 
@@ -30,7 +30,7 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text);
       background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
       background-attachment: fixed;
@@ -198,7 +198,6 @@
       line-height: 1.6;
     }
     
-    /* Autocomplete dropdown styling */
     .autocomplete-wrapper {
       position: relative;
     }
@@ -206,8 +205,8 @@
     .autocomplete-list {
       position: absolute;
       top: 100%;
-      left: 0;
       right: 0;
+      left: 0;
       background: var(--input-bg);
       border: 1.5px solid var(--accent);
       border-top: none;
@@ -237,7 +236,7 @@
     .autocomplete-count {
       font-size: 12px;
       color: var(--muted);
-      margin-left: 8px;
+      margin-right: 8px;
     }
     
     .checkbox-wrapper {
@@ -409,7 +408,7 @@
     .btn-remove-image {
       position: absolute;
       top: 12px;
-      right: 12px;
+      left: 12px;
       padding: 8px 16px;
       background: var(--danger);
       color: white;
@@ -427,6 +426,11 @@
       transform: scale(1.05);
     }
     
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+    }
+    
     @media (max-width: 768px) {
       .container { padding: 24px 16px; }
       .card { padding: 28px 20px; }
@@ -442,143 +446,143 @@
     <div class="topnav">
       <div class="brand">
         <div class="brand-icon">🌾</div>
-        <span>Farmer Hub</span>
+        <span>مركز المزارعين</span>
       </div>
       <div style="display: flex; gap: 12px; align-items: center;">
-        <div style="display: flex; gap: 8px;">
-          <a href="index.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">English</a>
-          <a href="index-ar.html" class="nav-link">العربية</a>
+        <div class="lang-switcher">
+          <a href="index.html" class="nav-link">English</a>
+          <a href="index-ar.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">العربية</a>
         </div>
-        <a href="market.html" class="nav-link">Browse Marketplace</a>
-        <a href="admin.html" class="nav-link">Admin Panel</a>
+        <a href="market-ar.html" class="nav-link">تصفح السوق</a>
+        <a href="admin.html" class="nav-link">لوحة الإدارة</a>
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
-        <h1>List Your Produce</h1>
-        <p class="lead">Fill this form to make your product visible on the public marketplace. We'll suggest previously used values to keep data consistent.</p>
+        <h1>أضف منتجك</h1>
+        <p class="lead">املأ هذا النموذج لعرض منتجك في السوق العامة. سنقترح عليك قيم مستخدمة سابقاً للحفاظ على اتساق البيانات.</p>
       </div>
 
       <form id="listingForm" autocomplete="off">
         <!-- User Authentication -->
         <div class="full">
           <div class="section-divider">
-            <span class="section-title">🔐 User Authentication</span>
+            <span class="section-title">🔐 التحقق من الهوية</span>
           </div>
         </div>
         
         <div class="form-group">
-          <label class="required">Username</label>
-          <input name="username" id="username" required placeholder="Your assigned username" autocomplete="off" />
-          <div class="helper-text">🔑 Enter the username provided by admin</div>
+          <label class="required">اسم المستخدم</label>
+          <input name="username" id="username" required placeholder="اسم المستخدم المخصص لك" autocomplete="off" />
+          <div class="helper-text">🔑 أدخل اسم المستخدم الذي قدمه لك المسؤول</div>
         </div>
         
         <div class="form-group">
-          <label class="required">Password</label>
-          <input name="user_password" id="user_password" type="password" required placeholder="Your password" autocomplete="off" />
-          <div class="helper-text">🔒 Enter the password provided by admin</div>
+          <label class="required">كلمة المرور</label>
+          <input name="user_password" id="user_password" type="password" required placeholder="كلمة المرور الخاصة بك" autocomplete="off" />
+          <div class="helper-text">🔒 أدخل كلمة المرور التي قدمها لك المسؤول</div>
         </div>
         
         <!-- Contact Information -->
         <div class="full">
           <div class="section-divider">
-            <span class="section-title">Contact Information</span>
+            <span class="section-title">معلومات التواصل</span>
           </div>
         </div>
         
         <div class="full form-group">
-          <label class="required">Full Name</label>
-          <input name="name" id="name" required placeholder="e.g. Ahmad Khoury" />
+          <label class="required">الاسم الكامل</label>
+          <input name="name" id="name" required placeholder="مثال: أحمد خوري" />
         </div>
         
         <div class="form-group">
-          <label class="required">Phone (WhatsApp)</label>
+          <label class="required">رقم الهاتف (واتساب)</label>
           <input name="phone" id="phone" required placeholder="+961..." type="tel" />
-          <div class="helper-text">📱 Used for WhatsApp contact</div>
+          <div class="helper-text">📱 يُستخدم للتواصل عبر الواتساب</div>
         </div>
         
         <div class="form-group">
-          <label>Email</label>
-          <input name="email" id="email" type="email" placeholder="optional@example.com" />
+          <label>البريد الإلكتروني</label>
+          <input name="email" id="email" type="email" placeholder="example@email.com (اختياري)" />
         </div>
 
         <!-- Product Details -->
         <div class="full">
           <div class="section-divider">
-            <span class="section-title">Product Details</span>
+            <span class="section-title">تفاصيل المنتج</span>
           </div>
         </div>
         
         <div class="full form-group autocomplete-wrapper">
-          <label class="required">Product Name</label>
-          <input name="product" id="product" required placeholder="e.g. Olive Oil, Apples, Thyme..." />
-          <div class="helper-text">💡 Start typing to see suggestions from previous listings</div>
+          <label class="required">اسم المنتج</label>
+          <input name="product" id="product" required placeholder="مثال: زيت زيتون، تفاح، زعتر..." />
+          <div class="helper-text">💡 ابدأ بالكتابة لرؤية اقتراحات من قوائم سابقة</div>
           <div id="product-suggestions" class="autocomplete-list" style="display:none;"></div>
         </div>
         
         <div class="form-group">
-          <label>Quantity</label>
-          <input name="quantity" id="quantity" placeholder="e.g. 50 kg, 200 L" />
+          <label>الكمية</label>
+          <input name="quantity" id="quantity" placeholder="مثال: 50 كغ، 200 لتر" />
         </div>
         
         <div class="form-group">
-          <label>Unit Price</label>
-          <input name="price" id="price" placeholder="e.g. 3.5 USD/kg" />
+          <label>سعر الوحدة</label>
+          <input name="price" id="price" placeholder="مثال: 3.5 دولار/كغ" />
         </div>
         
         <div class="form-group autocomplete-wrapper">
-          <label class="required">Location</label>
-          <input name="location" id="location" required placeholder="e.g. Bekaa, Zahle" />
+          <label class="required">الموقع</label>
+          <input name="location" id="location" required placeholder="مثال: البقاع، زحلة" />
           <div id="location-suggestions" class="autocomplete-list" style="display:none;"></div>
         </div>
         
         <div class="form-group">
-          <label>Harvest Date</label>
+          <label>تاريخ الحصاد</label>
           <input name="harvest_date" id="harvest_date" type="date" />
         </div>
         
         <div class="full form-group">
-          <label>Product Image</label>
+          <label>صورة المنتج</label>
           <input name="image" id="image" type="file" accept="image/*" style="display:none;" />
           <div class="image-upload-area" id="imageUploadArea">
             <div class="upload-placeholder" id="uploadPlaceholder">
               <div style="font-size: 48px; margin-bottom: 12px;">📸</div>
-              <div style="font-weight: 600; margin-bottom: 8px;">Click to upload or drag & drop</div>
-              <div style="font-size: 13px; color: var(--muted);">PNG, JPG, WebP up to 5MB</div>
+              <div style="font-weight: 600; margin-bottom: 8px;">انقر للرفع أو اسحب وأفلت</div>
+              <div style="font-size: 13px; color: var(--muted);">PNG, JPG, WebP حتى 5 ميجابايت</div>
             </div>
             <img id="imagePreview" class="image-preview" style="display:none;" />
-            <button type="button" class="btn-remove-image" id="removeImage" style="display:none;">✕ Remove</button>
+            <button type="button" class="btn-remove-image" id="removeImage" style="display:none;">✕ إزالة</button>
           </div>
-          <div class="helper-text">🖼️ Upload a product photo (optional but recommended)</div>
+          <div class="helper-text">🖼️ ارفع صورة للمنتج (اختياري لكن موصى به)</div>
         </div>
         
         <div class="full form-group">
-          <label>Description</label>
-          <textarea name="description" id="description" placeholder="Short details: variety, organic, delivery options, certifications, etc."></textarea>
+          <label>الوصف</label>
+          <textarea name="description" id="description" placeholder="تفاصيل قصيرة: النوع، عضوي، خيارات التوصيل، الشهادات، إلخ."></textarea>
         </div>
 
         <!-- Consent -->
         <div class="full">
           <div class="checkbox-wrapper">
-          <input id="consent" type="checkbox" required />
-            <label for="consent">I agree to publish my name and contact information for buyers to reach me on the public marketplace.</label>
+            <input id="consent" type="checkbox" required />
+            <label for="consent">أوافق على نشر اسمي ومعلومات الاتصال الخاصة بي حتى يتمكن المشترون من التواصل معي في السوق العامة.</label>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="full">
-        <div class="actions">
-            <button class="btn btn-primary" type="submit">✓ Submit Listing</button>
-            <button class="btn btn-secondary" type="button" id="fillTestData">🧪 Fill Test Data</button>
-            <button class="btn btn-secondary" type="reset">↺ Clear Form</button>
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">✓ إرسال القائمة</button>
+            <button class="btn btn-secondary" type="button" id="fillTestData">🧪 تعبئة بيانات تجريبية</button>
+            <button class="btn btn-secondary" type="reset">↺ مسح النموذج</button>
           </div>
           <div id="status" class="notice"></div>
         </div>
       </form>
       
       <div class="footer">
-        After submitting, your listing appears on the <a href="market.html">Marketplace</a> within seconds.
+        بعد الإرسال، ستظهر قائمتك في <a href="market-ar.html">السوق</a> خلال ثوانٍ.
       </div>
     </div>
   </div>
@@ -586,11 +590,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // === CONFIG ===
-// 🔧 REPLACE THESE WITH YOUR SUPABASE CREDENTIALS
 const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
 
-// Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // === STATE ===
@@ -621,7 +623,7 @@ class Autocomplete {
     
     const suggestions = existingData[this.dataKey]
       .filter(item => item.value.toLowerCase().includes(value))
-      .slice(0, 8); // Limit to 8 suggestions
+      .slice(0, 8);
     
     if (suggestions.length === 0) {
       this.hide();
@@ -635,14 +637,13 @@ class Autocomplete {
     this.suggestionsBox.innerHTML = suggestions.map((item, idx) => 
       `<div class="autocomplete-item" data-index="${idx}" data-value="${item.value}">
         ${item.value}
-        <span class="autocomplete-count">(used ${item.count}x)</span>
+        <span class="autocomplete-count">(استُخدم ${item.count} مرة)</span>
       </div>`
     ).join('');
     
     this.suggestionsBox.style.display = 'block';
     this.activeIndex = -1;
     
-    // Add click handlers
     this.suggestionsBox.querySelectorAll('.autocomplete-item').forEach(el => {
       el.addEventListener('click', () => {
         this.input.value = el.dataset.value;
@@ -699,7 +700,6 @@ async function loadExistingData() {
     
     if (error) throw error;
     
-    // Extract and count unique values
     const productMap = {};
     const locationMap = {};
     
@@ -714,10 +714,9 @@ async function loadExistingData() {
       }
     });
     
-    // Convert to sorted arrays
     existingData.products = Object.entries(productMap)
       .map(([value, count]) => ({ value, count }))
-      .sort((a, b) => b.count - a.count); // Most used first
+      .sort((a, b) => b.count - a.count);
     
     existingData.locations = Object.entries(locationMap)
       .map(([value, count]) => ({ value, count }))
@@ -738,20 +737,17 @@ function setupImageUpload() {
   const preview = document.getElementById('imagePreview');
   const removeBtn = document.getElementById('removeImage');
   
-  // Click to upload
   uploadArea.addEventListener('click', (e) => {
     if (e.target !== removeBtn) {
       imageInput.click();
     }
   });
   
-  // File selected
   imageInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) handleImageFile(file);
   });
   
-  // Drag and drop
   uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadArea.classList.add('drag-over');
@@ -770,7 +766,6 @@ function setupImageUpload() {
     }
   });
   
-  // Remove image
   removeBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     selectedImageFile = null;
@@ -783,21 +778,18 @@ function setupImageUpload() {
 }
 
 function handleImageFile(file) {
-  // Validate file size (5MB max)
   if (file.size > 5 * 1024 * 1024) {
-    alert('Image too large! Please choose an image under 5MB.');
+    alert('الصورة كبيرة جداً! الرجاء اختيار صورة أقل من 5 ميجابايت.');
     return;
   }
   
-  // Validate file type
   if (!file.type.startsWith('image/')) {
-    alert('Please select a valid image file.');
+    alert('الرجاء اختيار ملف صورة صالح.');
     return;
   }
   
   selectedImageFile = file;
   
-  // Show preview
   const reader = new FileReader();
   reader.onload = (e) => {
     const preview = document.getElementById('imagePreview');
@@ -826,7 +818,6 @@ async function uploadImage(file, listingId) {
   
   if (error) throw error;
   
-  // Get public URL
   const { data: urlData } = supabase.storage
     .from('product-images')
     .getPublicUrl(filePath);
@@ -840,20 +831,18 @@ async function submitListing(evt) {
   const form = evt.target;
   const status = document.getElementById('status');
   
-  status.textContent = "Verifying credentials...";
+  status.textContent = "جارٍ التحقق من بيانات الدخول...";
   status.className = "notice loading show";
   
   try {
-    // Get and verify user credentials
     const formData = new FormData(form);
     const username = formData.get('username')?.trim();
     const password = formData.get('user_password')?.trim();
     
     if (!username || !password) {
-      throw new Error('Please enter your username and password');
+      throw new Error('الرجاء إدخال اسم المستخدم وكلمة المرور');
     }
     
-    // Verify user credentials
     const { data: user, error: authError } = await supabase
       .from('verified_users')
       .select('id, username, full_name, is_active')
@@ -862,16 +851,15 @@ async function submitListing(evt) {
       .single();
     
     if (authError || !user) {
-      throw new Error('Invalid username or password. Please contact admin for access.');
+      throw new Error('اسم المستخدم أو كلمة المرور غير صحيحة. يرجى الاتصال بالمسؤول للحصول على الوصول.');
     }
     
     if (!user.is_active) {
-      throw new Error('Your account has been deactivated. Please contact admin.');
+      throw new Error('تم تعطيل حسابك. يرجى الاتصال بالمسؤول.');
     }
     
-    status.textContent = "Credentials verified. Submitting listing...";
+    status.textContent = "تم التحقق من البيانات. جارٍ إرسال القائمة...";
     
-    // Prepare data
     const payload = {
       user_id: user.id,
       name: formData.get('name')?.trim(),
@@ -886,12 +874,10 @@ async function submitListing(evt) {
       image_url: null
     };
     
-    // Validate required fields
     if (!payload.name || !payload.phone || !payload.product || !payload.location) {
-      throw new Error('Please fill in all required fields');
+      throw new Error('الرجاء ملء جميع الحقول المطلوبة');
     }
     
-    // Insert listing first (without image)
     const { data: listing, error: insertError } = await supabase
       .from('listings')
       .insert([payload])
@@ -900,12 +886,10 @@ async function submitListing(evt) {
     
     if (insertError) throw insertError;
     
-    // Upload image if present
     if (selectedImageFile) {
-      status.textContent = "Uploading image...";
+      status.textContent = "جارٍ رفع الصورة...";
       const imageUrl = await uploadImage(selectedImageFile, listing.id);
       
-      // Update listing with image URL
       const { error: updateError } = await supabase
         .from('listings')
         .update({ image_url: imageUrl })
@@ -914,26 +898,23 @@ async function submitListing(evt) {
       if (updateError) console.warn('Failed to update image URL:', updateError);
     }
     
-    status.textContent = "✅ Listing submitted successfully!";
+    status.textContent = "✅ تم إرسال القائمة بنجاح!";
     status.className = "notice ok show";
     
-    // Reset form
     form.reset();
     selectedImageFile = null;
     document.getElementById('imagePreview').style.display = 'none';
     document.getElementById('removeImage').style.display = 'none';
     document.getElementById('uploadPlaceholder').style.display = 'block';
     
-    // Reload suggestions for next submission
     await loadExistingData();
     
-    // Hide success message after 5 seconds
     setTimeout(() => {
       status.classList.remove('show');
     }, 5000);
     
   } catch (e) {
-    status.textContent = "❌ Submission failed: " + e.message;
+    status.textContent = "❌ فشل الإرسال: " + e.message;
     status.className = "notice err show";
     console.error('Submission error:', e);
   }
@@ -943,61 +924,39 @@ async function submitListing(evt) {
 function fillTestData() {
   const testData = [
     {
-      name: 'Ahmad Khoury',
+      name: 'أحمد خوري',
       phone: '+9611234567',
       email: 'ahmad@example.com',
-      product: 'Olive Oil',
-      quantity: '50 L',
-      price: '12 USD/L',
-      location: 'Bekaa Valley',
-      description: 'Extra virgin olive oil, cold-pressed, organic certified. Available for delivery throughout Lebanon.'
+      product: 'زيت زيتون',
+      quantity: '50 لتر',
+      price: '12 دولار/لتر',
+      location: 'البقاع',
+      description: 'زيت زيتون بكر ممتاز، معصور على البارد، معتمد عضوياً. متاح للتوصيل في جميع أنحاء لبنان.'
     },
     {
-      name: 'Sara Mansour',
+      name: 'سارة منصور',
       phone: '+9617654321',
       email: 'sara.farm@example.com',
-      product: 'Fresh Apples',
-      quantity: '100 kg',
-      price: '2.5 USD/kg',
-      location: 'Zahle',
-      description: 'Red delicious apples, freshly harvested. Sweet and crispy, perfect for fresh eating.'
+      product: 'تفاح طازج',
+      quantity: '100 كغ',
+      price: '2.5 دولار/كغ',
+      location: 'زحلة',
+      description: 'تفاح أحمر لذيذ، محصود حديثاً. حلو ومقرمش، مثالي للأكل الطازج.'
     },
     {
-      name: 'Karim Hassan',
+      name: 'كريم حسن',
       phone: '+9619876543',
       email: 'karim@example.com',
-      product: 'Wild Thyme',
-      quantity: '10 kg',
-      price: '15 USD/kg',
-      location: 'Mount Lebanon',
-      description: 'Premium wild mountain thyme (zaatar), hand-picked and sun-dried. Strong aroma and flavor.'
-    },
-    {
-      name: 'Layla Mahmoud',
-      phone: '+9615551234',
-      email: 'layla@example.com',
-      product: 'Honey',
-      quantity: '30 jars (500g each)',
-      price: '8 USD/jar',
-      location: 'Tripoli',
-      description: 'Pure natural honey from mountain flowers. No additives or processing.'
-    },
-    {
-      name: 'Youssef Abed',
-      phone: '+9614443333',
-      email: 'youssef.farm@example.com',
-      product: 'Cherry Tomatoes',
-      quantity: '50 kg',
-      price: '1.8 USD/kg',
-      location: 'Bekaa',
-      description: 'Organic cherry tomatoes, vine-ripened. Perfect for salads and cooking.'
+      product: 'زعتر بري',
+      quantity: '10 كغ',
+      price: '15 دولار/كغ',
+      location: 'جبل لبنان',
+      description: 'زعتر بري ممتاز من الجبال، مقطوف باليد ومجفف بالشمس. رائحة ونكهة قوية.'
     }
   ];
   
-  // Pick a random test entry
   const data = testData[Math.floor(Math.random() * testData.length)];
   
-  // Fill the form
   document.getElementById('name').value = data.name;
   document.getElementById('phone').value = data.phone;
   document.getElementById('email').value = data.email;
@@ -1007,38 +966,30 @@ function fillTestData() {
   document.getElementById('location').value = data.location;
   document.getElementById('description').value = data.description;
   
-  // Set today's date for harvest
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('harvest_date').value = today;
   
-  // Check the consent box
   document.getElementById('consent').checked = true;
   
-  // Show notification
   const status = document.getElementById('status');
-  status.textContent = '🧪 Test data filled! Ready to submit.';
+  status.textContent = '🧪 تم ملء البيانات التجريبية! جاهز للإرسال.';
   status.className = 'notice loading show';
   setTimeout(() => status.classList.remove('show'), 3000);
 }
 
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load existing data for autocomplete
   await loadExistingData();
   
-  // Initialize autocomplete
   new Autocomplete('product', 'product-suggestions', 'products');
   new Autocomplete('location', 'location-suggestions', 'locations');
   
-  // Setup image upload
   setupImageUpload();
   
-  // Setup form submission
   document.getElementById('listingForm').addEventListener('submit', submitListing);
-  
-  // Setup test data button
   document.getElementById('fillTestData').addEventListener('click', fillTestData);
 });
 </script>
 </body>
 </html>
+

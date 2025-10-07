@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Farmer Hub — Marketplace</title>
+  <title>مركز المزارعين — السوق</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
       --bg-primary:#0a0e1a; 
@@ -30,7 +30,7 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text);
       background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
       background-attachment: fixed;
@@ -427,6 +427,11 @@
       font-weight: 600;
     }
     
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+    }
+    
     @media (max-width: 1024px) {
       .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
       .filters-grid { grid-template-columns: 1fr 1fr; }
@@ -449,33 +454,33 @@
     <div class="topnav">
       <div class="brand">
         <div class="brand-icon">🌾</div>
-        <span>Farmer Hub</span>
+        <span>مركز المزارعين</span>
       </div>
       <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-        <div style="display: flex; gap: 8px;">
-          <a href="market.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">English</a>
-          <a href="market-ar.html" class="nav-link">العربية</a>
+        <div class="lang-switcher">
+          <a href="market.html" class="nav-link">English</a>
+          <a href="market-ar.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">العربية</a>
         </div>
-        <a href="index.html" class="nav-link">+ Submit Listing</a>
-        <a href="admin.html" class="nav-link">Admin Panel</a>
+        <a href="index-ar.html" class="nav-link">+ إضافة منتج</a>
+        <a href="admin.html" class="nav-link">لوحة الإدارة</a>
       </div>
     </div>
 
     <div class="header-section">
-      <h1>Local Produce Marketplace</h1>
-      <p class="lead">Discover fresh, locally-sourced products directly from farmers in your region</p>
+      <h1>سوق المنتجات المحلية</h1>
+      <p class="lead">اكتشف منتجات طازجة محلية المصدر مباشرة من المزارعين في منطقتك</p>
       <div class="stats-bar" id="stats">
         <div class="stat-item">
           <span class="stat-number" id="stat-total">-</span>
-          <span>Products</span>
+          <span>منتج</span>
         </div>
         <div class="stat-item">
           <span class="stat-number" id="stat-farmers">-</span>
-          <span>Farmers</span>
+          <span>مزارع</span>
         </div>
         <div class="stat-item">
           <span class="stat-number" id="stat-locations">-</span>
-          <span>Locations</span>
+          <span>موقع</span>
         </div>
       </div>
     </div>
@@ -483,49 +488,47 @@
     <div class="filters-card">
       <div class="filters-grid">
         <div class="filter-group">
-          <label>Search Products</label>
-          <input id="q" placeholder="e.g. apples, olive oil, thyme..." />
+          <label>البحث عن منتجات</label>
+          <input id="q" placeholder="مثال: تفاح، زيت زيتون، زعتر..." />
         </div>
         <div class="filter-group">
-          <label>Location</label>
-          <input id="region" placeholder="e.g. Bekaa, Tripoli..." />
+          <label>الموقع</label>
+          <input id="region" placeholder="مثال: البقاع، طرابلس..." />
         </div>
         <div class="filter-group">
-          <label>Max Price</label>
-          <input id="maxPrice" placeholder="e.g. 50" type="number" />
+          <label>الحد الأقصى للسعر</label>
+          <input id="maxPrice" placeholder="مثال: 50" type="number" />
         </div>
         <div class="filter-group">
-          <label>Sort By</label>
-      <select id="sort">
-            <option value="newest">Newest First</option>
-            <option value="priceAsc">Price: Low to High</option>
-            <option value="priceDesc">Price: High to Low</option>
-            <option value="nameAsc">Name: A to Z</option>
-      </select>
+          <label>ترتيب حسب</label>
+          <select id="sort">
+            <option value="newest">الأحدث أولاً</option>
+            <option value="priceAsc">السعر: من الأقل للأعلى</option>
+            <option value="priceDesc">السعر: من الأعلى للأقل</option>
+            <option value="nameAsc">الاسم: من أ إلى ي</option>
+          </select>
         </div>
-        <button class="btn-clear" id="clearFilters">Clear All</button>
+        <button class="btn-clear" id="clearFilters">مسح الكل</button>
       </div>
     </div>
 
     <div class="results-header">
-      <div class="results-count" id="resultsCount">Loading products...</div>
+      <div class="results-count" id="resultsCount">جارٍ تحميل المنتجات...</div>
     </div>
 
     <div id="results" class="grid"></div>
     
     <div class="footer">
-      Data refreshes automatically every 30 seconds. <a href="index.html">Submit your own listing →</a>
+      يتم تحديث البيانات تلقائياً كل 30 ثانية. <a href="index-ar.html">أضف منتجك الخاص ←</a>
     </div>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // === CONFIG ===
-// 🔧 REPLACE THESE WITH YOUR SUPABASE CREDENTIALS
 const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
 
-// Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // === STATE ===
@@ -569,36 +572,36 @@ function render(items) {
     grid.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🔍</div>
-        <div class="empty-state-title">No products found</div>
-        <p>Try adjusting your filters or check back later for new listings.</p>
+        <div class="empty-state-title">لم يتم العثور على منتجات</div>
+        <p>حاول تعديل الفلاتر أو تحقق مرة أخرى لاحقاً للحصول على قوائم جديدة.</p>
       </div>
     `;
-    resultsCount.innerHTML = 'No products found';
+    resultsCount.innerHTML = 'لم يتم العثور على منتجات';
     return;
   }
   
-  resultsCount.innerHTML = `Showing <strong>${items.length}</strong> product${items.length !== 1 ? 's' : ''}`;
+  resultsCount.innerHTML = `عرض <strong>${items.length}</strong> منتج${items.length !== 1 ? '' : ''}`;
   
   grid.innerHTML = items.map(row => {
-    const product = escapeHtml(row.product || 'Product');
-    const location = escapeHtml(row.location || 'Location not specified');
-    const name = escapeHtml(row.name || 'Anonymous');
+    const product = escapeHtml(row.product || 'منتج');
+    const location = escapeHtml(row.location || 'الموقع غير محدد');
+    const name = escapeHtml(row.name || 'مجهول');
     const price = escapeHtml(row.price || '');
     const qty = escapeHtml(row.quantity || '');
-    const desc = escapeHtml(row.description || 'No description provided.');
+    const desc = escapeHtml(row.description || 'لا يوجد وصف متاح.');
     const phone = row.phone || '';
     const email = row.email || '';
     const imageUrl = row.image_url || '';
-    const date = row.created_at ? new Date(row.created_at).toLocaleDateString('en-US', { 
+    const date = row.created_at ? new Date(row.created_at).toLocaleDateString('ar-EG', { 
       month: 'short', 
       day: 'numeric', 
       year: 'numeric' 
     }) : '';
     
     const imgStyle = imageUrl ? `style="background-image:url('${escapeHtml(imageUrl)}');"` : '';
-    const wa = phone ? phoneToWhatsApp(phone, `Hello ${name}, I'm interested in your ${product}.`) : null;
+    const wa = phone ? phoneToWhatsApp(phone, `مرحباً ${name}، أنا مهتم بمنتجك ${product}.`) : null;
     const call = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
-    const mail = email ? `mailto:${email}?subject=Interested in your ${encodeURIComponent(product)}` : null;
+    const mail = email ? `mailto:${email}?subject=مهتم بمنتجك ${encodeURIComponent(product)}` : null;
 
     const priceQty = [qty, price].filter(Boolean).join(' • ');
     
@@ -616,14 +619,14 @@ function render(items) {
           </div>` : ''}
           <div class="card-description">${desc}</div>
           <div class="card-actions">
-            ${wa ? `<a class="btn btn-primary" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}
-            ${call ? `<a class="btn btn-secondary" href="${call}">📞 Call</a>` : ''}
-            ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ Email</a>` : ''}
+            ${wa ? `<a class="btn btn-primary" href="${wa}" target="_blank" rel="noopener">💬 واتساب</a>` : ''}
+            ${call ? `<a class="btn btn-secondary" href="${call}">📞 اتصال</a>` : ''}
+            ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ بريد</a>` : ''}
           </div>
           <div class="card-footer">
             <span class="seller-name">${name}</span>
             <span>${date}</span>
-        </div>
+          </div>
         </div>
       </div>
     `;
@@ -658,7 +661,7 @@ function applyFilters(rows) {
   } else if (sort === 'priceDesc') {
     list.sort((a, b) => (currencyToNumber(b.price) || -1e9) - (currencyToNumber(a.price) || -1e9));
   } else if (sort === 'nameAsc') {
-    list.sort((a, b) => (a.product || '').localeCompare(b.product || ''));
+    list.sort((a, b) => (a.product || '').localeCompare(b.product || '', 'ar'));
   } else {
     // Newest first (default)
     list.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
@@ -708,11 +711,11 @@ async function fetchData() {
     document.getElementById('results').innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">⚠️</div>
-        <div class="empty-state-title">Failed to load data</div>
-        <p>Please check your Supabase configuration and try again.</p>
+        <div class="empty-state-title">فشل تحميل البيانات</div>
+        <p>يرجى التحقق من إعدادات Supabase والمحاولة مرة أخرى.</p>
       </div>
     `;
-    document.getElementById('resultsCount').textContent = 'Error loading products';
+    document.getElementById('resultsCount').textContent = 'خطأ في تحميل المنتجات';
   }
 }
 
@@ -729,7 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clearFilters').addEventListener('click', clearFilters);
   
   // Initial load
-fetchData();
+  fetchData();
   
   // Auto-refresh every 30 seconds
   setInterval(fetchData, 30000);
@@ -737,3 +740,4 @@ fetchData();
 </script>
 </body>
 </html>
+
