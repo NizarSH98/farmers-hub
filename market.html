@@ -78,6 +78,7 @@
       align-items: center;
       margin-bottom: 32px;
       padding: 16px 0;
+      gap: 20px;
     }
     
     .brand {
@@ -87,6 +88,7 @@
       font-size: 20px;
       font-weight: 700;
       color: var(--text-bright);
+      flex-shrink: 0;
     }
     
     .brand-icon {
@@ -100,16 +102,26 @@
       font-size: 24px;
     }
     
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    
     .nav-link {
       color: var(--text);
       text-decoration: none;
       font-weight: 600;
-      font-size: 15px;
-      padding: 10px 20px;
+      font-size: 14px;
+      padding: 10px 16px;
       border-radius: 10px;
       transition: all 0.2s ease;
       border: 1px solid transparent;
       display: inline-block;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     
     .nav-link:hover {
@@ -122,19 +134,28 @@
       background: var(--input-bg);
       border: 1.5px solid var(--input-border);
       color: var(--text);
-      padding: 10px 16px;
+      padding: 10px 14px;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 18px;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      min-width: 44px;
+      height: 44px;
+      flex-shrink: 0;
     }
     
     .theme-toggle:hover {
       border-color: var(--accent);
       background: var(--accent-light);
+    }
+    
+    .lang-switcher {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
     }
     
     .header-section {
@@ -530,7 +551,20 @@
       h1 { font-size: 28px; }
       .filters-grid { grid-template-columns: 1fr; }
       .grid { grid-template-columns: 1fr; }
-      .topnav { flex-direction: column; gap: 16px; text-align: center; }
+      .topnav { 
+        flex-wrap: wrap; 
+        gap: 12px;
+      }
+      .brand { flex: 1 1 100%; justify-content: center; }
+      .nav-actions { 
+        flex: 1 1 100%; 
+        justify-content: center;
+        gap: 6px;
+      }
+      .nav-link {
+        font-size: 13px;
+        padding: 8px 12px;
+      }
       .card-actions { flex-direction: column; }
       .btn { width: 100%; }
     }
@@ -543,11 +577,11 @@
         <div class="brand-icon">🌾</div>
         <span>Farmer Hub</span>
       </div>
-      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+      <div class="nav-actions">
         <button class="theme-toggle" id="themeToggle" title="Toggle theme">
           <span id="themeIcon">🌙</span>
         </button>
-        <div style="display: flex; gap: 8px;">
+        <div class="lang-switcher">
           <a href="market.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">English</a>
           <a href="market-ar.html" class="nav-link">العربية</a>
         </div>

@@ -9,22 +9,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
-      --bg-primary:#0a0e1a; 
-      --bg-secondary:#111827; 
-      --card-bg:rgba(17,24,39,0.7);
+      /* Light Mode (Default) */
+      --bg-primary:#ffffff;
+      --bg-secondary:#f9fafb;
+      --card-bg:rgba(255,255,255,0.9);
       --card-border:rgba(99,102,241,0.2);
-      --muted:#9ca3af; 
-      --text:#f3f4f6; 
-      --text-bright:#ffffff;
-      --accent:#6366f1; 
+      --muted:#6b7280;
+      --text:#1f2937;
+      --text-bright:#000000;
+      --accent:#6366f1;
       --accent-hover:#4f46e5;
       --accent-light:rgba(99,102,241,0.1);
-      --success:#10b981; 
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --input-bg:#ffffff;
+      --input-border:#d1d5db;
+      --input-focus:rgba(99,102,241,0.3);
+      --shadow:rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg-primary:#0a0e1a;
+      --bg-secondary:#111827;
+      --card-bg:rgba(17,24,39,0.7);
+      --card-border:rgba(99,102,241,0.2);
+      --muted:#9ca3af;
+      --text:#f3f4f6;
+      --text-bright:#ffffff;
+      --accent:#6366f1;
+      --accent-hover:#4f46e5;
+      --accent-light:rgba(99,102,241,0.1);
+      --success:#10b981;
       --danger:#ef4444;
       --warning:#f59e0b;
       --input-bg:rgba(31,41,55,0.8);
       --input-border:rgba(75,85,99,0.5);
       --input-focus:rgba(99,102,241,0.5);
+      --shadow:rgba(0,0,0,0.3);
     }
     
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -32,11 +54,16 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text);
-      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
-      background-attachment: fixed;
+      background: var(--bg-primary);
       min-height: 100vh;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
+      background-attachment: fixed;
     }
     
     .container {
@@ -51,6 +78,7 @@
       align-items: center;
       margin-bottom: 32px;
       padding: 16px 0;
+      gap: 20px;
     }
     
     .brand {
@@ -60,6 +88,7 @@
       font-size: 20px;
       font-weight: 700;
       color: var(--text-bright);
+      flex-shrink: 0;
     }
     
     .brand-icon {
@@ -73,9 +102,12 @@
       font-size: 24px;
     }
     
-    .nav-links {
+    .nav-actions {
       display: flex;
-      gap: 12px;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
     
     .nav-link {
@@ -83,16 +115,40 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 14px;
-      padding: 10px 20px;
+      padding: 10px 16px;
       border-radius: 10px;
       transition: all 0.2s ease;
       border: 1px solid transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     
     .nav-link:hover {
       background: var(--accent-light);
       border-color: var(--card-border);
       color: var(--text-bright);
+    }
+    
+    .theme-toggle {
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+    
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
     }
     
     .btn-logout {
@@ -113,7 +169,7 @@
       border-radius: 16px;
       padding: 24px;
       margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px var(--shadow);
     }
     
     h1 {
@@ -340,6 +396,20 @@
       .container { padding: 16px; }
       table { font-size: 13px; }
       th, td { padding: 8px; }
+      .topnav {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .brand { flex: 1 1 100%; justify-content: center; }
+      .nav-actions {
+        flex: 1 1 100%;
+        justify-content: center;
+        gap: 6px;
+      }
+      .nav-link {
+        font-size: 13px;
+        padding: 8px 12px;
+      }
     }
   </style>
 </head>
@@ -369,7 +439,10 @@
         <div class="brand-icon">⚙️</div>
         <span>Farmer Hub Admin</span>
       </div>
-      <div class="nav-links">
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
         <a href="index.html" class="nav-link">Submit Page</a>
         <a href="market.html" class="nav-link">Marketplace</a>
         <button class="nav-link btn-logout" id="logoutBtn">🚪 Logout</button>
@@ -502,6 +575,31 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const ADMIN_PASSWORD = "admin123"; // Change this to your secure password!
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// === THEME MANAGEMENT ===
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const htmlEl = document.documentElement;
+
+const savedTheme = localStorage.getItem('theme') || 'light';
+htmlEl.setAttribute('data-theme', savedTheme);
+updateThemeIcon(savedTheme);
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = htmlEl.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    htmlEl.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  });
+}
+
+function updateThemeIcon(theme) {
+  if (themeIcon) {
+    themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+  }
+}
 
 // === STATE ===
 let isLoggedIn = false;
