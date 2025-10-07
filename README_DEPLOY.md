@@ -1,4 +1,12 @@
-# Farmer Hub — Free 2‑Page Website + Google Sheets Backend
+# ⚠️ LEGACY: Google Sheets Backend (DEPRECATED)
+
+> **Note**: This guide is for the old Google Sheets backend. We now recommend using **Supabase** for much better features including direct image uploads!
+> 
+> **👉 See [QUICKSTART.md](QUICKSTART.md) for the new setup (5 minutes)**
+
+---
+
+## Old System Documentation (Google Sheets)
 
 This repo gives you a ready-to-deploy, **free** mini-platform:
 

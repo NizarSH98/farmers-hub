@@ -511,9 +511,15 @@
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // === CONFIG ===
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfacDvVNdckNqa-kzz-se8Nx9_ceaogIDYQNbVwtNlzaV0QvZiGWjTRMyAfKTAbPNfPw/exec";
+// 🔧 REPLACE THESE WITH YOUR SUPABASE CREDENTIALS
+const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
+
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // === STATE ===
 let ROWS = [];
@@ -666,9 +672,28 @@ function clearFilters() {
 // === DATA FETCHING ===
 async function fetchData() {
   try {
-    const res = await fetch(APPS_SCRIPT_URL + '?list=1', { cache: 'no-store' });
-    const json = await res.json();
-    ROWS = json.rows || [];
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    // Transform data to match expected format
+    ROWS = (data || []).map(row => ({
+      created_at: row.created_at,
+      name: row.name,
+      phone: row.phone,
+      email: row.email,
+      product: row.product,
+      quantity: row.quantity,
+      price: row.price,
+      location: row.location,
+      harvest_date: row.harvest_date,
+      image_url: row.image_url,
+      description: row.description
+    }));
+    
     updateStats(ROWS);
     applyFilters(ROWS);
   } catch (e) {
@@ -677,7 +702,7 @@ async function fetchData() {
       <div class="empty-state">
         <div class="empty-state-icon">⚠️</div>
         <div class="empty-state-title">Failed to load data</div>
-        <p>Please check your backend URL configuration and try again.</p>
+        <p>Please check your Supabase configuration and try again.</p>
       </div>
     `;
     document.getElementById('resultsCount').textContent = 'Error loading products';

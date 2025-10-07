@@ -369,6 +369,64 @@
       gap: 6px;
     }
     
+    .image-upload-area {
+      position: relative;
+      min-height: 200px;
+      border: 2px dashed var(--input-border);
+      border-radius: 12px;
+      background: var(--input-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+    
+    .image-upload-area:hover {
+      border-color: var(--accent);
+      background: rgba(31,41,55,0.95);
+    }
+    
+    .image-upload-area.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    
+    .upload-placeholder {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text);
+    }
+    
+    .image-preview {
+      max-width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .btn-remove-image {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 8px 16px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    
+    .btn-remove-image:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+    
     @media (max-width: 768px) {
       .container { padding: 24px 16px; }
       .card { padding: 28px 20px; }
@@ -455,9 +513,18 @@
         </div>
         
         <div class="full form-group">
-          <label>Image URL</label>
-          <input name="image_url" id="image_url" placeholder="https://example.com/your-product-photo.jpg" type="url" />
-          <div class="helper-text">🖼️ Link to a product photo (optional)</div>
+          <label>Product Image</label>
+          <input name="image" id="image" type="file" accept="image/*" style="display:none;" />
+          <div class="image-upload-area" id="imageUploadArea">
+            <div class="upload-placeholder" id="uploadPlaceholder">
+              <div style="font-size: 48px; margin-bottom: 12px;">📸</div>
+              <div style="font-weight: 600; margin-bottom: 8px;">Click to upload or drag & drop</div>
+              <div style="font-size: 13px; color: var(--muted);">PNG, JPG, WebP up to 5MB</div>
+            </div>
+            <img id="imagePreview" class="image-preview" style="display:none;" />
+            <button type="button" class="btn-remove-image" id="removeImage" style="display:none;">✕ Remove</button>
+          </div>
+          <div class="helper-text">🖼️ Upload a product photo (optional but recommended)</div>
         </div>
         
         <div class="full form-group">
@@ -490,10 +557,15 @@
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // === CONFIG ===
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfacDvVNdckNqa-kzz-se8Nx9_ceaogIDYQNbVwtNlzaV0QvZiGWjTRMyAfKTAbPNfPw/exec";
-const SHARED_SECRET = "farmer_hub_secret_2024_xyz";
+// 🔧 REPLACE THESE WITH YOUR SUPABASE CREDENTIALS
+const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
+
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // === STATE ===
 let existingData = { products: [], locations: [], units: [] };
@@ -593,15 +665,19 @@ class Autocomplete {
 // === DATA FETCHING ===
 async function loadExistingData() {
   try {
-    const res = await fetch(APPS_SCRIPT_URL + '?list=1', { cache: 'no-store' });
-    const json = await res.json();
-    const rows = json.rows || [];
+    const { data: rows, error } = await supabase
+      .from('listings')
+      .select('product, location')
+      .order('created_at', { ascending: false })
+      .limit(1000);
+    
+    if (error) throw error;
     
     // Extract and count unique values
     const productMap = {};
     const locationMap = {};
     
-    rows.forEach(row => {
+    (rows || []).forEach(row => {
       if (row.product) {
         const product = row.product.trim();
         productMap[product] = (productMap[product] || 0) + 1;
@@ -626,12 +702,113 @@ async function loadExistingData() {
   }
 }
 
-// === FORM SUBMISSION ===
-function serializeForm(form) {
-  const data = Object.fromEntries(new FormData(form).entries());
-  return data;
+// === IMAGE HANDLING ===
+let selectedImageFile = null;
+
+function setupImageUpload() {
+  const imageInput = document.getElementById('image');
+  const uploadArea = document.getElementById('imageUploadArea');
+  const placeholder = document.getElementById('uploadPlaceholder');
+  const preview = document.getElementById('imagePreview');
+  const removeBtn = document.getElementById('removeImage');
+  
+  // Click to upload
+  uploadArea.addEventListener('click', (e) => {
+    if (e.target !== removeBtn) {
+      imageInput.click();
+    }
+  });
+  
+  // File selected
+  imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) handleImageFile(file);
+  });
+  
+  // Drag and drop
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+  });
+  
+  uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+  });
+  
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      handleImageFile(file);
+    }
+  });
+  
+  // Remove image
+  removeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectedImageFile = null;
+    imageInput.value = '';
+    preview.style.display = 'none';
+    preview.src = '';
+    removeBtn.style.display = 'none';
+    placeholder.style.display = 'block';
+  });
 }
 
+function handleImageFile(file) {
+  // Validate file size (5MB max)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Image too large! Please choose an image under 5MB.');
+    return;
+  }
+  
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    alert('Please select a valid image file.');
+    return;
+  }
+  
+  selectedImageFile = file;
+  
+  // Show preview
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const preview = document.getElementById('imagePreview');
+    const placeholder = document.getElementById('uploadPlaceholder');
+    const removeBtn = document.getElementById('removeImage');
+    
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    removeBtn.style.display = 'block';
+    placeholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadImage(file, listingId) {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${listingId}-${Date.now()}.${fileExt}`;
+  const filePath = `${fileName}`;
+  
+  const { data, error } = await supabase.storage
+    .from('product-images')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+  
+  if (error) throw error;
+  
+  // Get public URL
+  const { data: urlData } = supabase.storage
+    .from('product-images')
+    .getPublicUrl(filePath);
+  
+  return urlData.publicUrl;
+}
+
+// === FORM SUBMISSION ===
 async function submitListing(evt) {
   evt.preventDefault();
   const form = evt.target;
@@ -640,40 +817,72 @@ async function submitListing(evt) {
   status.textContent = "Submitting...";
   status.className = "notice loading show";
   
-  const payload = serializeForm(form);
-  payload.secret = SHARED_SECRET;
-  
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      mode: "cors",
-      cache: "no-store",
-    });
+    // Prepare data
+    const formData = new FormData(form);
+    const payload = {
+      name: formData.get('name')?.trim(),
+      phone: formData.get('phone')?.trim(),
+      email: formData.get('email')?.trim() || null,
+      product: formData.get('product')?.trim(),
+      quantity: formData.get('quantity')?.trim() || null,
+      price: formData.get('price')?.trim() || null,
+      location: formData.get('location')?.trim(),
+      harvest_date: formData.get('harvest_date') || null,
+      description: formData.get('description')?.trim() || null,
+      image_url: null
+    };
     
-    if (!res.ok) throw new Error("Network error " + res.status);
-    const json = await res.json();
-    
-    if (json.ok) {
-      status.textContent = "✅ Listing submitted successfully!";
-      status.className = "notice ok show";
-      form.reset();
-      
-      // Reload suggestions for next submission
-      await loadExistingData();
-      
-      // Hide success message after 5 seconds
-      setTimeout(() => {
-        status.classList.remove('show');
-      }, 5000);
-    } else {
-      status.textContent = "❌ Error: " + (json.message || "Unknown error");
-      status.className = "notice err show";
+    // Validate required fields
+    if (!payload.name || !payload.phone || !payload.product || !payload.location) {
+      throw new Error('Please fill in all required fields');
     }
+    
+    // Insert listing first (without image)
+    const { data: listing, error: insertError } = await supabase
+      .from('listings')
+      .insert([payload])
+      .select()
+      .single();
+    
+    if (insertError) throw insertError;
+    
+    // Upload image if present
+    if (selectedImageFile) {
+      status.textContent = "Uploading image...";
+      const imageUrl = await uploadImage(selectedImageFile, listing.id);
+      
+      // Update listing with image URL
+      const { error: updateError } = await supabase
+        .from('listings')
+        .update({ image_url: imageUrl })
+        .eq('id', listing.id);
+      
+      if (updateError) console.warn('Failed to update image URL:', updateError);
+    }
+    
+    status.textContent = "✅ Listing submitted successfully!";
+    status.className = "notice ok show";
+    
+    // Reset form
+    form.reset();
+    selectedImageFile = null;
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('removeImage').style.display = 'none';
+    document.getElementById('uploadPlaceholder').style.display = 'block';
+    
+    // Reload suggestions for next submission
+    await loadExistingData();
+    
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+      status.classList.remove('show');
+    }, 5000);
+    
   } catch (e) {
     status.textContent = "❌ Submission failed: " + e.message;
     status.className = "notice err show";
+    console.error('Submission error:', e);
   }
 }
 
@@ -768,8 +977,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   new Autocomplete('product', 'product-suggestions', 'products');
   new Autocomplete('location', 'location-suggestions', 'locations');
   
+  // Setup image upload
+  setupImageUpload();
+  
   // Setup form submission
-document.getElementById('listingForm').addEventListener('submit', submitListing);
+  document.getElementById('listingForm').addEventListener('submit', submitListing);
   
   // Setup test data button
   document.getElementById('fillTestData').addEventListener('click', fillTestData);
