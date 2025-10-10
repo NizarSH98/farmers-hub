@@ -30,17 +30,17 @@
     }
     
     [data-theme="dark"] {
-      --bg-primary:#0a0e1a;
-      --bg-secondary:#111827;
+      --bg-primary:#0a0e1a; 
+      --bg-secondary:#111827; 
       --card-bg:rgba(17,24,39,0.7);
       --card-border:rgba(99,102,241,0.2);
-      --muted:#9ca3af;
-      --text:#f3f4f6;
+      --muted:#9ca3af; 
+      --text:#f3f4f6; 
       --text-bright:#ffffff;
-      --accent:#6366f1;
+      --accent:#6366f1; 
       --accent-hover:#4f46e5;
       --accent-light:rgba(99,102,241,0.1);
-      --success:#10b981;
+      --success:#10b981; 
       --danger:#ef4444;
       --warning:#f59e0b;
       --input-bg:rgba(31,41,55,0.8);
@@ -579,8 +579,8 @@
         <div class="lang-switcher">
           <a href="index.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">English</a>
           <a href="index-ar.html" class="nav-link">العربية</a>
-        </div>
-        <a href="market.html" class="nav-link">Browse Marketplace</a>
+      </div>
+      <a href="market.html" class="nav-link">Browse Marketplace</a>
         <a href="admin.html" class="nav-link">Admin Panel</a>
       </div>
     </div>
@@ -665,10 +665,64 @@
           <input name="price" id="price" placeholder="e.g. 3.5 USD/kg" />
         </div>
         
-        <div class="form-group autocomplete-wrapper">
+        <div class="form-group">
           <label class="required">Location</label>
-          <input name="location" id="location" required placeholder="e.g. Bekaa, Zahle" />
-          <div id="location-suggestions" class="autocomplete-list" style="display:none;"></div>
+          <select name="location" id="location" required>
+            <option value="">Select your location...</option>
+            <optgroup label="Beirut">
+              <option value="Beirut - Achrafieh">Achrafieh</option>
+              <option value="Beirut - Hamra">Hamra</option>
+              <option value="Beirut - Verdun">Verdun</option>
+              <option value="Beirut - Ras Beirut">Ras Beirut</option>
+              <option value="Beirut - Mar Elias">Mar Elias</option>
+              <option value="Beirut - Badaro">Badaro</option>
+            </optgroup>
+            <optgroup label="Mount Lebanon">
+              <option value="Baabda">Baabda</option>
+              <option value="Aley">Aley</option>
+              <option value="Bhamdoun">Bhamdoun</option>
+              <option value="Chouf - Deir el Qamar">Deir el Qamar</option>
+              <option value="Chouf - Beiteddine">Beiteddine</option>
+              <option value="Chouf - Baakline">Baakline</option>
+              <option value="Jbeil - Byblos">Byblos (Jbeil)</option>
+              <option value="Jounieh">Jounieh</option>
+              <option value="Kesrouan - Harissa">Harissa</option>
+              <option value="Kesrouan - Faraya">Faraya</option>
+              <option value="Metn - Broummana">Broummana</option>
+              <option value="Metn - Beit Mery">Beit Mery</option>
+              <option value="Metn - Dhour el Choueir">Dhour el Choueir</option>
+            </optgroup>
+            <optgroup label="North Lebanon">
+              <option value="Tripoli">Tripoli</option>
+              <option value="Mina">Mina</option>
+              <option value="Zgharta">Zgharta</option>
+              <option value="Bcharre">Bcharre</option>
+              <option value="Koura - Amioun">Amioun</option>
+              <option value="Batroun">Batroun</option>
+              <option value="Akkar - Halba">Halba</option>
+              <option value="Akkar - Qobayat">Qobayat</option>
+              <option value="Akkar - Aarsal">Aarsal</option>
+            </optgroup>
+            <optgroup label="Bekaa">
+              <option value="Zahle">Zahle</option>
+              <option value="Bekaa - Aanjar">Aanjar</option>
+              <option value="Bekaa - Chtaura">Chtaura</option>
+              <option value="Bekaa - Baalbek">Baalbek</option>
+              <option value="Bekaa - Hermel">Hermel</option>
+              <option value="West Bekaa - Joub Jannine">Joub Jannine</option>
+              <option value="West Bekaa - Rachaya">Rachaya</option>
+              <option value="West Bekaa - Kamed el Loz">Kamed el Loz</option>
+            </optgroup>
+            <optgroup label="South Lebanon">
+              <option value="Saida - Sidon">Sidon (Saida)</option>
+              <option value="Tyre - Sour">Tyre (Sour)</option>
+              <option value="Jezzine">Jezzine</option>
+              <option value="Nabatieh">Nabatieh</option>
+              <option value="Bent Jbeil">Bent Jbeil</option>
+              <option value="Marjayoun">Marjayoun</option>
+              <option value="Hasbaya">Hasbaya</option>
+            </optgroup>
+          </select>
         </div>
         
         <div class="form-group">
@@ -719,14 +773,14 @@
         <!-- Consent -->
         <div class="full">
           <div class="checkbox-wrapper">
-            <input id="consent" type="checkbox" required />
+          <input id="consent" type="checkbox" required />
             <label for="consent">I agree to publish my name and contact information for buyers to reach me on the public marketplace.</label>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="full">
-          <div class="actions">
+        <div class="actions">
             <button class="btn btn-primary" type="submit">✓ Submit Listing</button>
             <button class="btn btn-secondary" type="button" id="fillTestData">🧪 Fill Test Data</button>
             <button class="btn btn-secondary" type="reset">↺ Clear Form</button>
@@ -1132,10 +1186,10 @@ async function submitListing(evt) {
       if (updateError) console.warn('Failed to update image URL:', updateError);
     }
     
-    status.textContent = "✅ Listing submitted successfully!";
-    status.className = "notice ok show";
+      status.textContent = "✅ Listing submitted successfully!";
+      status.className = "notice ok show";
     
-    form.reset();
+      form.reset();
     selectedImageFile = null;
     selectedMonths.clear();
     document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
@@ -1143,11 +1197,11 @@ async function submitListing(evt) {
     document.getElementById('removeImage').style.display = 'none';
     document.getElementById('uploadPlaceholder').style.display = 'block';
     
-    await loadExistingData();
-    
-    setTimeout(() => {
-      status.classList.remove('show');
-    }, 5000);
+      await loadExistingData();
+      
+      setTimeout(() => {
+        status.classList.remove('show');
+      }, 5000);
     
   } catch (e) {
     status.textContent = "❌ Submission failed: " + e.message;
@@ -1167,7 +1221,7 @@ function fillTestData() {
       product_ar: 'زيت زيتون',
       quantity: '50 L',
       price: '12 USD/L',
-      location: 'Bekaa Valley',
+      location: 'Zahle',
       description: 'Extra virgin olive oil, cold-pressed, organic certified. Available for delivery throughout Lebanon.',
       months: ['1', '2', '3', '11', '12']
     },
@@ -1191,7 +1245,7 @@ function fillTestData() {
       product_ar: 'زعتر بري',
       quantity: '10 kg',
       price: '15 USD/kg',
-      location: 'Mount Lebanon',
+      location: 'Metn - Broummana',
       description: 'Premium wild mountain thyme (zaatar), hand-picked and sun-dried. Strong aroma and flavor.',
       months: ['5', '6', '7', '8']
     }
@@ -1234,7 +1288,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   new Autocomplete('product', 'product-suggestions', 'products');
   new Autocomplete('product_ar', 'product-ar-suggestions', 'productsAr');
-  new Autocomplete('location', 'location-suggestions', 'locations');
   
   setupImageUpload();
   setupMonthSelector();

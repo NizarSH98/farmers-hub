@@ -665,10 +665,64 @@
           <input name="price" id="price" placeholder="مثال: 3.5 دولار/كغ" />
         </div>
         
-        <div class="form-group autocomplete-wrapper">
+        <div class="form-group">
           <label class="required">الموقع</label>
-          <input name="location" id="location" required placeholder="مثال: البقاع، زحلة" />
-          <div id="location-suggestions" class="autocomplete-list" style="display:none;"></div>
+          <select name="location" id="location" required>
+            <option value="">اختر موقعك...</option>
+            <optgroup label="بيروت">
+              <option value="Beirut - Achrafieh">الأشرفية</option>
+              <option value="Beirut - Hamra">الحمرا</option>
+              <option value="Beirut - Verdun">الفردان</option>
+              <option value="Beirut - Ras Beirut">رأس بيروت</option>
+              <option value="Beirut - Mar Elias">مار الياس</option>
+              <option value="Beirut - Badaro">البدارو</option>
+            </optgroup>
+            <optgroup label="جبل لبنان">
+              <option value="Baabda">بعبدا</option>
+              <option value="Aley">عاليه</option>
+              <option value="Bhamdoun">بحمدون</option>
+              <option value="Chouf - Deir el Qamar">دير القمر</option>
+              <option value="Chouf - Beiteddine">بيت الدين</option>
+              <option value="Chouf - Baakline">بعقلين</option>
+              <option value="Jbeil - Byblos">جبيل</option>
+              <option value="Jounieh">جونيه</option>
+              <option value="Kesrouan - Harissa">حريصا</option>
+              <option value="Kesrouan - Faraya">فاريا</option>
+              <option value="Metn - Broummana">برمانا</option>
+              <option value="Metn - Beit Mery">بيت مري</option>
+              <option value="Metn - Dhour el Choueir">ضهور الشوير</option>
+            </optgroup>
+            <optgroup label="الشمال">
+              <option value="Tripoli">طرابلس</option>
+              <option value="Mina">الميناء</option>
+              <option value="Zgharta">زغرتا</option>
+              <option value="Bcharre">بشري</option>
+              <option value="Koura - Amioun">أميون</option>
+              <option value="Batroun">البترون</option>
+              <option value="Akkar - Halba">حلبا</option>
+              <option value="Akkar - Qobayat">القبيات</option>
+              <option value="Akkar - Aarsal">عرسال</option>
+            </optgroup>
+            <optgroup label="البقاع">
+              <option value="Zahle">زحلة</option>
+              <option value="Bekaa - Aanjar">عنجر</option>
+              <option value="Bekaa - Chtaura">شتورا</option>
+              <option value="Bekaa - Baalbek">بعلبك</option>
+              <option value="Bekaa - Hermel">الهرمل</option>
+              <option value="West Bekaa - Joub Jannine">جوب جنين</option>
+              <option value="West Bekaa - Rachaya">راشيا</option>
+              <option value="West Bekaa - Kamed el Loz">كامد اللوز</option>
+            </optgroup>
+            <optgroup label="الجنوب">
+              <option value="Saida - Sidon">صيدا</option>
+              <option value="Tyre - Sour">صور</option>
+              <option value="Jezzine">جزين</option>
+              <option value="Nabatieh">النبطية</option>
+              <option value="Bent Jbeil">بنت جبيل</option>
+              <option value="Marjayoun">مرجعيون</option>
+              <option value="Hasbaya">حاصبيا</option>
+            </optgroup>
+          </select>
         </div>
         
         <div class="form-group">
@@ -1165,7 +1219,7 @@ function fillTestData() {
       product_ar: 'زيت زيتون',
       quantity: '50 لتر',
       price: '12 دولار/لتر',
-      location: 'البقاع',
+      location: 'Zahle',
       description: 'زيت زيتون بكر ممتاز، معصور على البارد، معتمد عضوياً. متاح للتوصيل في جميع أنحاء لبنان.',
       months: ['1', '2', '3', '11', '12']
     },
@@ -1189,7 +1243,7 @@ function fillTestData() {
       product_ar: 'زعتر بري',
       quantity: '10 كغ',
       price: '15 دولار/كغ',
-      location: 'جبل لبنان',
+      location: 'Metn - Broummana',
       description: 'زعتر بري ممتاز من الجبال، مقطوف باليد ومجفف بالشمس. رائحة ونكهة قوية.',
       months: ['5', '6', '7', '8']
     }
@@ -1231,7 +1285,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   new Autocomplete('product', 'product-suggestions', 'products');
   new Autocomplete('product_ar', 'product-ar-suggestions', 'productsAr');
-  new Autocomplete('location', 'location-suggestions', 'locations');
   
   setupImageUpload();
   setupMonthSelector();
