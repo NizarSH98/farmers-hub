@@ -66,84 +66,37 @@
       background-attachment: fixed;
     }
     
-    .container {
-      max-width: 960px;
+    /* Top Utility Bar */
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--card-border);
+      padding: 8px 0;
+    }
+    
+    .top-bar-content {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 32px 24px;
-    }
-    
-    .topnav {
+      padding: 0 24px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-      padding: 16px 0;
-      gap: 20px;
-    }
-    
-    .brand {
-      display: flex;
+      justify-content: flex-end;
       align-items: center;
       gap: 12px;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-bright);
-      flex-shrink: 0;
-    }
-    
-    .brand-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-    }
-    
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    
-    .nav-link {
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 14px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    
-    .nav-link:hover {
-      background: var(--accent-light);
-      border-color: var(--card-border);
-      color: var(--text-bright);
     }
     
     .theme-toggle {
       background: var(--input-bg);
       border: 1.5px solid var(--input-border);
       color: var(--text);
-      padding: 10px 14px;
-      border-radius: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 18px;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 44px;
-      height: 44px;
-      flex-shrink: 0;
+      min-width: 40px;
+      height: 40px;
     }
     
     .theme-toggle:hover {
@@ -151,10 +104,97 @@
       background: var(--accent-light);
     }
     
-    .lang-switcher {
+    .lang-toggle {
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
       display: flex;
-      gap: 4px;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      text-decoration: none;
+    }
+    
+    .lang-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--text-bright);
+    }
+    
+    /* Main Navigation */
+    .main-nav {
+      background: var(--card-bg);
+      border-bottom: 2px solid var(--card-border);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .main-nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-bright);
+      text-decoration: none;
       flex-shrink: 0;
+    }
+    
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .nav-link {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    
+    .nav-link:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--text-bright);
+    }
+    
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px;
     }
     
     .card {
@@ -547,43 +587,65 @@
       h1 { font-size: 28px; }
       form { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
-      .topnav { 
-        flex-wrap: wrap; 
+      .top-bar-content {
+        padding: 0 16px;
+        gap: 8px;
+      }
+      .main-nav-content {
+        flex-direction: column;
+        padding: 12px 16px;
         gap: 12px;
       }
-      .brand { flex: 1 1 100%; justify-content: center; }
-      .nav-actions { 
-        flex: 1 1 100%; 
+      .brand {
+        font-size: 20px;
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+      .nav-links {
+        width: 100%;
         justify-content: center;
         gap: 6px;
       }
       .nav-link {
         font-size: 13px;
-        padding: 8px 12px;
+        padding: 8px 14px;
       }
       .month-selector { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="topnav">
-      <div class="brand">
+  <!-- Top Utility Bar -->
+  <div class="top-bar">
+    <div class="top-bar-content">
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <a href="index-ar.html" class="lang-toggle" title="Switch to Arabic">
+        <span>🌐</span>
+        <span>العربية</span>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Main Navigation -->
+  <div class="main-nav">
+    <div class="main-nav-content">
+      <a href="index.html" class="brand">
         <div class="brand-icon">🌾</div>
         <span>Farmer Hub</span>
-      </div>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-          <span id="themeIcon">🌙</span>
-        </button>
-        <div class="lang-switcher">
-          <a href="index.html" class="nav-link" style="background: var(--accent-light); border-color: var(--accent);">English</a>
-          <a href="index-ar.html" class="nav-link">العربية</a>
-      </div>
-      <a href="market.html" class="nav-link">Browse Marketplace</a>
+      </a>
+      <div class="nav-links">
+        <a href="market.html" class="nav-link">Browse Marketplace</a>
         <a href="admin.html" class="nav-link">Admin Panel</a>
       </div>
     </div>
+  </div>
+  
+  <div class="container">
 
     <div class="card">
       <div class="card-header">
