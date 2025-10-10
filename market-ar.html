@@ -540,6 +540,120 @@
       font-weight: 600;
     }
     
+    /* Login Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+    }
+    
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 60px var(--shadow);
+    }
+    
+    .modal h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+    
+    .modal p {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    
+    .modal .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .modal label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    
+    .modal input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-bright);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    .modal input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--input-focus);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .modal .btn {
+      flex: 1;
+      padding: 12px 20px;
+    }
+    
+    .user-badge {
+      padding: 8px 16px;
+      background: var(--success);
+      color: white;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-delete-own {
+      background: var(--danger);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+      width: 100%;
+    }
+    
+    .btn-delete-own:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+    
     @media (max-width: 1024px) {
       .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
       .filters-grid { grid-template-columns: 1fr 1fr; }
@@ -587,6 +701,36 @@
         </div>
         <a href="index-ar.html" class="nav-link">+ إضافة منتج</a>
         <a href="admin.html" class="nav-link">لوحة الإدارة</a>
+        <div id="userStatus">
+          <button class="nav-link" id="loginBtn" style="background: var(--success); color: white; border-color: var(--success);">🔓 تسجيل الدخول</button>
+          <div class="user-badge" id="userBadge" style="display: none;">
+            <span>👤 <span id="usernameDisplay"></span></span>
+            <button class="nav-link" id="logoutBtn" style="padding: 4px 12px; font-size: 12px;">تسجيل خروج</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+      <div class="modal">
+        <h2>🔐 تسجيل دخول المزارع</h2>
+        <p>سجل الدخول لإدارة منتجاتك</p>
+        <div id="loginError" style="display: none; padding: 12px; background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); margin-bottom: 16px; font-size: 14px;"></div>
+        <form id="loginForm">
+          <div class="form-group">
+            <label>اسم المستخدم</label>
+            <input type="text" id="loginUsername" required placeholder="اسم المستخدم الخاص بك" autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="loginPassword" required placeholder="كلمة المرور الخاصة بك" autocomplete="current-password" />
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+            <button type="button" class="btn btn-secondary" id="cancelLogin">إلغاء</button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -679,6 +823,130 @@ function updateThemeIcon(theme) {
 // === STATE ===
 let ROWS = [];
 let filteredRows = [];
+let currentUser = null; // {id, username, full_name}
+
+// === USER AUTHENTICATION ===
+function checkLoginStatus() {
+  const userDataStr = sessionStorage.getItem('marketUser');
+  if (userDataStr) {
+    try {
+      currentUser = JSON.parse(userDataStr);
+      updateUIForLoggedInUser();
+    } catch (e) {
+      sessionStorage.removeItem('marketUser');
+    }
+  }
+}
+
+function updateUIForLoggedInUser() {
+  if (currentUser) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('userBadge').style.display = 'flex';
+    document.getElementById('usernameDisplay').textContent = currentUser.username;
+  } else {
+    document.getElementById('loginBtn').style.display = 'inline-block';
+    document.getElementById('userBadge').style.display = 'none';
+  }
+}
+
+async function handleLogin(evt) {
+  evt.preventDefault();
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const errorDiv = document.getElementById('loginError');
+  
+  try {
+    const { data: user, error } = await supabase
+      .from('verified_users')
+      .select('id, username, full_name, is_active')
+      .eq('username', username)
+      .eq('password', password)
+      .single();
+    
+    if (error || !user) {
+      errorDiv.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (!user.is_active) {
+      errorDiv.textContent = '❌ حسابك غير نشط. اتصل بالمسؤول.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Save user to session
+    currentUser = { id: user.id, username: user.username, full_name: user.full_name };
+    sessionStorage.setItem('marketUser', JSON.stringify(currentUser));
+    
+    // Update UI
+    updateUIForLoggedInUser();
+    document.getElementById('loginModal').classList.remove('show');
+    document.getElementById('loginForm').reset();
+    errorDiv.style.display = 'none';
+    
+    // Refresh listings to show delete buttons
+    render(filteredRows);
+    
+  } catch (e) {
+    errorDiv.textContent = '❌ فشل تسجيل الدخول: ' + e.message;
+    errorDiv.style.display = 'block';
+  }
+}
+
+function handleLogout() {
+  currentUser = null;
+  sessionStorage.removeItem('marketUser');
+  updateUIForLoggedInUser();
+  render(filteredRows); // Refresh to hide delete buttons
+}
+
+async function deleteOwnListing(listingId, productName) {
+  if (!currentUser) {
+    alert('يجب تسجيل الدخول لحذف المنتجات');
+    return;
+  }
+  
+  if (!confirm(`هل أنت متأكد من حذف "${productName}"؟ لا يمكن التراجع عن هذا الإجراء.`)) {
+    return;
+  }
+  
+  try {
+    // Verify ownership before deleting
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('user_id, image_url')
+      .eq('id', listingId)
+      .single();
+    
+    if (!listing) {
+      alert('❌ المنتج غير موجود');
+      return;
+    }
+    
+    if (listing.user_id !== currentUser.id) {
+      alert('❌ يمكنك فقط حذف منتجاتك الخاصة');
+      return;
+    }
+    
+    // Delete image from storage if exists
+    if (listing.image_url) {
+      const fileName = listing.image_url.split('/').pop();
+      await supabase.storage.from('product-images').remove([fileName]);
+    }
+    
+    // Delete listing
+    const { error } = await supabase.from('listings').delete().eq('id', listingId);
+    
+    if (error) throw error;
+    
+    alert('✅ تم حذف المنتج بنجاح');
+    fetchData(); // Refresh the listings
+    
+  } catch (e) {
+    alert('❌ فشل حذف المنتج: ' + e.message);
+  }
+}
 
 // === AVAILABILITY FUNCTIONS ===
 function isInSeason(availability) {
@@ -789,6 +1057,12 @@ function render(items) {
 
     const priceQty = [qty, price].filter(Boolean).join(' • ');
     
+    // Check if current user owns this listing
+    const isOwnListing = currentUser && row.user_id === currentUser.id;
+    const deleteButton = isOwnListing 
+      ? `<button class="btn-delete-own" onclick="deleteOwnListing(${row.id}, '${escapeHtml(productDisplay).replace(/'/g, "\\'")}')">🗑️ حذف منتجي</button>`
+      : '';
+    
     return `
       <div class="card ${outOfSeasonClass}">
         <div class="card-img" ${imgStyle}></div>
@@ -809,6 +1083,7 @@ function render(items) {
             ${call ? `<a class="btn btn-secondary" href="${call}">📞 اتصال</a>` : ''}
             ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ بريد</a>` : ''}
           </div>
+          ${deleteButton}
           <div class="card-footer">
             <span class="seller-name">${name}</span>
             <span>${date}</span>
@@ -875,7 +1150,7 @@ async function fetchData() {
   try {
     const { data, error } = await supabase
       .from('listings')
-      .select('*')
+      .select('*, user_id')
       .order('created_at', { ascending: false });
     
     if (error) throw error;
@@ -899,6 +1174,32 @@ async function fetchData() {
 
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', () => {
+  // Check login status on page load
+  checkLoginStatus();
+  
+  // Login/Logout handlers
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    document.getElementById('loginModal').classList.add('show');
+  });
+  
+  document.getElementById('cancelLogin').addEventListener('click', () => {
+    document.getElementById('loginModal').classList.remove('show');
+    document.getElementById('loginForm').reset();
+    document.getElementById('loginError').style.display = 'none';
+  });
+  
+  document.getElementById('loginForm').addEventListener('submit', handleLogin);
+  document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+  
+  // Close modal when clicking outside
+  document.getElementById('loginModal').addEventListener('click', (e) => {
+    if (e.target.id === 'loginModal') {
+      document.getElementById('loginModal').classList.remove('show');
+      document.getElementById('loginForm').reset();
+      document.getElementById('loginError').style.display = 'none';
+    }
+  });
+  
   // Setup filter listeners
   ['q', 'region', 'maxPrice', 'sort'].forEach(id => {
     const el = document.getElementById(id);
