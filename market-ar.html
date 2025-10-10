@@ -1060,7 +1060,7 @@ function render(items) {
     // Check if current user owns this listing
     const isOwnListing = currentUser && row.user_id === currentUser.id;
     const deleteButton = isOwnListing 
-      ? `<button class="btn-delete-own" onclick="deleteOwnListing(${row.id}, '${escapeHtml(productDisplay).replace(/'/g, "\\'")}')">🗑️ حذف منتجي</button>`
+      ? `<button class="btn-delete-own" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">🗑️ حذف منتجي</button>`
       : '';
     
     return `
@@ -1092,6 +1092,17 @@ function render(items) {
       </div>
     `;
   }).join('');
+  
+  // Attach event listeners to delete buttons
+  setTimeout(() => {
+    document.querySelectorAll('.btn-delete-own').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const listingId = parseInt(this.dataset.listingId);
+        const productName = this.dataset.productName;
+        deleteOwnListing(listingId, productName);
+      });
+    });
+  }, 0);
 }
 
 // === FILTERING ===
