@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Farmer Hub — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      /* Light Mode (Default) */
+      --bg-primary:#ffffff;
+      --bg-secondary:#f9fafb;
+      --card-bg:rgba(255,255,255,0.9);
+      --card-border:rgba(99,102,241,0.2);
+      --muted:#6b7280;
+      --text:#1f2937;
+      --text-bright:#000000;
+      --accent:#6366f1;
+      --accent-hover:#4f46e5;
+      --accent-light:rgba(99,102,241,0.1);
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --input-bg:#ffffff;
+      --input-border:#d1d5db;
+      --input-focus:rgba(99,102,241,0.3);
+      --shadow:rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg-primary:#0a0e1a;
+      --bg-secondary:#111827;
+      --card-bg:rgba(17,24,39,0.7);
+      --card-border:rgba(99,102,241,0.2);
+      --muted:#9ca3af;
+      --text:#f3f4f6;
+      --text-bright:#ffffff;
+      --accent:#6366f1;
+      --accent-hover:#4f46e5;
+      --accent-light:rgba(99,102,241,0.1);
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --input-bg:rgba(31,41,55,0.8);
+      --input-border:rgba(75,85,99,0.5);
+      --input-focus:rgba(99,102,241,0.5);
+      --shadow:rgba(0,0,0,0.3);
+    }
+    
+    * { box-sizing:border-box; margin:0; padding:0; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      background: var(--bg-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
+      background-attachment: fixed;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    
+    /* Top Utility Bar */
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--card-border);
+      padding: 8px 0;
+    }
+    
+    .top-bar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .theme-toggle {
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 40px;
+    }
+    
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    
+    /* Main Navigation */
+    .main-nav {
+      background: var(--card-bg);
+      border-bottom: 2px solid var(--card-border);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .main-nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-bright);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .nav-link {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    
+    .nav-link:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--text-bright);
+    }
+    
+    .btn-logout {
+      background: var(--danger);
+      color: white;
+      border-color: var(--danger);
+    }
+    
+    .btn-logout:hover {
+      background: #dc2626;
+      border-color: #dc2626;
+    }
+    
+    .btn-logout {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+    
+    .btn-logout:hover {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+    
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+    
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 16px;
+    }
+    
+    .lead {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--card-border);
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th {
+      text-align: left;
+      padding: 12px;
+      background: var(--input-bg);
+      border-bottom: 2px solid var(--card-border);
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+    
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    
+    tr:hover {
+      background: var(--accent-light);
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-bright);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--input-focus);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .badge-success {
+      background: rgba(16,185,129,0.2);
+      color: var(--success);
+    }
+    
+    .badge-danger {
+      background: rgba(239,68,68,0.2);
+      color: var(--danger);
+    }
+    
+    .notice {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .notice.success {
+      background: rgba(16,185,129,0.15);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+    
+    .notice.error {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+    
+    .login-card {
+      max-width: 400px;
+      margin: 100px auto;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: var(--accent-light);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      table { font-size: 13px; }
+      th, td { padding: 8px; }
+      .top-bar-content {
+        padding: 0 16px;
+        gap: 8px;
+      }
+      .main-nav-content {
+        flex-direction: column;
+        padding: 12px 16px;
+        gap: 12px;
+      }
+      .brand {
+        font-size: 20px;
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+      }
+      .nav-link {
+        font-size: 13px;
+        padding: 8px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="container">
+    <div class="card login-card">
+      <h1 style="text-align: center; margin-bottom: 24px;">🔐 Admin Login</h1>
+      <div id="loginError" class="notice error hidden"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Admin Password</label>
+          <input type="password" id="adminPassword" required placeholder="Enter admin password" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+      </form>
+      <p style="text-align: center; margin-top: 16px; color: var(--muted); font-size: 13px;">
+        Default password: <code>admin123</code>
+      </p>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel" class="hidden">
+    <!-- Top Utility Bar -->
+    <div class="top-bar">
+      <div class="top-bar-content">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Main Navigation -->
+    <div class="main-nav">
+      <div class="main-nav-content">
+        <span class="brand">
+          <div class="brand-icon">⚙️</div>
+          <span>Farmer Hub Admin</span>
+        </span>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Submit Page</a>
+          <a href="market.html" class="nav-link">Marketplace</a>
+          <button class="nav-link btn-logout" id="logoutBtn">🚪 Logout</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="card">
+      <h1>Admin Dashboard</h1>
+      <p class="lead">Manage verified users and moderate listings</p>
+      
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-number" id="statUsers">-</span>
+          <span class="stat-label">Verified Users</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="statListings">-</span>
+          <span class="stat-label">Total Listings</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="statToday">-</span>
+          <span class="stat-label">Listings Today</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" data-tab="users">👥 Verified Users</button>
+        <button class="tab" data-tab="listings">📦 Manage Listings</button>
+      </div>
+
+      <!-- Users Tab -->
+      <div id="usersTab" class="tab-content active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h2>Verified Users</h2>
+          <button class="btn btn-success" id="showAddUserBtn">+ Add New User</button>
+        </div>
+        
+        <div id="addUserForm" class="card" style="background: var(--input-bg); display: none; margin-bottom: 16px;">
+          <h3 style="margin-bottom: 16px;">Add New Verified User</h3>
+          <div id="addUserNotice"></div>
+          <form id="newUserForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label>Username *</label>
+                <input type="text" id="newUsername" required placeholder="e.g. john_farmer" />
+              </div>
+              <div class="form-group">
+                <label>Password (auto-generated)</label>
+                <input type="text" id="newPassword" readonly style="font-family: monospace;" />
+              </div>
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="newFullName" required placeholder="e.g. John Doe" />
+              </div>
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="newPhone" placeholder="+961..." />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="newEmail" placeholder="john@example.com" />
+              </div>
+              <div class="form-group">
+                <label>Notes</label>
+                <input type="text" id="newNotes" placeholder="Optional notes" />
+              </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+              <button type="submit" class="btn btn-success">✓ Create User</button>
+              <button type="button" class="btn btn-danger" id="cancelAddUserBtn">✕ Cancel</button>
+              <button type="button" class="btn btn-primary" id="generatePasswordBtn">🔄 Generate New Password</button>
+            </div>
+          </form>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table id="usersTable">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Password</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--muted);">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Listings Tab -->
+      <div id="listingsTab" class="tab-content">
+        <h2>All Listings</h2>
+        <div style="overflow-x: auto;">
+          <table id="listingsTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product</th>
+                <th>Seller</th>
+                <th>Phone</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listingsTableBody">
+              <tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--muted);">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// === CONFIG ===
+const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
+const ADMIN_PASSWORD = "admin123"; // Change this to your secure password!
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// === THEME MANAGEMENT ===
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const htmlEl = document.documentElement;
+
+const savedTheme = localStorage.getItem('theme') || 'light';
+htmlEl.setAttribute('data-theme', savedTheme);
+updateThemeIcon(savedTheme);
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = htmlEl.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    htmlEl.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  });
+}
+
+function updateThemeIcon(theme) {
+  if (themeIcon) {
+    themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+  }
+}
+
+// === STATE ===
+let isLoggedIn = false;
+
+// === UTILITY ===
+function generatePassword() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let password = '';
+  for (let i = 0; i < 8; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', { 
+    year: 'numeric', month: 'short', day: 'numeric' 
+  });
+}
+
+// === LOGIN ===
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const password = document.getElementById('adminPassword').value;
+  
+  if (password === ADMIN_PASSWORD) {
+    isLoggedIn = true;
+    sessionStorage.setItem('adminLoggedIn', 'true');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadDashboard();
+  } else {
+    const error = document.getElementById('loginError');
+    error.textContent = '❌ Incorrect password';
+    error.classList.remove('hidden');
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('adminLoggedIn');
+  location.reload();
+});
+
+// Check if already logged in
+if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+  isLoggedIn = true;
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('hidden');
+  loadDashboard();
+}
+
+// === TABS ===
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+  });
+});
+
+// === LOAD DASHBOARD ===
+async function loadDashboard() {
+  await loadStats();
+  await loadUsers();
+  await loadListings();
+}
+
+async function loadStats() {
+  try {
+    const { data: users } = await supabase.from('verified_users').select('id', { count: 'exact' });
+    const { data: listings } = await supabase.from('listings').select('id, created_at', { count: 'exact' });
+    
+    const today = new Date().toISOString().split('T')[0];
+    const todayListings = listings?.filter(l => l.created_at?.startsWith(today)).length || 0;
+    
+    document.getElementById('statUsers').textContent = users?.length || 0;
+    document.getElementById('statListings').textContent = listings?.length || 0;
+    document.getElementById('statToday').textContent = todayListings;
+  } catch (e) {
+    console.error('Failed to load stats:', e);
+  }
+}
+
+// === USERS ===
+async function loadUsers() {
+  try {
+    const { data, error } = await supabase
+      .from('verified_users')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    const tbody = document.getElementById('usersTableBody');
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--muted);">No users yet</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = data.map(user => `
+      <tr>
+        <td style="font-weight: 600;">${user.username}</td>
+        <td>${user.full_name}</td>
+        <td style="font-family: monospace; color: var(--accent);">${user.password}</td>
+        <td>${user.phone || '-'}</td>
+        <td>${user.email || '-'}</td>
+        <td>
+          <span class="badge ${user.is_active ? 'badge-success' : 'badge-danger'}">
+            ${user.is_active ? 'Active' : 'Inactive'}
+          </span>
+        </td>
+        <td>${formatDate(user.created_at)}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id}, '${user.username}')">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    console.error('Failed to load users:', e);
+    document.getElementById('usersTableBody').innerHTML = `
+      <tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--danger);">Error loading users</td></tr>
+    `;
+  }
+}
+
+// Add User Form
+document.getElementById('showAddUserBtn').addEventListener('click', () => {
+  document.getElementById('addUserForm').style.display = 'block';
+  document.getElementById('newPassword').value = generatePassword();
+});
+
+document.getElementById('cancelAddUserBtn').addEventListener('click', () => {
+  document.getElementById('addUserForm').style.display = 'none';
+  document.getElementById('newUserForm').reset();
+});
+
+document.getElementById('generatePasswordBtn').addEventListener('click', () => {
+  document.getElementById('newPassword').value = generatePassword();
+});
+
+document.getElementById('newUserForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const userData = {
+    username: document.getElementById('newUsername').value.trim(),
+    password: document.getElementById('newPassword').value,
+    full_name: document.getElementById('newFullName').value.trim(),
+    phone: document.getElementById('newPhone').value.trim() || null,
+    email: document.getElementById('newEmail').value.trim() || null,
+    notes: document.getElementById('newNotes').value.trim() || null,
+    is_active: true
+  };
+  
+  try {
+    const { error } = await supabase.from('verified_users').insert([userData]);
+    
+    if (error) throw error;
+    
+    document.getElementById('addUserNotice').innerHTML = '<div class="notice success">✅ User created successfully!</div>';
+    document.getElementById('newUserForm').reset();
+    document.getElementById('newPassword').value = generatePassword();
+    
+    await loadUsers();
+    await loadStats();
+    
+    setTimeout(() => {
+      document.getElementById('addUserNotice').innerHTML = '';
+    }, 3000);
+  } catch (e) {
+    document.getElementById('addUserNotice').innerHTML = `<div class="notice error">❌ Error: ${e.message}</div>`;
+  }
+});
+
+// Initialize password field
+document.getElementById('newPassword').value = generatePassword();
+
+// Delete User
+window.deleteUser = async function(userId, username) {
+  if (!confirm(`Delete user "${username}"? This cannot be undone.`)) return;
+  
+  try {
+    const { error } = await supabase.from('verified_users').delete().eq('id', userId);
+    if (error) throw error;
+    
+    await loadUsers();
+    await loadStats();
+    alert('✅ User deleted successfully');
+  } catch (e) {
+    alert('❌ Failed to delete user: ' + e.message);
+  }
+};
+
+// === LISTINGS ===
+async function loadListings() {
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    const tbody = document.getElementById('listingsTableBody');
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--muted);">No listings yet</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = data.map(listing => `
+      <tr>
+        <td style="font-weight: 600;">#${listing.id}</td>
+        <td>${listing.product}</td>
+        <td>${listing.name}</td>
+        <td>${listing.phone}</td>
+        <td>${listing.location}</td>
+        <td>${listing.price || '-'}</td>
+        <td>${formatDate(listing.created_at)}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteListing(${listing.id}, '${listing.product}')">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    console.error('Failed to load listings:', e);
+    document.getElementById('listingsTableBody').innerHTML = `
+      <tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--danger);">Error loading listings</td></tr>
+    `;
+  }
+}
+
+// Delete Listing
+window.deleteListing = async function(listingId, productName) {
+  if (!confirm(`Delete listing "${productName}"? This cannot be undone.`)) return;
+  
+  try {
+    // Delete associated image from storage if exists
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('image_url')
+      .eq('id', listingId)
+      .single();
+    
+    if (listing?.image_url) {
+      const fileName = listing.image_url.split('/').pop();
+      await supabase.storage.from('product-images').remove([fileName]);
+    }
+    
+    // Delete listing
+    const { error } = await supabase.from('listings').delete().eq('id', listingId);
+    if (error) throw error;
+    
+    await loadListings();
+    await loadStats();
+    alert('✅ Listing deleted successfully');
+  } catch (e) {
+    alert('❌ Failed to delete listing: ' + e.message);
+  }
+};
+</script>
+</body>
+</html>
+

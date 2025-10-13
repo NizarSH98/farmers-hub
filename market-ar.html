@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Farmer Hub — Marketplace</title>
+  <title>مركز المزارعين — السوق</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
       /* Light Mode (Default) */
@@ -52,7 +52,7 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text);
       background: var(--bg-primary);
       min-height: 100vh;
@@ -78,7 +78,7 @@
       margin: 0 auto;
       padding: 0 24px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
       align-items: center;
       gap: 12px;
     }
@@ -751,31 +751,31 @@
   <!-- Top Utility Bar -->
   <div class="top-bar">
     <div class="top-bar-content">
-      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+      <a href="market.html" class="lang-toggle" title="Switch to English">
+        <span>🌐</span>
+        <span>English</span>
+      </a>
+      <button class="theme-toggle" id="themeToggle" title="تبديل المظهر">
         <span id="themeIcon">🌙</span>
       </button>
-      <a href="market-ar.html" class="lang-toggle" title="Switch to Arabic">
-        <span>🌐</span>
-        <span>العربية</span>
-      </a>
     </div>
   </div>
   
   <!-- Main Navigation -->
   <div class="main-nav">
     <div class="main-nav-content">
-      <a href="market.html" class="brand">
+      <a href="market-ar.html" class="brand">
         <div class="brand-icon">🌾</div>
-        <span>Farmer Hub</span>
+        <span>مركز المزارعين</span>
       </a>
       <div class="nav-links">
-        <a href="index.html" class="nav-link">+ Submit Listing</a>
-        <a href="admin.html" class="nav-link">Admin Panel</a>
+        <a href="index-ar.html" class="nav-link">+ إضافة منتج</a>
+        <a href="admin.html" class="nav-link">لوحة الإدارة</a>
         <div id="userStatus">
-          <button class="nav-link btn-login" id="loginBtn">🔓 Login</button>
+          <button class="nav-link btn-login" id="loginBtn">🔓 تسجيل الدخول</button>
           <div class="user-badge" id="userBadge" style="display: none;">
             <span>👤 <span id="usernameDisplay"></span></span>
-            <button class="nav-link" id="logoutBtn" style="padding: 6px 12px; font-size: 12px;">Logout</button>
+            <button class="nav-link" id="logoutBtn" style="padding: 6px 12px; font-size: 12px;">تسجيل خروج</button>
           </div>
         </div>
       </div>
@@ -785,21 +785,21 @@
   <!-- Login Modal -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal">
-      <h2>🔐 Farmer Login</h2>
-      <p>Login to manage your listings</p>
+      <h2>🔐 تسجيل دخول المزارع</h2>
+      <p>سجل الدخول لإدارة منتجاتك</p>
       <div id="loginError" style="display: none; padding: 12px; background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); margin-bottom: 16px; font-size: 14px;"></div>
       <form id="loginForm">
         <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="loginUsername" required placeholder="Your username" autocomplete="username" />
+          <label>اسم المستخدم</label>
+          <input type="text" id="loginUsername" required placeholder="اسم المستخدم الخاص بك" autocomplete="username" />
         </div>
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="loginPassword" required placeholder="Your password" autocomplete="current-password" />
+          <label>كلمة المرور</label>
+          <input type="password" id="loginPassword" required placeholder="كلمة المرور الخاصة بك" autocomplete="current-password" />
         </div>
         <div class="modal-actions">
-          <button type="submit" class="btn btn-primary">Login</button>
-          <button type="button" class="btn btn-secondary" id="cancelLogin">Cancel</button>
+          <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+          <button type="button" class="btn btn-secondary" id="cancelLogin">إلغاء</button>
         </div>
       </form>
     </div>
@@ -807,20 +807,20 @@
   
   <div class="container">
     <div class="header-section">
-      <h1>Local Produce Marketplace</h1>
-      <p class="lead">Discover fresh, locally-sourced products directly from farmers in your region</p>
+      <h1>سوق المنتجات المحلية</h1>
+      <p class="lead">اكتشف منتجات طازجة محلية المصدر مباشرة من المزارعين في منطقتك</p>
       <div class="stats-bar" id="stats">
         <div class="stat-item">
           <span class="stat-number" id="stat-total">-</span>
-          <span>Products</span>
+          <span>منتج</span>
         </div>
         <div class="stat-item">
           <span class="stat-number" id="stat-farmers">-</span>
-          <span>Farmers</span>
+          <span>مزارع</span>
         </div>
         <div class="stat-item">
           <span class="stat-number" id="stat-locations">-</span>
-          <span>Locations</span>
+          <span>موقع</span>
         </div>
       </div>
     </div>
@@ -828,38 +828,38 @@
     <div class="filters-card">
       <div class="filters-grid">
         <div class="filter-group">
-          <label>Search Products</label>
-          <input id="q" placeholder="e.g. apples, olive oil, thyme..." />
+          <label>البحث عن منتجات</label>
+          <input id="q" placeholder="مثال: تفاح، زيت زيتون، زعتر..." />
         </div>
         <div class="filter-group">
-          <label>Location</label>
-          <input id="region" placeholder="e.g. Bekaa, Tripoli..." />
+          <label>الموقع</label>
+          <input id="region" placeholder="مثال: البقاع، طرابلس..." />
         </div>
         <div class="filter-group">
-          <label>Max Price</label>
-          <input id="maxPrice" placeholder="e.g. 50" type="number" />
+          <label>الحد الأقصى للسعر</label>
+          <input id="maxPrice" placeholder="مثال: 50" type="number" />
         </div>
         <div class="filter-group">
-          <label>Sort By</label>
+          <label>ترتيب حسب</label>
           <select id="sort">
-            <option value="newest">Newest First</option>
-            <option value="priceAsc">Price: Low to High</option>
-            <option value="priceDesc">Price: High to Low</option>
-            <option value="nameAsc">Name: A to Z</option>
+            <option value="newest">الأحدث أولاً</option>
+            <option value="priceAsc">السعر: من الأقل للأعلى</option>
+            <option value="priceDesc">السعر: من الأعلى للأقل</option>
+            <option value="nameAsc">الاسم: من أ إلى ي</option>
           </select>
         </div>
-        <button class="btn-clear" id="clearFilters">Clear All</button>
+        <button class="btn-clear" id="clearFilters">مسح الكل</button>
       </div>
     </div>
 
     <div class="results-header">
-      <div class="results-count" id="resultsCount">Loading products...</div>
+      <div class="results-count" id="resultsCount">جارٍ تحميل المنتجات...</div>
     </div>
 
     <div id="results" class="grid"></div>
     
     <div class="footer">
-      Data refreshes automatically every 30 seconds. <a href="index.html">Submit your own listing →</a>
+      يتم تحديث البيانات تلقائياً كل 30 ثانية. <a href="index-ar.html">أضف منتجك الخاص ←</a>
     </div>
   </div>
 
@@ -936,13 +936,13 @@ async function handleLogin(evt) {
       .single();
     
     if (error || !user) {
-      errorDiv.textContent = '❌ Invalid username or password';
+      errorDiv.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة';
       errorDiv.style.display = 'block';
       return;
     }
     
     if (!user.is_active) {
-      errorDiv.textContent = '❌ Your account is not active. Contact admin.';
+      errorDiv.textContent = '❌ حسابك غير نشط. اتصل بالمسؤول.';
       errorDiv.style.display = 'block';
       return;
     }
@@ -961,7 +961,7 @@ async function handleLogin(evt) {
     render(filteredRows);
     
   } catch (e) {
-    errorDiv.textContent = '❌ Login failed: ' + e.message;
+    errorDiv.textContent = '❌ فشل تسجيل الدخول: ' + e.message;
     errorDiv.style.display = 'block';
   }
 }
@@ -975,11 +975,11 @@ function handleLogout() {
 
 async function deleteOwnListing(listingId, productName) {
   if (!currentUser) {
-    alert('You must be logged in to delete listings');
+    alert('يجب تسجيل الدخول لحذف المنتجات');
     return;
   }
   
-  if (!confirm(`Are you sure you want to delete "${productName}"? This cannot be undone.`)) {
+  if (!confirm(`هل أنت متأكد من حذف "${productName}"؟ لا يمكن التراجع عن هذا الإجراء.`)) {
     return;
   }
   
@@ -992,12 +992,12 @@ async function deleteOwnListing(listingId, productName) {
       .single();
     
     if (!listing) {
-      alert('❌ Listing not found');
+      alert('❌ المنتج غير موجود');
       return;
     }
     
     if (listing.user_id !== currentUser.id) {
-      alert('❌ You can only delete your own listings');
+      alert('❌ يمكنك فقط حذف منتجاتك الخاصة');
       return;
     }
     
@@ -1012,11 +1012,11 @@ async function deleteOwnListing(listingId, productName) {
     
     if (error) throw error;
     
-    alert('✅ Listing deleted successfully');
+    alert('✅ تم حذف المنتج بنجاح');
     fetchData(); // Refresh the listings
     
   } catch (e) {
-    alert('❌ Failed to delete listing: ' + e.message);
+    alert('❌ فشل حذف المنتج: ' + e.message);
   }
 }
 
@@ -1028,19 +1028,20 @@ function isInSeason(availability) {
     const months = JSON.parse(availability);
     return months.includes(currentMonth);
   } catch {
-    return true; // Default to available if error
+    return true;
   }
 }
 
 function getAvailabilityBadge(availability) {
   if (!availability || availability === 'all') {
-    return '<span class="badge badge-success">Available All Year</span>';
+    return '<span class="badge badge-success">متاح طوال العام</span>';
   }
   try {
     const months = JSON.parse(availability);
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthsStr = months.map(m => monthNames[m-1]).join(', ');
-    return `<span class="badge badge-info">Available: ${monthsStr}</span>`;
+    const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    const monthsStr = months.map(m => monthNames[m-1]).join('، ');
+    return `<span class="badge badge-info">متاح: ${monthsStr}</span>`;
   } catch {
     return '';
   }
@@ -1083,15 +1084,15 @@ function render(items) {
     grid.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🔍</div>
-        <div class="empty-state-title">No products found</div>
-        <p>Try adjusting your filters or check back later for new listings.</p>
+        <div class="empty-state-title">لم يتم العثور على منتجات</div>
+        <p>حاول تعديل الفلاتر أو تحقق مرة أخرى لاحقاً للحصول على قوائم جديدة.</p>
       </div>
     `;
-    resultsCount.innerHTML = 'No products found';
+    resultsCount.innerHTML = 'لم يتم العثور على منتجات';
     return;
   }
   
-  resultsCount.innerHTML = `Showing <strong>${items.length}</strong> product${items.length !== 1 ? 's' : ''}`;
+  resultsCount.innerHTML = `عرض <strong>${items.length}</strong> منتج${items.length !== 1 ? '' : ''}`;
   
   grid.innerHTML = items.map(row => {
     // Bilingual product display
@@ -1099,17 +1100,17 @@ function render(items) {
     const productEn = escapeHtml(row.product || '');
     const productDisplay = productAr && productEn 
       ? `${productAr} • ${productEn}` 
-      : productAr || productEn || 'Product';
+      : productAr || productEn || 'منتج';
     
-    const location = escapeHtml(row.location || 'Location not specified');
-    const name = escapeHtml(row.name || 'Anonymous');
+    const location = escapeHtml(row.location || 'الموقع غير محدد');
+    const name = escapeHtml(row.name || 'مجهول');
     const price = escapeHtml(row.price || '');
     const qty = escapeHtml(row.quantity || '');
-    const desc = escapeHtml(row.description || 'No description provided.');
+    const desc = escapeHtml(row.description || 'لا يوجد وصف متاح.');
     const phone = row.phone || '';
     const email = row.email || '';
     const imageUrl = row.image_url || '';
-    const date = row.created_at ? new Date(row.created_at).toLocaleDateString('en-US', { 
+    const date = row.created_at ? new Date(row.created_at).toLocaleDateString('ar-EG', { 
       month: 'short', 
       day: 'numeric', 
       year: 'numeric' 
@@ -1119,19 +1120,19 @@ function render(items) {
     const inSeason = isInSeason(row.availability);
     const availBadge = getAvailabilityBadge(row.availability);
     const outOfSeasonClass = inSeason ? '' : 'out-of-season';
-    const outOfSeasonBadge = inSeason ? '' : '<span class="badge badge-danger">Out of Season</span>';
+    const outOfSeasonBadge = inSeason ? '' : '<span class="badge badge-danger">خارج الموسم</span>';
     
     const imgStyle = imageUrl ? `style="background-image:url('${escapeHtml(imageUrl)}');"` : '';
-    const wa = phone ? phoneToWhatsApp(phone, `Hello ${name}, I'm interested in your ${productDisplay}.`) : null;
+    const wa = phone ? phoneToWhatsApp(phone, `مرحباً ${name}، أنا مهتم بمنتجك ${productDisplay}.`) : null;
     const call = phone ? `tel:${phone.replace(/[^0-9+]/g, '')}` : null;
-    const mail = email ? `mailto:${email}?subject=Interested in your ${encodeURIComponent(productDisplay)}` : null;
+    const mail = email ? `mailto:${email}?subject=مهتم بمنتجك ${encodeURIComponent(productDisplay)}` : null;
 
     const priceQty = [qty, price].filter(Boolean).join(' • ');
     
     // Check if current user owns this listing
     const isOwnListing = currentUser && row.user_id === currentUser.id;
     const deleteButton = isOwnListing 
-      ? `<button class="btn-delete-own" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">🗑️ Delete My Listing</button>`
+      ? `<button class="btn-delete-own" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">🗑️ حذف منتجي</button>`
       : '';
     
     return `
@@ -1150,9 +1151,9 @@ function render(items) {
           </div>` : ''}
           <div class="card-description">${desc}</div>
           <div class="card-actions">
-            ${wa ? `<a class="btn btn-primary" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ''}
-            ${call ? `<a class="btn btn-secondary" href="${call}">📞 Call</a>` : ''}
-            ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ Email</a>` : ''}
+            ${wa ? `<a class="btn btn-primary" href="${wa}" target="_blank" rel="noopener">💬 واتساب</a>` : ''}
+            ${call ? `<a class="btn btn-secondary" href="${call}">📞 اتصال</a>` : ''}
+            ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ بريد</a>` : ''}
           </div>
           ${deleteButton}
           <div class="card-footer">
@@ -1208,7 +1209,7 @@ function applyFilters(rows) {
     list.sort((a, b) => {
       const nameA = a.product_ar || a.product || '';
       const nameB = b.product_ar || b.product || '';
-      return nameA.localeCompare(nameB);
+      return nameA.localeCompare(nameB, 'ar');
     });
   } else {
     // Newest first (default)
@@ -1246,11 +1247,11 @@ async function fetchData() {
     document.getElementById('results').innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">⚠️</div>
-        <div class="empty-state-title">Failed to load data</div>
-        <p>Please check your Supabase configuration and try again.</p>
+        <div class="empty-state-title">فشل تحميل البيانات</div>
+        <p>يرجى التحقق من إعدادات Supabase والمحاولة مرة أخرى.</p>
       </div>
     `;
-    document.getElementById('resultsCount').textContent = 'Error loading products';
+    document.getElementById('resultsCount').textContent = 'خطأ في تحميل المنتجات';
   }
 }
 

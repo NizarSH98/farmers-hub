@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Farmer Hub — Submit Your Product Listing</title>
+  <title>مركز المزارعين — إضافة منتج</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
       /* Light Mode (Default) */
@@ -30,17 +30,17 @@
     }
     
     [data-theme="dark"] {
-      --bg-primary:#0a0e1a; 
-      --bg-secondary:#111827; 
+      --bg-primary:#0a0e1a;
+      --bg-secondary:#111827;
       --card-bg:rgba(17,24,39,0.7);
       --card-border:rgba(99,102,241,0.2);
-      --muted:#9ca3af; 
-      --text:#f3f4f6; 
+      --muted:#9ca3af;
+      --text:#f3f4f6;
       --text-bright:#ffffff;
-      --accent:#6366f1; 
+      --accent:#6366f1;
       --accent-hover:#4f46e5;
       --accent-light:rgba(99,102,241,0.1);
-      --success:#10b981; 
+      --success:#10b981;
       --danger:#ef4444;
       --warning:#f59e0b;
       --input-bg:rgba(31,41,55,0.8);
@@ -52,7 +52,7 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text);
       background: var(--bg-primary);
       min-height: 100vh;
@@ -78,7 +78,7 @@
       margin: 0 auto;
       padding: 0 24px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
       align-items: center;
       gap: 12px;
     }
@@ -311,8 +311,8 @@
     .autocomplete-list {
       position: absolute;
       top: 100%;
-      left: 0;
       right: 0;
+      left: 0;
       background: var(--input-bg);
       border: 1.5px solid var(--accent);
       border-top: none;
@@ -342,7 +342,7 @@
     .autocomplete-count {
       font-size: 12px;
       color: var(--muted);
-      margin-left: 8px;
+      margin-right: 8px;
     }
     
     .checkbox-wrapper {
@@ -563,7 +563,7 @@
     .btn-remove-image {
       position: absolute;
       top: 12px;
-      right: 12px;
+      left: 12px;
       padding: 8px 16px;
       background: var(--danger);
       color: white;
@@ -621,26 +621,26 @@
   <!-- Top Utility Bar -->
   <div class="top-bar">
     <div class="top-bar-content">
-      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+      <a href="index.html" class="lang-toggle" title="Switch to English">
+        <span>🌐</span>
+        <span>English</span>
+      </a>
+      <button class="theme-toggle" id="themeToggle" title="تبديل المظهر">
         <span id="themeIcon">🌙</span>
       </button>
-      <a href="index-ar.html" class="lang-toggle" title="Switch to Arabic">
-        <span>🌐</span>
-        <span>العربية</span>
-      </a>
     </div>
   </div>
   
   <!-- Main Navigation -->
   <div class="main-nav">
     <div class="main-nav-content">
-      <a href="index.html" class="brand">
+      <a href="index-ar.html" class="brand">
         <div class="brand-icon">🌾</div>
-        <span>Farmer Hub</span>
+        <span>مركز المزارعين</span>
       </a>
       <div class="nav-links">
-        <a href="market.html" class="nav-link">Browse Marketplace</a>
-        <a href="admin.html" class="nav-link">Admin Panel</a>
+        <a href="market-ar.html" class="nav-link">تصفح السوق</a>
+        <a href="admin.html" class="nav-link">لوحة الإدارة</a>
       </div>
     </div>
   </div>
@@ -649,210 +649,210 @@
 
     <div class="card">
       <div class="card-header">
-        <h1>List Your Produce</h1>
-        <p class="lead">Fill this form to make your product visible on the public marketplace. We'll suggest previously used values to keep data consistent.</p>
+        <h1>أضف منتجك</h1>
+        <p class="lead">املأ هذا النموذج لعرض منتجك في السوق العامة. سنقترح عليك قيم مستخدمة سابقاً للحفاظ على اتساق البيانات.</p>
       </div>
 
       <form id="listingForm" autocomplete="off">
         <!-- User Authentication -->
         <div class="full">
           <div class="section-divider">
-            <span class="section-title">🔐 User Authentication</span>
+            <span class="section-title">🔐 التحقق من الهوية</span>
           </div>
         </div>
         
         <div class="form-group">
-          <label class="required">Username</label>
-          <input name="username" id="username" required placeholder="Your assigned username" autocomplete="off" />
-          <div class="helper-text">🔑 Enter the username provided by admin</div>
+          <label class="required">اسم المستخدم</label>
+          <input name="username" id="username" required placeholder="اسم المستخدم المخصص لك" autocomplete="off" />
+          <div class="helper-text">🔑 أدخل اسم المستخدم الذي قدمه لك المسؤول</div>
         </div>
         
         <div class="form-group">
-          <label class="required">Password</label>
-          <input name="user_password" id="user_password" type="password" required placeholder="Your password" autocomplete="off" />
-          <div class="helper-text">🔒 Enter the password provided by admin</div>
+          <label class="required">كلمة المرور</label>
+          <input name="user_password" id="user_password" type="password" required placeholder="كلمة المرور الخاصة بك" autocomplete="off" />
+          <div class="helper-text">🔒 أدخل كلمة المرور التي قدمها لك المسؤول</div>
         </div>
         
         <!-- Contact Information -->
         <div class="full">
           <div class="section-divider">
-            <span class="section-title">Contact Information</span>
+            <span class="section-title">معلومات التواصل</span>
           </div>
         </div>
         
         <div class="full form-group">
-          <label class="required">Full Name</label>
-          <input name="name" id="name" required placeholder="e.g. Ahmad Khoury" />
+          <label class="required">الاسم الكامل</label>
+          <input name="name" id="name" required placeholder="مثال: أحمد خوري" />
         </div>
         
         <div class="form-group">
-          <label class="required">Phone (WhatsApp)</label>
+          <label class="required">رقم الهاتف (واتساب)</label>
           <input name="phone" id="phone" required placeholder="+961..." type="tel" />
-          <div class="helper-text">📱 Used for WhatsApp contact</div>
+          <div class="helper-text">📱 يُستخدم للتواصل عبر الواتساب</div>
         </div>
         
         <div class="form-group">
-          <label>Email</label>
-          <input name="email" id="email" type="email" placeholder="optional@example.com" />
+          <label>البريد الإلكتروني</label>
+          <input name="email" id="email" type="email" placeholder="example@email.com (اختياري)" />
         </div>
 
         <!-- Product Details -->
         <div class="full">
           <div class="section-divider">
-            <span class="section-title">Product Details</span>
+            <span class="section-title">تفاصيل المنتج</span>
           </div>
         </div>
         
         <div class="form-group autocomplete-wrapper">
-          <label class="required">Product Name (Arabic)</label>
+          <label class="required">اسم المنتج (بالعربية)</label>
           <input name="product_ar" id="product_ar" required placeholder="مثال: زيت زيتون، تفاح، زعتر..." />
-          <div class="helper-text">💡 Arabic name is required</div>
+          <div class="helper-text">💡 الاسم بالعربية مطلوب</div>
           <div id="product-ar-suggestions" class="autocomplete-list" style="display:none;"></div>
         </div>
         
         <div class="form-group autocomplete-wrapper">
-          <label>Product Name (English - Optional)</label>
+          <label>اسم المنتج (بالإنجليزية - اختياري)</label>
           <input name="product" id="product" placeholder="e.g. Olive Oil, Apples, Thyme..." />
-          <div class="helper-text">💡 English name is optional</div>
+          <div class="helper-text">💡 الاسم بالإنجليزية اختياري</div>
           <div id="product-suggestions" class="autocomplete-list" style="display:none;"></div>
         </div>
         
         <div class="form-group">
-          <label>Quantity</label>
-          <input name="quantity" id="quantity" placeholder="e.g. 50 kg, 200 L" />
+          <label>الكمية</label>
+          <input name="quantity" id="quantity" placeholder="مثال: 50 كغ، 200 لتر" />
         </div>
         
         <div class="form-group">
-          <label>Unit Price</label>
-          <input name="price" id="price" placeholder="e.g. 3.5 USD/kg" />
+          <label>سعر الوحدة</label>
+          <input name="price" id="price" placeholder="مثال: 3.5 دولار/كغ" />
         </div>
         
         <div class="form-group">
-          <label class="required">Location</label>
+          <label class="required">الموقع</label>
           <select name="location" id="location" required>
-            <option value="">Select your location...</option>
-            <optgroup label="Beirut">
-              <option value="Beirut - Achrafieh">Achrafieh</option>
-              <option value="Beirut - Hamra">Hamra</option>
-              <option value="Beirut - Verdun">Verdun</option>
-              <option value="Beirut - Ras Beirut">Ras Beirut</option>
-              <option value="Beirut - Mar Elias">Mar Elias</option>
-              <option value="Beirut - Badaro">Badaro</option>
+            <option value="">اختر موقعك...</option>
+            <optgroup label="بيروت">
+              <option value="Beirut - Achrafieh">الأشرفية</option>
+              <option value="Beirut - Hamra">الحمرا</option>
+              <option value="Beirut - Verdun">الفردان</option>
+              <option value="Beirut - Ras Beirut">رأس بيروت</option>
+              <option value="Beirut - Mar Elias">مار الياس</option>
+              <option value="Beirut - Badaro">البدارو</option>
             </optgroup>
-            <optgroup label="Mount Lebanon">
-              <option value="Baabda">Baabda</option>
-              <option value="Aley">Aley</option>
-              <option value="Bhamdoun">Bhamdoun</option>
-              <option value="Chouf - Deir el Qamar">Deir el Qamar</option>
-              <option value="Chouf - Beiteddine">Beiteddine</option>
-              <option value="Chouf - Baakline">Baakline</option>
-              <option value="Jbeil - Byblos">Byblos (Jbeil)</option>
-              <option value="Jounieh">Jounieh</option>
-              <option value="Kesrouan - Harissa">Harissa</option>
-              <option value="Kesrouan - Faraya">Faraya</option>
-              <option value="Metn - Broummana">Broummana</option>
-              <option value="Metn - Beit Mery">Beit Mery</option>
-              <option value="Metn - Dhour el Choueir">Dhour el Choueir</option>
+            <optgroup label="جبل لبنان">
+              <option value="Baabda">بعبدا</option>
+              <option value="Aley">عاليه</option>
+              <option value="Bhamdoun">بحمدون</option>
+              <option value="Chouf - Deir el Qamar">دير القمر</option>
+              <option value="Chouf - Beiteddine">بيت الدين</option>
+              <option value="Chouf - Baakline">بعقلين</option>
+              <option value="Jbeil - Byblos">جبيل</option>
+              <option value="Jounieh">جونيه</option>
+              <option value="Kesrouan - Harissa">حريصا</option>
+              <option value="Kesrouan - Faraya">فاريا</option>
+              <option value="Metn - Broummana">برمانا</option>
+              <option value="Metn - Beit Mery">بيت مري</option>
+              <option value="Metn - Dhour el Choueir">ضهور الشوير</option>
             </optgroup>
-            <optgroup label="North Lebanon">
-              <option value="Tripoli">Tripoli</option>
-              <option value="Mina">Mina</option>
-              <option value="Zgharta">Zgharta</option>
-              <option value="Bcharre">Bcharre</option>
-              <option value="Koura - Amioun">Amioun</option>
-              <option value="Batroun">Batroun</option>
-              <option value="Akkar - Halba">Halba</option>
-              <option value="Akkar - Qobayat">Qobayat</option>
-              <option value="Akkar - Aarsal">Aarsal</option>
+            <optgroup label="الشمال">
+              <option value="Tripoli">طرابلس</option>
+              <option value="Mina">الميناء</option>
+              <option value="Zgharta">زغرتا</option>
+              <option value="Bcharre">بشري</option>
+              <option value="Koura - Amioun">أميون</option>
+              <option value="Batroun">البترون</option>
+              <option value="Akkar - Halba">حلبا</option>
+              <option value="Akkar - Qobayat">القبيات</option>
+              <option value="Akkar - Aarsal">عرسال</option>
             </optgroup>
-            <optgroup label="Bekaa">
-              <option value="Zahle">Zahle</option>
-              <option value="Bekaa - Aanjar">Aanjar</option>
-              <option value="Bekaa - Chtaura">Chtaura</option>
-              <option value="Bekaa - Baalbek">Baalbek</option>
-              <option value="Bekaa - Hermel">Hermel</option>
-              <option value="West Bekaa - Joub Jannine">Joub Jannine</option>
-              <option value="West Bekaa - Rachaya">Rachaya</option>
-              <option value="West Bekaa - Kamed el Loz">Kamed el Loz</option>
+            <optgroup label="البقاع">
+              <option value="Zahle">زحلة</option>
+              <option value="Bekaa - Aanjar">عنجر</option>
+              <option value="Bekaa - Chtaura">شتورا</option>
+              <option value="Bekaa - Baalbek">بعلبك</option>
+              <option value="Bekaa - Hermel">الهرمل</option>
+              <option value="West Bekaa - Joub Jannine">جوب جنين</option>
+              <option value="West Bekaa - Rachaya">راشيا</option>
+              <option value="West Bekaa - Kamed el Loz">كامد اللوز</option>
             </optgroup>
-            <optgroup label="South Lebanon">
-              <option value="Saida - Sidon">Sidon (Saida)</option>
-              <option value="Tyre - Sour">Tyre (Sour)</option>
-              <option value="Jezzine">Jezzine</option>
-              <option value="Nabatieh">Nabatieh</option>
-              <option value="Bent Jbeil">Bent Jbeil</option>
-              <option value="Marjayoun">Marjayoun</option>
-              <option value="Hasbaya">Hasbaya</option>
+            <optgroup label="الجنوب">
+              <option value="Saida - Sidon">صيدا</option>
+              <option value="Tyre - Sour">صور</option>
+              <option value="Jezzine">جزين</option>
+              <option value="Nabatieh">النبطية</option>
+              <option value="Bent Jbeil">بنت جبيل</option>
+              <option value="Marjayoun">مرجعيون</option>
+              <option value="Hasbaya">حاصبيا</option>
             </optgroup>
           </select>
         </div>
         
         <div class="form-group">
-          <label>Harvest Date</label>
+          <label>تاريخ الحصاد</label>
           <input name="harvest_date" id="harvest_date" type="date" />
         </div>
         
         <div class="full form-group">
-          <label class="required">Availability</label>
-          <div class="helper-text" style="margin-bottom: 12px;">📅 Select the months when this product is available</div>
+          <label class="required">التوفر</label>
+          <div class="helper-text" style="margin-bottom: 12px;">📅 اختر الأشهر التي يتوفر فيها هذا المنتج</div>
           <div class="month-selector" id="monthSelector">
-            <button type="button" class="month-btn" data-month="1">Jan</button>
-            <button type="button" class="month-btn" data-month="2">Feb</button>
-            <button type="button" class="month-btn" data-month="3">Mar</button>
-            <button type="button" class="month-btn" data-month="4">Apr</button>
-            <button type="button" class="month-btn" data-month="5">May</button>
-            <button type="button" class="month-btn" data-month="6">Jun</button>
-            <button type="button" class="month-btn" data-month="7">Jul</button>
-            <button type="button" class="month-btn" data-month="8">Aug</button>
-            <button type="button" class="month-btn" data-month="9">Sep</button>
-            <button type="button" class="month-btn" data-month="10">Oct</button>
-            <button type="button" class="month-btn" data-month="11">Nov</button>
-            <button type="button" class="month-btn" data-month="12">Dec</button>
-            <button type="button" class="month-btn all-year" id="allYearBtn">All Year</button>
+            <button type="button" class="month-btn" data-month="1">يناير</button>
+            <button type="button" class="month-btn" data-month="2">فبراير</button>
+            <button type="button" class="month-btn" data-month="3">مارس</button>
+            <button type="button" class="month-btn" data-month="4">أبريل</button>
+            <button type="button" class="month-btn" data-month="5">مايو</button>
+            <button type="button" class="month-btn" data-month="6">يونيو</button>
+            <button type="button" class="month-btn" data-month="7">يوليو</button>
+            <button type="button" class="month-btn" data-month="8">أغسطس</button>
+            <button type="button" class="month-btn" data-month="9">سبتمبر</button>
+            <button type="button" class="month-btn" data-month="10">أكتوبر</button>
+            <button type="button" class="month-btn" data-month="11">نوفمبر</button>
+            <button type="button" class="month-btn" data-month="12">ديسمبر</button>
+            <button type="button" class="month-btn all-year" id="allYearBtn">طوال العام</button>
           </div>
         </div>
         
         <div class="full form-group">
-          <label>Product Image</label>
+          <label>صورة المنتج</label>
           <input name="image" id="image" type="file" accept="image/*" style="display:none;" />
           <div class="image-upload-area" id="imageUploadArea">
             <div class="upload-placeholder" id="uploadPlaceholder">
               <div style="font-size: 48px; margin-bottom: 12px;">📸</div>
-              <div style="font-weight: 600; margin-bottom: 8px;">Click to upload or drag & drop</div>
-              <div style="font-size: 13px; color: var(--muted);">PNG, JPG, WebP up to 5MB</div>
+              <div style="font-weight: 600; margin-bottom: 8px;">انقر للرفع أو اسحب وأفلت</div>
+              <div style="font-size: 13px; color: var(--muted);">PNG, JPG, WebP حتى 5 ميجابايت</div>
             </div>
             <img id="imagePreview" class="image-preview" style="display:none;" />
-            <button type="button" class="btn-remove-image" id="removeImage" style="display:none;">✕ Remove</button>
+            <button type="button" class="btn-remove-image" id="removeImage" style="display:none;">✕ إزالة</button>
           </div>
-          <div class="helper-text">🖼️ Upload a product photo (optional but recommended)</div>
+          <div class="helper-text">🖼️ ارفع صورة للمنتج (اختياري لكن موصى به)</div>
         </div>
         
         <div class="full form-group">
-          <label>Description</label>
-          <textarea name="description" id="description" placeholder="Short details: variety, organic, delivery options, certifications, etc."></textarea>
+          <label>الوصف</label>
+          <textarea name="description" id="description" placeholder="تفاصيل قصيرة: النوع، عضوي، خيارات التوصيل، الشهادات، إلخ."></textarea>
         </div>
 
         <!-- Consent -->
         <div class="full">
           <div class="checkbox-wrapper">
-          <input id="consent" type="checkbox" required />
-            <label for="consent">I agree to publish my name and contact information for buyers to reach me on the public marketplace.</label>
+            <input id="consent" type="checkbox" required />
+            <label for="consent">أوافق على نشر اسمي ومعلومات الاتصال الخاصة بي حتى يتمكن المشترون من التواصل معي في السوق العامة.</label>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="full">
-        <div class="actions">
-            <button class="btn btn-primary" type="submit">✓ Submit Listing</button>
-            <button class="btn btn-secondary" type="button" id="fillTestData">🧪 Fill Test Data</button>
-            <button class="btn btn-secondary" type="reset">↺ Clear Form</button>
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">✓ إرسال القائمة</button>
+            <button class="btn btn-secondary" type="button" id="fillTestData">🧪 تعبئة بيانات تجريبية</button>
+            <button class="btn btn-secondary" type="reset">↺ مسح النموذج</button>
           </div>
           <div id="status" class="notice"></div>
         </div>
       </form>
       
       <div class="footer">
-        After submitting, your listing appears on the <a href="market.html">Marketplace</a> within seconds.
+        بعد الإرسال، ستظهر قائمتك في <a href="market-ar.html">السوق</a> خلال ثوانٍ.
       </div>
     </div>
   </div>
@@ -870,7 +870,6 @@ const themeToggle = document.getElementById('themeToggle');
 const themeIcon = document.getElementById('themeIcon');
 const htmlEl = document.documentElement;
 
-// Load saved theme or default to light
 const savedTheme = localStorage.getItem('theme') || 'light';
 htmlEl.setAttribute('data-theme', savedTheme);
 updateThemeIcon(savedTheme);
@@ -966,7 +965,7 @@ class Autocomplete {
     this.suggestionsBox.innerHTML = suggestions.map((item, idx) => 
       `<div class="autocomplete-item" data-index="${idx}" data-value="${item.value}">
         ${item.value}
-        <span class="autocomplete-count">(used ${item.count}x)</span>
+        <span class="autocomplete-count">(استُخدم ${item.count} مرة)</span>
       </div>`
     ).join('');
     
@@ -1117,12 +1116,12 @@ function setupImageUpload() {
 
 function handleImageFile(file) {
   if (file.size > 5 * 1024 * 1024) {
-    alert('Image too large! Please choose an image under 5MB.');
+    alert('الصورة كبيرة جداً! الرجاء اختيار صورة أقل من 5 ميجابايت.');
     return;
   }
   
   if (!file.type.startsWith('image/')) {
-    alert('Please select a valid image file.');
+    alert('الرجاء اختيار ملف صورة صالح.');
     return;
   }
   
@@ -1147,7 +1146,7 @@ async function uploadImage(file, listingId) {
   const fileName = `${listingId}-${Date.now()}.${fileExt}`;
   const filePath = `${fileName}`;
   
-  const { data, error } = await supabase.storage
+  const { data, error} = await supabase.storage
     .from('product-images')
     .upload(filePath, file, {
       cacheControl: '3600',
@@ -1169,15 +1168,14 @@ async function submitListing(evt) {
   const form = evt.target;
   const status = document.getElementById('status');
   
-  // Check availability selection
   if (selectedMonths.size === 0) {
-    status.textContent = "❌ Please select availability months";
+    status.textContent = "❌ الرجاء اختيار أشهر التوفر";
     status.className = "notice err show";
     setTimeout(() => status.classList.remove('show'), 3000);
     return;
   }
   
-  status.textContent = "Verifying credentials...";
+  status.textContent = "جارٍ التحقق من بيانات الدخول...";
   status.className = "notice loading show";
   
   try {
@@ -1186,7 +1184,7 @@ async function submitListing(evt) {
     const password = formData.get('user_password')?.trim();
     
     if (!username || !password) {
-      throw new Error('Please enter your username and password');
+      throw new Error('الرجاء إدخال اسم المستخدم وكلمة المرور');
     }
     
     const { data: user, error: authError } = await supabase
@@ -1197,14 +1195,14 @@ async function submitListing(evt) {
       .single();
     
     if (authError || !user) {
-      throw new Error('Invalid username or password. Please contact admin for access.');
+      throw new Error('اسم المستخدم أو كلمة المرور غير صحيحة. يرجى الاتصال بالمسؤول للحصول على الوصول.');
     }
     
     if (!user.is_active) {
-      throw new Error('Your account has been deactivated. Please contact admin.');
+      throw new Error('تم تعطيل حسابك. يرجى الاتصال بالمسؤول.');
     }
     
-    status.textContent = "Credentials verified. Submitting listing...";
+    status.textContent = "تم التحقق من البيانات. جارٍ إرسال القائمة...";
     
     const availability = selectedMonths.has('all') ? 'all' : JSON.stringify(Array.from(selectedMonths).map(Number));
     
@@ -1225,7 +1223,7 @@ async function submitListing(evt) {
     };
     
     if (!payload.name || !payload.phone || !payload.product_ar || !payload.location) {
-      throw new Error('Please fill in all required fields');
+      throw new Error('الرجاء ملء جميع الحقول المطلوبة');
     }
     
     const { data: listing, error: insertError } = await supabase
@@ -1237,7 +1235,7 @@ async function submitListing(evt) {
     if (insertError) throw insertError;
     
     if (selectedImageFile) {
-      status.textContent = "Uploading image...";
+      status.textContent = "جارٍ رفع الصورة...";
       const imageUrl = await uploadImage(selectedImageFile, listing.id);
       
       const { error: updateError } = await supabase
@@ -1248,10 +1246,10 @@ async function submitListing(evt) {
       if (updateError) console.warn('Failed to update image URL:', updateError);
     }
     
-      status.textContent = "✅ Listing submitted successfully!";
-      status.className = "notice ok show";
+    status.textContent = "✅ تم إرسال القائمة بنجاح!";
+    status.className = "notice ok show";
     
-      form.reset();
+    form.reset();
     selectedImageFile = null;
     selectedMonths.clear();
     document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
@@ -1259,14 +1257,14 @@ async function submitListing(evt) {
     document.getElementById('removeImage').style.display = 'none';
     document.getElementById('uploadPlaceholder').style.display = 'block';
     
-      await loadExistingData();
-      
-      setTimeout(() => {
-        status.classList.remove('show');
-      }, 5000);
+    await loadExistingData();
+    
+    setTimeout(() => {
+      status.classList.remove('show');
+    }, 5000);
     
   } catch (e) {
-    status.textContent = "❌ Submission failed: " + e.message;
+    status.textContent = "❌ فشل الإرسال: " + e.message;
     status.className = "notice err show";
     console.error('Submission error:', e);
   }
@@ -1276,39 +1274,39 @@ async function submitListing(evt) {
 function fillTestData() {
   const testData = [
     {
-      name: 'Ahmad Khoury',
+      name: 'أحمد خوري',
       phone: '+9611234567',
       email: 'ahmad@example.com',
       product: 'Olive Oil',
       product_ar: 'زيت زيتون',
-      quantity: '50 L',
-      price: '12 USD/L',
+      quantity: '50 لتر',
+      price: '12 دولار/لتر',
       location: 'Zahle',
-      description: 'Extra virgin olive oil, cold-pressed, organic certified. Available for delivery throughout Lebanon.',
+      description: 'زيت زيتون بكر ممتاز، معصور على البارد، معتمد عضوياً. متاح للتوصيل في جميع أنحاء لبنان.',
       months: ['1', '2', '3', '11', '12']
     },
     {
-      name: 'Sara Mansour',
+      name: 'سارة منصور',
       phone: '+9617654321',
       email: 'sara.farm@example.com',
       product: 'Fresh Apples',
       product_ar: 'تفاح طازج',
-      quantity: '100 kg',
-      price: '2.5 USD/kg',
-      location: 'Zahle',
-      description: 'Red delicious apples, freshly harvested. Sweet and crispy, perfect for fresh eating.',
+      quantity: '100 كغ',
+      price: '2.5 دولار/كغ',
+      location: 'زحلة',
+      description: 'تفاح أحمر لذيذ، محصود حديثاً. حلو ومقرمش، مثالي للأكل الطازج.',
       months: ['9', '10', '11']
     },
     {
-      name: 'Karim Hassan',
+      name: 'كريم حسن',
       phone: '+9619876543',
       email: 'karim@example.com',
       product: 'Wild Thyme',
       product_ar: 'زعتر بري',
-      quantity: '10 kg',
-      price: '15 USD/kg',
+      quantity: '10 كغ',
+      price: '15 دولار/كغ',
       location: 'Metn - Broummana',
-      description: 'Premium wild mountain thyme (zaatar), hand-picked and sun-dried. Strong aroma and flavor.',
+      description: 'زعتر بري ممتاز من الجبال، مقطوف باليد ومجفف بالشمس. رائحة ونكهة قوية.',
       months: ['5', '6', '7', '8']
     }
   ];
@@ -1330,7 +1328,6 @@ function fillTestData() {
   
   document.getElementById('consent').checked = true;
   
-  // Set months
   selectedMonths.clear();
   document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
   data.months.forEach(month => {
@@ -1339,7 +1336,7 @@ function fillTestData() {
   });
   
   const status = document.getElementById('status');
-  status.textContent = '🧪 Test data filled! Ready to submit.';
+  status.textContent = '🧪 تم ملء البيانات التجريبية! جاهز للإرسال.';
   status.className = 'notice loading show';
   setTimeout(() => status.classList.remove('show'), 3000);
 }
