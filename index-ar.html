@@ -9,43 +9,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
-      /* Light Mode (Default) */
+      /* FHF Brand Colors - Light Mode */
       --bg-primary:#ffffff;
       --bg-secondary:#f9fafb;
       --card-bg:rgba(255,255,255,0.9);
-      --card-border:rgba(99,102,241,0.2);
+      --card-border:rgba(45,80,22,0.15);
       --muted:#6b7280;
       --text:#1f2937;
       --text-bright:#000000;
-      --accent:#6366f1;
-      --accent-hover:#4f46e5;
-      --accent-light:rgba(99,102,241,0.1);
+      
+      /* FHF Primary Brand Colors */
+      --fhf-green:#2d5016;
+      --fhf-green-hover:#234010;
+      --fhf-gold:#d4af37;
+      --fhf-gold-hover:#b8972f;
+      --fhf-brown:#6b4423;
+      
+      /* System Colors */
+      --accent:var(--fhf-green);
+      --accent-hover:var(--fhf-green-hover);
+      --accent-light:rgba(45,80,22,0.1);
       --success:#10b981;
       --danger:#ef4444;
       --warning:#f59e0b;
       --input-bg:#ffffff;
       --input-border:#d1d5db;
-      --input-focus:rgba(99,102,241,0.3);
+      --input-focus:rgba(45,80,22,0.3);
       --shadow:rgba(0,0,0,0.1);
     }
     
     [data-theme="dark"] {
+      /* FHF Brand Colors - Dark Mode */
       --bg-primary:#0a0e1a;
       --bg-secondary:#111827;
       --card-bg:rgba(17,24,39,0.7);
-      --card-border:rgba(99,102,241,0.2);
+      --card-border:rgba(212,175,55,0.2);
       --muted:#9ca3af;
       --text:#f3f4f6;
       --text-bright:#ffffff;
-      --accent:#6366f1;
-      --accent-hover:#4f46e5;
-      --accent-light:rgba(99,102,241,0.1);
+      
+      /* FHF Colors adjusted for dark mode */
+      --fhf-green:#4a7a2a;
+      --fhf-green-hover:#5a8a3a;
+      --fhf-gold:#d4af37;
+      --fhf-gold-hover:#e4bf47;
+      --fhf-brown:#8b6433;
+      
+      --accent:var(--fhf-gold);
+      --accent-hover:var(--fhf-gold-hover);
+      --accent-light:rgba(212,175,55,0.15);
       --success:#10b981;
       --danger:#ef4444;
       --warning:#f59e0b;
       --input-bg:rgba(31,41,55,0.8);
       --input-border:rgba(75,85,99,0.5);
-      --input-focus:rgba(99,102,241,0.5);
+      --input-focus:rgba(212,175,55,0.3);
       --shadow:rgba(0,0,0,0.3);
     }
     
@@ -164,6 +182,35 @@
       align-items: center;
       justify-content: center;
       font-size: 26px;
+      overflow: hidden;
+    }
+    
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 4px;
+    }
+    
+    /* FHF Branding Elements */
+    .fhf-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: linear-gradient(135deg, var(--fhf-green) 0%, var(--fhf-brown) 100%);
+      color: white;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(45,80,22,0.3);
+    }
+    
+    .fhf-badge::before {
+      content: '🌾';
+      font-size: 14px;
     }
     
     .nav-links {
@@ -581,6 +628,159 @@
       transform: scale(1.05);
     }
     
+    /* Auth Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+    }
+    
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px var(--shadow);
+    }
+    
+    .modal h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+    
+    .modal .lead {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--card-border);
+    }
+    
+    .auth-tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      flex: 1;
+    }
+    
+    .auth-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    
+    .auth-tab-content {
+      display: none;
+    }
+    
+    .auth-tab-content.active {
+      display: block;
+    }
+    
+    .modal .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .modal label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    
+    .modal input, .modal select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-bright);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    .modal input:focus, .modal select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--input-focus);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .modal .btn {
+      flex: 1;
+      padding: 12px 20px;
+    }
+    
+    .user-info-bar {
+      background: var(--success);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+    }
+    
+    .user-info-text {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    
+    .btn-logout-form {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-logout-form:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+    }
+    
     @media (max-width: 768px) {
       .container { padding: 24px 16px; }
       .card { padding: 28px 20px; }
@@ -635,44 +835,128 @@
   <div class="main-nav">
     <div class="main-nav-content">
       <a href="index-ar.html" class="brand">
-        <div class="brand-icon">🌾</div>
+        <div class="brand-icon">
+          <img src="assets/images/logos/fhf-logo-icon.png" alt="FHF Logo" class="brand-logo-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🌾';" />
+        </div>
         <span>مركز المزارعين</span>
       </a>
       <div class="nav-links">
+        <span class="fhf-badge" title="مدعوم من مؤسسة التراث الغذائي">منصة FHF</span>
         <a href="market-ar.html" class="nav-link">تصفح السوق</a>
         <a href="admin.html" class="nav-link">لوحة الإدارة</a>
       </div>
     </div>
   </div>
   
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <img src="assets/images/logos/fhf-logo-icon.png" alt="FHF Logo" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto;" onerror="this.style.display='none';" />
+      </div>
+      <h2>🌾 تسجيل دخول المزارعين</h2>
+      <p class="lead">الرجاء تسجيل الدخول أو إنشاء حساب لإضافة منتجاتك</p>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="signin">تسجيل الدخول</button>
+        <button class="auth-tab" data-tab="signup">إنشاء حساب</button>
+      </div>
+      
+      <!-- Sign In Tab -->
+      <div id="signinTab" class="auth-tab-content active">
+        <div id="signinError" class="notice err" style="display: none; margin-bottom: 16px;"></div>
+        <form id="signinForm">
+          <div class="form-group">
+            <label>اسم المستخدم</label>
+            <input type="text" id="signinUsername" required placeholder="اسم المستخدم الخاص بك" autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="signinPassword" required placeholder="كلمة المرور الخاصة بك" autocomplete="current-password" />
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+            <button type="button" class="btn btn-secondary" id="cancelAuth">إلغاء</button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Sign Up Tab -->
+      <div id="signupTab" class="auth-tab-content">
+        <div id="signupError" class="notice err" style="display: none; margin-bottom: 16px;"></div>
+        <form id="signupForm">
+          <div class="form-group">
+            <label class="required">الاسم الكامل</label>
+            <input type="text" id="signupFullName" required placeholder="مثال: أحمد خوري" />
+          </div>
+          <div class="form-group">
+            <label class="required">اسم المستخدم</label>
+            <input type="text" id="signupUsername" required placeholder="اختر اسم مستخدم" autocomplete="off" />
+            <div class="helper-text">سيكون هذا اسم المستخدم الخاص بك لتسجيل الدخول</div>
+          </div>
+          <div class="form-group">
+            <label class="required">كلمة المرور</label>
+            <input type="password" id="signupPassword" required placeholder="اختر كلمة مرور" minlength="6" autocomplete="new-password" />
+            <div class="helper-text">6 أحرف على الأقل</div>
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="signupPhone" placeholder="+961..." />
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="signupEmail" placeholder="example@email.com (اختياري)" />
+          </div>
+          <div class="full">
+            <div class="section-divider" style="margin: 20px 0;">
+              <span class="section-title">معلومات مشاريع FHF</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="required">هل كنت جزءًا من مشروع سابق تحت FHF؟</label>
+            <select id="signupWasFhfProject" required>
+              <option value="">اختر...</option>
+              <option value="yes">نعم</option>
+              <option value="no">لا</option>
+            </select>
+          </div>
+          <div class="form-group" id="fhfProjectNameGroup" style="display: none;">
+            <label class="required">أي مشروع كنت جزءًا منه؟</label>
+            <select id="signupFhfProjectName">
+              <option value="">اختر المشروع...</option>
+              <option value="CODRA">CODRA</option>
+              <option value="ILO">ILO</option>
+              <option value="Releaf">Releaf</option>
+              <option value="Resolve">Resolve</option>
+              <option value="Other">أخرى</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-success">إنشاء حساب</button>
+            <button type="button" class="btn btn-secondary" id="cancelAuthSignup">إلغاء</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
 
     <div class="card">
+      <!-- User Info Bar (shown when logged in) -->
+      <div id="userInfoBar" class="user-info-bar" style="display: none;">
+        <div class="user-info-text">
+          👤 مسجل الدخول كـ: <strong id="currentUsername"></strong>
+        </div>
+        <button class="btn-logout-form" id="logoutBtn">🚪 تسجيل الخروج</button>
+      </div>
+      
       <div class="card-header">
         <h1>أضف منتجك</h1>
         <p class="lead">املأ هذا النموذج لعرض منتجك في السوق العامة. سنقترح عليك قيم مستخدمة سابقاً للحفاظ على اتساق البيانات.</p>
       </div>
 
       <form id="listingForm" autocomplete="off">
-        <!-- User Authentication -->
-        <div class="full">
-          <div class="section-divider">
-            <span class="section-title">🔐 التحقق من الهوية</span>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="required">اسم المستخدم</label>
-          <input name="username" id="username" required placeholder="اسم المستخدم المخصص لك" autocomplete="off" />
-          <div class="helper-text">🔑 أدخل اسم المستخدم الذي قدمه لك المسؤول</div>
-        </div>
-        
-        <div class="form-group">
-          <label class="required">كلمة المرور</label>
-          <input name="user_password" id="user_password" type="password" required placeholder="كلمة المرور الخاصة بك" autocomplete="off" />
-          <div class="helper-text">🔒 أدخل كلمة المرور التي قدمها لك المسؤول</div>
-        </div>
-        
         <!-- Contact Information -->
         <div class="full">
           <div class="section-divider">
@@ -844,7 +1128,6 @@
         <div class="full">
           <div class="actions">
             <button class="btn btn-primary" type="submit">✓ إرسال القائمة</button>
-            <button class="btn btn-secondary" type="button" id="fillTestData">🧪 تعبئة بيانات تجريبية</button>
             <button class="btn btn-secondary" type="reset">↺ مسح النموذج</button>
           </div>
           <div id="status" class="notice"></div>
@@ -852,7 +1135,18 @@
       </form>
       
       <div class="footer">
-        بعد الإرسال، ستظهر قائمتك في <a href="market-ar.html">السوق</a> خلال ثوانٍ.
+        <div style="margin-bottom: 16px;">
+          بعد الإرسال، ستظهر قائمتك في <a href="market-ar.html">السوق</a> خلال ثوانٍ.
+        </div>
+        <div style="padding-top: 16px; border-top: 1px solid var(--card-border); text-align: center;">
+          <img src="assets/images/logos/fhf-logo-horizontal.png" alt="مؤسسة التراث الغذائي" style="height: 40px; max-width: 200px; object-fit: contain; margin: 0 auto 8px; display: block;" onerror="this.style.display='none';" />
+          <div style="font-size: 12px; color: var(--muted);">
+            مدعوم من <strong style="color: var(--accent);">مؤسسة التراث الغذائي</strong>
+          </div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">
+            دعم المزارعين اللبنانيين والحفاظ على التراث الغذائي
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -889,6 +1183,208 @@ function updateThemeIcon(theme) {
 // === STATE ===
 let existingData = { products: [], productsAr: [], locations: [], units: [] };
 let selectedMonths = new Set();
+let currentUser = null; // {id, username, full_name}
+
+// === USER AUTHENTICATION ===
+function checkLoginStatus() {
+  const userDataStr = sessionStorage.getItem('farmerUser');
+  if (userDataStr) {
+    try {
+      currentUser = JSON.parse(userDataStr);
+      updateUIForLoggedInUser();
+    } catch (e) {
+      sessionStorage.removeItem('farmerUser');
+    }
+  }
+}
+
+function updateUIForLoggedInUser() {
+  if (currentUser) {
+    document.getElementById('userInfoBar').style.display = 'flex';
+    document.getElementById('currentUsername').textContent = currentUser.username;
+    document.getElementById('listingForm').style.display = 'grid';
+  } else {
+    document.getElementById('userInfoBar').style.display = 'none';
+    document.getElementById('listingForm').style.display = 'none';
+  }
+}
+
+function showAuthModal() {
+  document.getElementById('authModal').classList.add('show');
+}
+
+function hideAuthModal() {
+  document.getElementById('authModal').classList.remove('show');
+  document.getElementById('signinForm').reset();
+  document.getElementById('signupForm').reset();
+  document.getElementById('signinError').style.display = 'none';
+  document.getElementById('signupError').style.display = 'none';
+}
+
+function setupAuthTabs() {
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      const tabName = tab.dataset.tab;
+      document.querySelectorAll('.auth-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName + 'Tab').classList.add('active');
+    });
+  });
+}
+
+async function handleSignIn(evt) {
+  evt.preventDefault();
+  const username = document.getElementById('signinUsername').value.trim();
+  const password = document.getElementById('signinPassword').value.trim();
+  const errorDiv = document.getElementById('signinError');
+  
+  try {
+    const { data: user, error } = await supabase
+      .from('verified_users')
+      .select('id, username, full_name, is_active')
+      .eq('username', username)
+      .eq('password', password)
+      .single();
+    
+    if (error || !user) {
+      errorDiv.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (!user.is_active) {
+      errorDiv.textContent = '❌ حسابك غير نشط. يرجى الاتصال بالمسؤول.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Save user to session
+    currentUser = { id: user.id, username: user.username, full_name: user.full_name };
+    sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
+    
+    // Update UI
+    updateUIForLoggedInUser();
+    hideAuthModal();
+    
+  } catch (e) {
+    errorDiv.textContent = '❌ فشل تسجيل الدخول: ' + e.message;
+    errorDiv.style.display = 'block';
+  }
+}
+
+async function handleSignUp(evt) {
+  evt.preventDefault();
+  const errorDiv = document.getElementById('signupError');
+  
+  try {
+    const username = document.getElementById('signupUsername').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+    const fullName = document.getElementById('signupFullName').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const wasFhfProject = document.getElementById('signupWasFhfProject').value;
+    const fhfProjectName = document.getElementById('signupFhfProjectName').value;
+    
+    // Validation
+    if (!username || !password || !fullName) {
+      errorDiv.textContent = '❌ الرجاء ملء جميع الحقول المطلوبة';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (password.length < 6) {
+      errorDiv.textContent = '❌ يجب أن تكون كلمة المرور 6 أحرف على الأقل';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (wasFhfProject === 'yes' && !fhfProjectName) {
+      errorDiv.textContent = '❌ الرجاء اختيار المشروع الذي كنت جزءًا منه تحت FHF';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Check if username already exists
+    const { data: existingUser } = await supabase
+      .from('verified_users')
+      .select('username')
+      .eq('username', username)
+      .single();
+    
+    if (existingUser) {
+      errorDiv.textContent = '❌ اسم المستخدم موجود بالفعل. الرجاء اختيار اسم آخر.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Create user
+    const userData = {
+      username,
+      password,
+      full_name: fullName,
+      phone: phone || null,
+      email: email || null,
+      is_active: true,
+      was_part_of_fhf_project: wasFhfProject === 'yes',
+      fhf_project_name: wasFhfProject === 'yes' ? fhfProjectName : null
+    };
+    
+    const { data: newUser, error: insertError } = await supabase
+      .from('verified_users')
+      .insert([userData])
+      .select('id, username, full_name')
+      .single();
+    
+    if (insertError) throw insertError;
+    
+    // Auto sign in
+    currentUser = { id: newUser.id, username: newUser.username, full_name: newUser.full_name };
+    sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
+    
+    // Update UI
+    updateUIForLoggedInUser();
+    hideAuthModal();
+    
+    const status = document.getElementById('status');
+    status.textContent = '✅ تم إنشاء الحساب بنجاح! يمكنك الآن إضافة منتجاتك.';
+    status.className = 'notice ok show';
+    setTimeout(() => status.classList.remove('show'), 5000);
+    
+  } catch (e) {
+    errorDiv.textContent = '❌ فشل إنشاء الحساب: ' + e.message;
+    errorDiv.style.display = 'block';
+  }
+}
+
+function handleLogout() {
+  currentUser = null;
+  sessionStorage.removeItem('farmerUser');
+  updateUIForLoggedInUser();
+  showAuthModal();
+}
+
+// Setup FHF project dropdown visibility
+function setupFhfProjectToggle() {
+  const wasFhfSelect = document.getElementById('signupWasFhfProject');
+  const projectNameGroup = document.getElementById('fhfProjectNameGroup');
+  const projectNameSelect = document.getElementById('signupFhfProjectName');
+  
+  wasFhfSelect.addEventListener('change', () => {
+    if (wasFhfSelect.value === 'yes') {
+      projectNameGroup.style.display = 'block';
+      projectNameSelect.required = true;
+    } else {
+      projectNameGroup.style.display = 'none';
+      projectNameSelect.required = false;
+      projectNameSelect.value = '';
+    }
+  });
+}
 
 // === MONTH SELECTOR ===
 function setupMonthSelector() {
@@ -1168,6 +1664,16 @@ async function submitListing(evt) {
   const form = evt.target;
   const status = document.getElementById('status');
   
+  // Check if user is logged in
+  if (!currentUser) {
+    status.textContent = "❌ الرجاء تسجيل الدخول لإضافة منتجات";
+    status.className = "notice err show";
+    setTimeout(() => status.classList.remove('show'), 3000);
+    showAuthModal();
+    return;
+  }
+  
+  // Check availability selection
   if (selectedMonths.size === 0) {
     status.textContent = "❌ الرجاء اختيار أشهر التوفر";
     status.className = "notice err show";
@@ -1175,39 +1681,15 @@ async function submitListing(evt) {
     return;
   }
   
-  status.textContent = "جارٍ التحقق من بيانات الدخول...";
+  status.textContent = "جارٍ إرسال القائمة...";
   status.className = "notice loading show";
   
   try {
     const formData = new FormData(form);
-    const username = formData.get('username')?.trim();
-    const password = formData.get('user_password')?.trim();
-    
-    if (!username || !password) {
-      throw new Error('الرجاء إدخال اسم المستخدم وكلمة المرور');
-    }
-    
-    const { data: user, error: authError } = await supabase
-      .from('verified_users')
-      .select('id, username, full_name, is_active')
-      .eq('username', username)
-      .eq('password', password)
-      .single();
-    
-    if (authError || !user) {
-      throw new Error('اسم المستخدم أو كلمة المرور غير صحيحة. يرجى الاتصال بالمسؤول للحصول على الوصول.');
-    }
-    
-    if (!user.is_active) {
-      throw new Error('تم تعطيل حسابك. يرجى الاتصال بالمسؤول.');
-    }
-    
-    status.textContent = "تم التحقق من البيانات. جارٍ إرسال القائمة...";
-    
     const availability = selectedMonths.has('all') ? 'all' : JSON.stringify(Array.from(selectedMonths).map(Number));
     
     const payload = {
-      user_id: user.id,
+      user_id: currentUser.id,
       name: formData.get('name')?.trim(),
       phone: formData.get('phone')?.trim(),
       email: formData.get('email')?.trim() || null,
@@ -1270,89 +1752,58 @@ async function submitListing(evt) {
   }
 }
 
-// === TEST DATA FILLER ===
-function fillTestData() {
-  const testData = [
-    {
-      name: 'أحمد خوري',
-      phone: '+9611234567',
-      email: 'ahmad@example.com',
-      product: 'Olive Oil',
-      product_ar: 'زيت زيتون',
-      quantity: '50 لتر',
-      price: '12 دولار/لتر',
-      location: 'Zahle',
-      description: 'زيت زيتون بكر ممتاز، معصور على البارد، معتمد عضوياً. متاح للتوصيل في جميع أنحاء لبنان.',
-      months: ['1', '2', '3', '11', '12']
-    },
-    {
-      name: 'سارة منصور',
-      phone: '+9617654321',
-      email: 'sara.farm@example.com',
-      product: 'Fresh Apples',
-      product_ar: 'تفاح طازج',
-      quantity: '100 كغ',
-      price: '2.5 دولار/كغ',
-      location: 'زحلة',
-      description: 'تفاح أحمر لذيذ، محصود حديثاً. حلو ومقرمش، مثالي للأكل الطازج.',
-      months: ['9', '10', '11']
-    },
-    {
-      name: 'كريم حسن',
-      phone: '+9619876543',
-      email: 'karim@example.com',
-      product: 'Wild Thyme',
-      product_ar: 'زعتر بري',
-      quantity: '10 كغ',
-      price: '15 دولار/كغ',
-      location: 'Metn - Broummana',
-      description: 'زعتر بري ممتاز من الجبال، مقطوف باليد ومجفف بالشمس. رائحة ونكهة قوية.',
-      months: ['5', '6', '7', '8']
-    }
-  ];
-  
-  const data = testData[Math.floor(Math.random() * testData.length)];
-  
-  document.getElementById('name').value = data.name;
-  document.getElementById('phone').value = data.phone;
-  document.getElementById('email').value = data.email;
-  document.getElementById('product').value = data.product;
-  document.getElementById('product_ar').value = data.product_ar;
-  document.getElementById('quantity').value = data.quantity;
-  document.getElementById('price').value = data.price;
-  document.getElementById('location').value = data.location;
-  document.getElementById('description').value = data.description;
-  
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('harvest_date').value = today;
-  
-  document.getElementById('consent').checked = true;
-  
-  selectedMonths.clear();
-  document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
-  data.months.forEach(month => {
-    selectedMonths.add(month);
-    document.querySelector(`[data-month="${month}"]`).classList.add('selected');
-  });
-  
-  const status = document.getElementById('status');
-  status.textContent = '🧪 تم ملء البيانات التجريبية! جاهز للإرسال.';
-  status.className = 'notice loading show';
-  setTimeout(() => status.classList.remove('show'), 3000);
-}
-
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', async () => {
+  // Check if user is already logged in
+  checkLoginStatus();
+  
+  // If not logged in, show auth modal
+  if (!currentUser) {
+    showAuthModal();
+  }
+  
+  // Setup auth functionality
+  setupAuthTabs();
+  setupFhfProjectToggle();
+  
+  // Auth form handlers
+  document.getElementById('signinForm').addEventListener('submit', handleSignIn);
+  document.getElementById('signupForm').addEventListener('submit', handleSignUp);
+  document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+  
+  // Modal close handlers
+  document.getElementById('cancelAuth').addEventListener('click', () => {
+    if (currentUser) {
+      hideAuthModal();
+    }
+  });
+  
+  document.getElementById('cancelAuthSignup').addEventListener('click', () => {
+    if (currentUser) {
+      hideAuthModal();
+    }
+  });
+  
+  // Close modal when clicking outside (only if logged in)
+  document.getElementById('authModal').addEventListener('click', (e) => {
+    if (e.target.id === 'authModal' && currentUser) {
+      hideAuthModal();
+    }
+  });
+  
+  // Load existing data for autocomplete
   await loadExistingData();
   
+  // Setup autocomplete
   new Autocomplete('product', 'product-suggestions', 'products');
   new Autocomplete('product_ar', 'product-ar-suggestions', 'productsAr');
   
+  // Setup image upload and month selector
   setupImageUpload();
   setupMonthSelector();
   
+  // Form submission
   document.getElementById('listingForm').addEventListener('submit', submitListing);
-  document.getElementById('fillTestData').addEventListener('click', fillTestData);
 });
 </script>
 </body>
