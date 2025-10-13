@@ -467,13 +467,17 @@
       <div id="loginError" class="notice error hidden"></div>
       <form id="loginForm">
         <div class="form-group">
+          <label>Admin Username</label>
+          <input type="text" id="adminUsername" required placeholder="Enter admin username" value="admin" />
+        </div>
+        <div class="form-group">
           <label>Admin Password</label>
           <input type="password" id="adminPassword" required placeholder="Enter admin password" />
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
       </form>
       <p style="text-align: center; margin-top: 16px; color: var(--muted); font-size: 13px;">
-        Default password: <code>admin123</code>
+        Default credentials: <code>admin</code> / <code>Admin123!</code>
       </p>
     </div>
   </div>
@@ -626,6 +630,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/secure-config.js"></script>
+<script src="assets/js/input-validator.js"></script>
 <script>
 // === SECURE CONFIG ===
 const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
@@ -638,7 +643,9 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 }
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const ADMIN_PASSWORD = "admin123"; // Change this to your secure password!
+
+// === ADMIN AUTHENTICATION ===
+let currentAdmin = null;
 
 // === THEME MANAGEMENT ===
 const themeToggle = document.getElementById('themeToggle');
@@ -684,35 +691,107 @@ function formatDate(dateString) {
   });
 }
 
-// === LOGIN ===
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const password = document.getElementById('adminPassword').value;
+// === ADMIN LOGIN ===
+async function handleAdminLogin(evt) {
+  evt.preventDefault();
+  const username = document.getElementById('adminUsername').value.trim();
+  const password = document.getElementById('adminPassword').value.trim();
+  const errorDiv = document.getElementById('loginError');
   
-  if (password === ADMIN_PASSWORD) {
+  // Input validation
+  if (!username || !password) {
+    errorDiv.textContent = '❌ Please enter both username and password';
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+  
+  try {
+    // Use secure admin authentication function
+    const { data: admins, error } = await supabase
+      .rpc('authenticate_admin', {
+        username_input: username,
+        password_input: password
+      });
+    
+    if (error) {
+      console.error('Admin authentication error:', error);
+      errorDiv.textContent = '❌ Authentication failed. Please try again.';
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+    
+    if (!admins || admins.length === 0) {
+      errorDiv.textContent = '❌ Invalid username or password';
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+    
+    const admin = admins[0];
+    
+    if (!admin.is_active) {
+      errorDiv.textContent = '❌ Admin account is not active';
+      errorDiv.classList.remove('hidden');
+      return;
+    }
+    
+    // Save admin session
+    currentAdmin = {
+      id: admin.id,
+      username: admin.username,
+      role: admin.role
+    };
+    
+    // Update login time
+    await supabase.rpc('update_admin_login_time', { admin_id: admin.id });
+    
+    // Store session
+    sessionStorage.setItem('adminSession', JSON.stringify(currentAdmin));
+    
+    // Show admin panel
     isLoggedIn = true;
-    sessionStorage.setItem('adminLoggedIn', 'true');
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('adminPanel').classList.remove('hidden');
     loadDashboard();
-  } else {
-    const error = document.getElementById('loginError');
-    error.textContent = '❌ Incorrect password';
-    error.classList.remove('hidden');
+    
+    // Clear form
+    document.getElementById('loginForm').reset();
+    errorDiv.classList.add('hidden');
+    
+  } catch (e) {
+    console.error('Admin login error:', e);
+    errorDiv.textContent = '❌ Login failed: ' + e.message;
+    errorDiv.classList.remove('hidden');
   }
-});
+}
 
+// === LOGIN EVENT LISTENER ===
+document.getElementById('loginForm').addEventListener('submit', handleAdminLogin);
+
+// === LOGOUT ===
 document.getElementById('logoutBtn').addEventListener('click', () => {
-  sessionStorage.removeItem('adminLoggedIn');
+  // Clear admin session
+  currentAdmin = null;
+  sessionStorage.removeItem('adminSession');
+  sessionStorage.removeItem('adminLoggedIn'); // Legacy cleanup
+  
+  // Reload page to show login screen
   location.reload();
 });
 
-// Check if already logged in
-if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-  isLoggedIn = true;
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('adminPanel').classList.remove('hidden');
-  loadDashboard();
+// === SESSION CHECK ===
+// Check if admin is already logged in
+const savedAdminSession = sessionStorage.getItem('adminSession');
+if (savedAdminSession) {
+  try {
+    currentAdmin = JSON.parse(savedAdminSession);
+    isLoggedIn = true;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadDashboard();
+  } catch (e) {
+    console.error('Invalid admin session:', e);
+    sessionStorage.removeItem('adminSession');
+  }
 }
 
 // === TABS ===
