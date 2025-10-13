@@ -1247,7 +1247,7 @@ async function handleSignIn(evt) {
   try {
     const { data: user, error } = await supabase
       .from('verified_users')
-      .select('id, username, full_name, is_active')
+      .select('id, username, full_name, phone, email, is_active')
       .eq('username', username)
       .eq('password', password)
       .single();
@@ -1264,12 +1264,19 @@ async function handleSignIn(evt) {
       return;
     }
     
-    // Save user to session
-    currentUser = { id: user.id, username: user.username, full_name: user.full_name };
+    // Save user to session with contact info
+    currentUser = { 
+      id: user.id, 
+      username: user.username, 
+      full_name: user.full_name,
+      phone: user.phone,
+      email: user.email
+    };
     sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
     
-    // Update UI
+    // Update UI and autocomplete form
     updateUIForLoggedInUser();
+    autocompleteFormFields();
     hideAuthModal();
     
   } catch (e) {
@@ -1338,17 +1345,24 @@ async function handleSignUp(evt) {
     const { data: newUser, error: insertError } = await supabase
       .from('verified_users')
       .insert([userData])
-      .select('id, username, full_name')
+      .select('id, username, full_name, phone, email')
       .single();
     
     if (insertError) throw insertError;
     
-    // Auto sign in
-    currentUser = { id: newUser.id, username: newUser.username, full_name: newUser.full_name };
+    // Auto sign in with full user data
+    currentUser = { 
+      id: newUser.id, 
+      username: newUser.username, 
+      full_name: newUser.full_name,
+      phone: newUser.phone,
+      email: newUser.email
+    };
     sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
     
-    // Update UI
+    // Update UI and autocomplete form
     updateUIForLoggedInUser();
+    autocompleteFormFields();
     hideAuthModal();
     
     const status = document.getElementById('status');
@@ -1385,6 +1399,35 @@ function setupFhfProjectToggle() {
       projectNameSelect.value = '';
     }
   });
+}
+
+// === FORM AUTOCOMPLETE ===
+function autocompleteFormFields() {
+  if (!currentUser) return;
+  
+  // Autocomplete name field
+  if (currentUser.full_name) {
+    const nameField = document.getElementById('name');
+    if (nameField && !nameField.value) {
+      nameField.value = currentUser.full_name;
+    }
+  }
+  
+  // Autocomplete phone field
+  if (currentUser.phone) {
+    const phoneField = document.getElementById('phone');
+    if (phoneField && !phoneField.value) {
+      phoneField.value = currentUser.phone;
+    }
+  }
+  
+  // Autocomplete email field
+  if (currentUser.email) {
+    const emailField = document.getElementById('email');
+    if (emailField && !emailField.value) {
+      emailField.value = currentUser.email;
+    }
+  }
 }
 
 // === MONTH SELECTOR ===
@@ -1761,6 +1804,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // If not logged in, show auth modal
   if (!currentUser) {
     showAuthModal();
+  } else {
+    // If already logged in, autocomplete the form
+    autocompleteFormFields();
   }
   
   // Setup auth functionality
