@@ -863,13 +863,20 @@
     </div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// === CONFIG ===
-const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/secure-config.js"></script>
+  <script>
+    // === SECURE CONFIG ===
+    const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
+    const SUPABASE_KEY = window.SecureConfig.getSupabaseKey();
+    
+    // Security check
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      console.error('🚨 SECURITY ERROR: Missing Supabase configuration');
+      document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red;"><h1>Configuration Error</h1><p>Please contact the administrator.</p></div>';
+    }
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // === THEME MANAGEMENT ===
 const themeToggle = document.getElementById('themeToggle');
@@ -927,19 +934,35 @@ async function handleLogin(evt) {
   const password = document.getElementById('loginPassword').value.trim();
   const errorDiv = document.getElementById('loginError');
   
+  // Input validation
+  if (!username || !password) {
+    errorDiv.textContent = '❌ Please enter both username and password';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  
   try {
-    const { data: user, error } = await supabase
-      .from('verified_users')
-      .select('id, username, full_name, is_active')
-      .eq('username', username)
-      .eq('password', password)
-      .single();
+    // Use secure authentication function
+    const { data: users, error } = await supabase
+      .rpc('authenticate_user', {
+        username_input: username,
+        password_input: password
+      });
     
-    if (error || !user) {
+    if (error) {
+      console.error('Authentication error:', error);
+      errorDiv.textContent = '❌ Authentication failed. Please try again.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (!users || users.length === 0) {
       errorDiv.textContent = '❌ Invalid username or password';
       errorDiv.style.display = 'block';
       return;
     }
+    
+    const user = users[0];
     
     if (!user.is_active) {
       errorDiv.textContent = '❌ Your account is not active. Contact admin.';
@@ -961,6 +984,7 @@ async function handleLogin(evt) {
     render(filteredRows);
     
   } catch (e) {
+    console.error('Login error:', e);
     errorDiv.textContent = '❌ Login failed: ' + e.message;
     errorDiv.style.display = 'block';
   }

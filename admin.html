@@ -625,13 +625,20 @@
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/secure-config.js"></script>
 <script>
-// === CONFIG ===
-const SUPABASE_URL = "https://ddajjvdnzakznqjmtdwp.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU";
-const ADMIN_PASSWORD = "admin123"; // Change this to your secure password!
+// === SECURE CONFIG ===
+const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
+const SUPABASE_KEY = window.SecureConfig.getSupabaseKey();
+
+// Security check
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('🚨 SECURITY ERROR: Missing Supabase configuration');
+  document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red;"><h1>Configuration Error</h1><p>Please contact the administrator.</p></div>';
+}
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const ADMIN_PASSWORD = "admin123"; // Change this to your secure password!
 
 // === THEME MANAGEMENT ===
 const themeToggle = document.getElementById('themeToggle');
