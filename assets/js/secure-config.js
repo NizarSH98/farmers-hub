@@ -11,15 +11,19 @@ class SecureConfig {
     const envUrl = this.getEnvVar('SUPABASE_URL');
     const envKey = this.getEnvVar('SUPABASE_ANON_KEY');
     
-    // Fallback to hardcoded values (for GitHub Pages)
+    // Try to load from config.js (for GitHub Pages)
+    const configUrl = this.getConfigVar('SUPABASE_URL');
+    const configKey = this.getConfigVar('SUPABASE_ANON_KEY');
+    
+    // Fallback to hardcoded values (last resort)
     const fallbackUrl = 'https://ddajjvdnzakznqjmtdwp.supabase.co';
     const fallbackKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkYWpqdmRuemFrem5xam10ZHdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk4MjQxNTIsImV4cCI6MjA3NTQwMDE1Mn0.SwLSlSqnZn-fAFXj5uy1v50ZFSbOQi51IAk56VTmwUU';
     
     return {
-      SUPABASE_URL: envUrl || fallbackUrl,
-      SUPABASE_ANON_KEY: envKey || fallbackKey,
-      ENABLE_RLS: this.getEnvVar('ENABLE_RLS') === 'true' || true,
-      DEBUG_MODE: this.getEnvVar('DEBUG_MODE') === 'true' || false
+      SUPABASE_URL: envUrl || configUrl || fallbackUrl,
+      SUPABASE_ANON_KEY: envKey || configKey || fallbackKey,
+      ENABLE_RLS: this.getEnvVar('ENABLE_RLS') === 'true' || this.getConfigVar('ENABLE_RLS') === true || true,
+      DEBUG_MODE: this.getEnvVar('DEBUG_MODE') === 'true' || this.getConfigVar('DEBUG_MODE') === true || false
     };
   }
 
@@ -30,7 +34,15 @@ class SecureConfig {
     }
     
     // For GitHub Pages, we can't access environment variables
-    // This is why we need RLS policies for security
+    return null;
+  }
+
+  getConfigVar(name) {
+    // Try to get from config.js file
+    if (typeof window !== 'undefined' && window.APP_CONFIG) {
+      return window.APP_CONFIG[name];
+    }
+    
     return null;
   }
 
@@ -50,14 +62,34 @@ class SecureConfig {
     return this.config.DEBUG_MODE;
   }
 
+  // Get configuration source for debugging
+  getConfigSource() {
+    if (this.getEnvVar('SUPABASE_URL')) {
+      return 'environment-variables';
+    } else if (this.getConfigVar('SUPABASE_URL')) {
+      return 'config-file';
+    } else {
+      return 'fallback';
+    }
+  }
+
   // Security warning for development
   logSecurityWarning() {
+    const source = this.getConfigSource();
+    
     if (this.isDebugMode()) {
       console.warn('🔒 SECURITY: Running in debug mode. Ensure RLS is enabled in production.');
     }
     
     if (!this.isRLSEnabled()) {
       console.error('🚨 SECURITY WARNING: RLS is disabled! Enable Row Level Security immediately.');
+    }
+    
+    // Log configuration source
+    console.log(`🔧 Configuration loaded from: ${source}`);
+    
+    if (source === 'fallback') {
+      console.warn('⚠️ Using fallback configuration. Consider setting up environment variables for better security.');
     }
   }
 }
