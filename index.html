@@ -1828,42 +1828,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('signupForm').addEventListener('submit', handleSignUp);
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   
-  // Modal close handlers - FIXED: Allow cancel anytime, not just when logged in
+  // Modal close handlers - FIXED: Redirect to marketplace if not logged in
   document.getElementById('cancelAuth').addEventListener('click', (e) => {
     e.preventDefault();
-    // Only close if user is logged in (form is optional after login)
-    // If not logged in, user must authenticate to submit listings
     if (currentUser) {
+      // User is logged in, just close the modal
       hideAuthModal();
     } else {
-      // Show helpful message
-      const errorDiv = document.getElementById('signinError');
-      errorDiv.textContent = '⚠️ You need to sign in to submit listings. Close this tab if you want to leave.';
-      errorDiv.style.display = 'block';
-      setTimeout(() => errorDiv.style.display = 'none', 3000);
+      // User not logged in, redirect to marketplace where they can browse
+      window.location.href = 'market.html';
     }
   });
   
   document.getElementById('cancelAuthSignup').addEventListener('click', (e) => {
     e.preventDefault();
     if (currentUser) {
+      // User is logged in, just close the modal
       hideAuthModal();
     } else {
-      // Switch back to sign in tab
-      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.auth-tab-content').forEach(c => c.classList.remove('active'));
-      document.querySelector('.auth-tab[data-tab="signin"]').classList.add('active');
-      document.getElementById('signinTab').classList.add('active');
+      // User not logged in, redirect to marketplace where they can browse
+      window.location.href = 'market.html';
     }
   });
   
-  // Close modal when clicking outside (only if logged in or allow navigation away)
+  // Close modal when clicking outside - redirect to marketplace if not logged in
   document.getElementById('authModal').addEventListener('click', (e) => {
     if (e.target.id === 'authModal') {
       if (currentUser) {
+        // User is logged in, just close the modal
         hideAuthModal();
+      } else {
+        // User not logged in, redirect to marketplace where they can browse
+        window.location.href = 'market.html';
       }
-      // If not logged in, don't close - user needs to authenticate or navigate away
     }
   });
   

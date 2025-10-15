@@ -1904,23 +1904,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('signupForm').addEventListener('submit', handleSignUp);
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   
-  // Modal close handlers
-  document.getElementById('cancelAuth').addEventListener('click', () => {
+  // Modal close handlers - FIXED: Redirect to marketplace if not logged in
+  document.getElementById('cancelAuth').addEventListener('click', (e) => {
+    e.preventDefault();
     if (currentUser) {
+      // User is logged in, just close the modal
       hideAuthModal();
+    } else {
+      // User not logged in, redirect to marketplace where they can browse
+      window.location.href = 'market-ar.html';
     }
   });
   
-  document.getElementById('cancelAuthSignup').addEventListener('click', () => {
+  document.getElementById('cancelAuthSignup').addEventListener('click', (e) => {
+    e.preventDefault();
     if (currentUser) {
+      // User is logged in, just close the modal
       hideAuthModal();
+    } else {
+      // User not logged in, redirect to marketplace where they can browse
+      window.location.href = 'market-ar.html';
     }
   });
   
-  // Close modal when clicking outside (only if logged in)
+  // Close modal when clicking outside - redirect to marketplace if not logged in
   document.getElementById('authModal').addEventListener('click', (e) => {
-    if (e.target.id === 'authModal' && currentUser) {
-      hideAuthModal();
+    if (e.target.id === 'authModal') {
+      if (currentUser) {
+        // User is logged in, just close the modal
+        hideAuthModal();
+      } else {
+        // User not logged in, redirect to marketplace where they can browse
+        window.location.href = 'market-ar.html';
+      }
     }
   });
   
