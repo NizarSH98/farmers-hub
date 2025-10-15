@@ -884,22 +884,8 @@ function setLanguagePreference(lang) {
   localStorage.setItem('preferredLanguage', lang);
 }
 
-// Check if user prefers English and redirect if on Arabic page
-function checkLanguagePreference() {
-  const preferredLang = localStorage.getItem('preferredLanguage');
-  const currentPage = window.location.pathname;
-  
-  // If user prefers English and is on Arabic page, redirect
-  if (preferredLang === 'en' && currentPage.includes('-ar.html')) {
-    const englishPage = currentPage.replace('-ar.html', '.html');
-    window.location.href = englishPage;
-  }
-}
-
-// Run on page load (but not on first visit to avoid disruption)
-if (localStorage.getItem('preferredLanguage')) {
-  checkLanguagePreference();
-}
+// Language preference is now explicit - user chooses via toggle button
+// No auto-redirect to prevent getting stuck in one language
 
 // === THEME MANAGEMENT ===
 const themeToggle = document.getElementById('themeToggle');
