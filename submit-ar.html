@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مركز المزارعين — إضافة منتج</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      /* FHF Brand Colors - Light Mode */
+      --bg-primary:#ffffff;
+      --bg-secondary:#f9fafb;
+      --card-bg:rgba(255,255,255,0.9);
+      --card-border:rgba(45,80,22,0.15);
+      --muted:#6b7280;
+      --text:#1f2937;
+      --text-bright:#000000;
+      
+      /* FHF Primary Brand Colors */
+      --fhf-green:#2d5016;
+      --fhf-green-hover:#234010;
+      --fhf-gold:#d4af37;
+      --fhf-gold-hover:#b8972f;
+      --fhf-brown:#6b4423;
+      
+      /* System Colors */
+      --accent:var(--fhf-green);
+      --accent-hover:var(--fhf-green-hover);
+      --accent-light:rgba(45,80,22,0.1);
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --input-bg:#ffffff;
+      --input-border:#d1d5db;
+      --input-focus:rgba(45,80,22,0.3);
+      --shadow:rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      /* FHF Brand Colors - Dark Mode */
+      --bg-primary:#0a0e1a;
+      --bg-secondary:#111827;
+      --card-bg:rgba(17,24,39,0.7);
+      --card-border:rgba(212,175,55,0.2);
+      --muted:#9ca3af;
+      --text:#f3f4f6;
+      --text-bright:#ffffff;
+      
+      /* FHF Colors adjusted for dark mode */
+      --fhf-green:#4a7a2a;
+      --fhf-green-hover:#5a8a3a;
+      --fhf-gold:#d4af37;
+      --fhf-gold-hover:#e4bf47;
+      --fhf-brown:#8b6433;
+      
+      --accent:var(--fhf-gold);
+      --accent-hover:var(--fhf-gold-hover);
+      --accent-light:rgba(212,175,55,0.15);
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --input-bg:rgba(31,41,55,0.8);
+      --input-border:rgba(75,85,99,0.5);
+      --input-focus:rgba(212,175,55,0.3);
+      --shadow:rgba(0,0,0,0.3);
+    }
+    
+    * { box-sizing:border-box; margin:0; padding:0; }
+    
+    body {
+      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      background: var(--bg-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1419 100%);
+      background-attachment: fixed;
+    }
+    
+    /* Top Utility Bar */
+    .top-bar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--card-border);
+      padding: 8px 0;
+    }
+    
+    .top-bar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .theme-toggle {
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 40px;
+    }
+    
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    
+    .lang-toggle {
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      text-decoration: none;
+    }
+    
+    .lang-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--text-bright);
+    }
+    
+    /* Main Navigation */
+    .main-nav {
+      background: var(--card-bg);
+      border-bottom: 2px solid var(--card-border);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .main-nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-bright);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      overflow: hidden;
+    }
+    
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 4px;
+    }
+    
+    /* FHF Branding Elements */
+    .fhf-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: linear-gradient(135deg, var(--fhf-green) 0%, var(--fhf-brown) 100%);
+      color: white;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(45,80,22,0.3);
+    }
+    
+    .fhf-badge::before {
+      content: '🌾';
+      font-size: 14px;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .nav-link {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    
+    .nav-link:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--text-bright);
+    }
+    
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 20px 60px var(--shadow);
+    }
+    
+    .card-header {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    
+    .lead {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .section-divider {
+      margin: 32px 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    }
+    
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+    }
+    
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .full { grid-column: 1 / -1; }
+    
+    .form-group {
+      position: relative;
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--text);
+      letter-spacing: 0.3px;
+    }
+    
+    .required::after {
+      content: " *";
+      color: var(--danger);
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-bright);
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--input-focus);
+    }
+    
+    input::placeholder, textarea::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    
+    .autocomplete-wrapper {
+      position: relative;
+    }
+    
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      background: var(--input-bg);
+      border: 1.5px solid var(--accent);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 10px 30px var(--shadow);
+      margin-top: -12px;
+      padding-top: 12px;
+    }
+    
+    .autocomplete-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      font-size: 15px;
+      color: var(--text);
+    }
+    
+    .autocomplete-item:hover,
+    .autocomplete-item.active {
+      background: var(--accent-light);
+      color: var(--text-bright);
+    }
+    
+    .autocomplete-count {
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: 8px;
+    }
+    
+    .checkbox-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      background: var(--accent-light);
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    
+    .checkbox-wrapper input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    
+    .checkbox-wrapper label {
+      margin: 0;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .month-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    
+    .month-btn {
+      padding: 12px 8px;
+      border: 2px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    
+    .month-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    
+    .month-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    
+    .month-btn.all-year {
+      grid-column: 1 / -1;
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+    
+    .month-btn.all-year:hover {
+      background: #059669;
+    }
+    
+    .month-btn.all-year.selected {
+      background: #047857;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .btn {
+      appearance: none;
+      border: 0;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      font-family: inherit;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      color: white;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(99,102,241,0.4);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid var(--input-border);
+      color: var(--text);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--text);
+      background: rgba(0,0,0,0.05);
+    }
+    
+    [data-theme="dark"] .btn-secondary:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .notice {
+      margin-top: 20px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+    }
+    
+    .notice.show { display: block; }
+    
+    .notice.ok {
+      background: rgba(16,185,129,0.15);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+    
+    .notice.err {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+    
+    .notice.loading {
+      background: var(--accent-light);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+    
+    .footer {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .helper-text {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .image-upload-area {
+      position: relative;
+      min-height: 200px;
+      border: 2px dashed var(--input-border);
+      border-radius: 12px;
+      background: var(--input-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+    
+    .image-upload-area:hover {
+      border-color: var(--accent);
+    }
+    
+    .image-upload-area.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    
+    .upload-placeholder {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text);
+    }
+    
+    .image-preview {
+      max-width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .btn-remove-image {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 8px 16px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    
+    .btn-remove-image:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+    
+    /* Auth Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+    }
+    
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px var(--shadow);
+    }
+    
+    .modal h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+    
+    .modal .lead {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--card-border);
+    }
+    
+    .auth-tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      flex: 1;
+    }
+    
+    .auth-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    
+    .auth-tab-content {
+      display: none;
+    }
+    
+    .auth-tab-content.active {
+      display: block;
+    }
+    
+    .modal .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .modal label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    
+    .modal input, .modal select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-bright);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    .modal input:focus, .modal select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--input-focus);
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .modal .btn {
+      flex: 1;
+      padding: 12px 20px;
+    }
+    
+    .user-info-bar {
+      background: var(--success);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+    }
+    
+    .user-info-text {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    
+    .btn-logout-form {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-logout-form:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+    }
+    
+    @media (max-width: 768px) {
+      .container { padding: 24px 16px; }
+      .card { padding: 28px 20px; }
+      h1 { font-size: 28px; }
+      form { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .top-bar-content {
+        padding: 0 16px;
+        gap: 8px;
+      }
+      .main-nav-content {
+        flex-direction: column;
+        padding: 12px 16px;
+        gap: 12px;
+      }
+      .brand {
+        font-size: 20px;
+      }
+      .brand-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+      }
+      .nav-link {
+        font-size: 13px;
+        padding: 8px 14px;
+      }
+      .month-selector { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Utility Bar -->
+  <div class="top-bar">
+    <div class="top-bar-content">
+      <a href="submit.html" class="lang-toggle" title="Switch to English" onclick="setLanguagePreference('en')">
+        <span>🌐</span>
+        <span>English</span>
+      </a>
+      <button class="theme-toggle" id="themeToggle" title="تبديل المظهر">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Main Navigation -->
+  <div class="main-nav">
+    <div class="main-nav-content">
+      <a href="index-ar.html" class="brand">
+        <div class="brand-icon">
+          <img src="assets/images/logos/fhf-logo-icon.png" alt="FHF Logo" class="brand-logo-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🌾';" />
+        </div>
+        <span>مركز المزارعين</span>
+      </a>
+      <div class="nav-links">
+        <span class="fhf-badge" title="مدعوم من مؤسسة التراث الغذائي">منصة FHF</span>
+        <a href="index-ar.html" class="nav-link">تصفح السوق</a>
+        <a href="admin.html" class="nav-link">لوحة الإدارة</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <img src="assets/images/logos/fhf-logo-icon.png" alt="FHF Logo" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto;" onerror="this.style.display='none';" />
+      </div>
+      <h2>🌾 تسجيل دخول المزارعين</h2>
+      <p class="lead">الرجاء تسجيل الدخول أو إنشاء حساب لإضافة منتجاتك</p>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="signin">تسجيل الدخول</button>
+        <button class="auth-tab" data-tab="signup">إنشاء حساب</button>
+      </div>
+      
+      <!-- Sign In Tab -->
+      <div id="signinTab" class="auth-tab-content active">
+        <div id="signinError" class="notice err" style="display: none; margin-bottom: 16px;"></div>
+        <form id="signinForm">
+          <div class="form-group">
+            <label>اسم المستخدم</label>
+            <input type="text" id="signinUsername" required placeholder="اسم المستخدم الخاص بك" autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="signinPassword" required placeholder="كلمة المرور الخاصة بك" autocomplete="current-password" />
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+            <button type="button" class="btn btn-secondary" id="cancelAuth">إلغاء</button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Sign Up Tab -->
+      <div id="signupTab" class="auth-tab-content">
+        <div id="signupError" class="notice err" style="display: none; margin-bottom: 16px;"></div>
+        <form id="signupForm">
+          <div class="form-group">
+            <label class="required">الاسم الكامل</label>
+            <input type="text" id="signupFullName" required placeholder="مثال: أحمد خوري" />
+          </div>
+          <div class="form-group">
+            <label class="required">اسم المستخدم</label>
+            <input type="text" id="signupUsername" required placeholder="اختر اسم مستخدم" autocomplete="off" />
+            <div class="helper-text">سيكون هذا اسم المستخدم الخاص بك لتسجيل الدخول</div>
+          </div>
+          <div class="form-group">
+            <label class="required">كلمة المرور</label>
+            <input type="password" id="signupPassword" required placeholder="اختر كلمة مرور" minlength="6" autocomplete="new-password" />
+            <div class="helper-text">6 أحرف على الأقل</div>
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="signupPhone" placeholder="+961..." />
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="signupEmail" placeholder="example@email.com (اختياري)" />
+          </div>
+          <div class="full">
+            <div class="section-divider" style="margin: 20px 0;">
+              <span class="section-title">معلومات مشاريع FHF</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="required">هل كنت جزءًا من مشروع سابق تحت FHF؟</label>
+            <select id="signupWasFhfProject" required>
+              <option value="">اختر...</option>
+              <option value="yes">نعم</option>
+              <option value="no">لا</option>
+            </select>
+          </div>
+          <div class="form-group" id="fhfProjectNameGroup" style="display: none;">
+            <label class="required">أي مشروع كنت جزءًا منه؟</label>
+            <select id="signupFhfProjectName">
+              <option value="">اختر المشروع...</option>
+              <option value="CODRA">CODRA</option>
+              <option value="ILO">ILO</option>
+              <option value="Releaf">Releaf</option>
+              <option value="Resolve">Resolve</option>
+              <option value="Other">أخرى</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-success">إنشاء حساب</button>
+            <button type="button" class="btn btn-secondary" id="cancelAuthSignup">إلغاء</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <!-- User Info Bar (shown when logged in) -->
+      <div id="userInfoBar" class="user-info-bar" style="display: none;">
+        <div class="user-info-text">
+          👤 مسجل الدخول كـ: <strong id="currentUsername"></strong>
+        </div>
+        <button class="btn-logout-form" id="logoutBtn">🚪 تسجيل الخروج</button>
+      </div>
+      
+      <div class="card-header">
+        <h1>أضف منتجك</h1>
+        <p class="lead">املأ هذا النموذج لعرض منتجك في السوق العامة. سنقترح عليك قيم مستخدمة سابقاً للحفاظ على اتساق البيانات.</p>
+      </div>
+
+      <form id="listingForm" autocomplete="off">
+        <!-- Contact Information -->
+        <div class="full">
+          <div class="section-divider">
+            <span class="section-title">معلومات التواصل</span>
+          </div>
+        </div>
+        
+        <div class="full form-group">
+          <label class="required">الاسم الكامل</label>
+          <input name="name" id="name" required placeholder="مثال: أحمد خوري" />
+        </div>
+        
+        <div class="form-group">
+          <label class="required">رقم الهاتف (واتساب)</label>
+          <input name="phone" id="phone" required placeholder="+961..." type="tel" />
+          <div class="helper-text">📱 يُستخدم للتواصل عبر الواتساب</div>
+        </div>
+        
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input name="email" id="email" type="email" placeholder="example@email.com (اختياري)" />
+        </div>
+
+        <!-- Product Details -->
+        <div class="full">
+          <div class="section-divider">
+            <span class="section-title">تفاصيل المنتج</span>
+          </div>
+        </div>
+        
+        <div class="form-group autocomplete-wrapper">
+          <label class="required">اسم المنتج (بالعربية)</label>
+          <input name="product_ar" id="product_ar" required placeholder="مثال: زيت زيتون، تفاح، زعتر..." />
+          <div class="helper-text">💡 الاسم بالعربية مطلوب</div>
+          <div id="product-ar-suggestions" class="autocomplete-list" style="display:none;"></div>
+        </div>
+        
+        <div class="form-group autocomplete-wrapper">
+          <label>اسم المنتج (بالإنجليزية - اختياري)</label>
+          <input name="product" id="product" placeholder="e.g. Olive Oil, Apples, Thyme..." />
+          <div class="helper-text">💡 الاسم بالإنجليزية اختياري</div>
+          <div id="product-suggestions" class="autocomplete-list" style="display:none;"></div>
+        </div>
+        
+        <div class="form-group">
+          <label>الكمية</label>
+          <input name="quantity" id="quantity" placeholder="مثال: 50 كغ، 200 لتر" />
+        </div>
+        
+        <div class="form-group">
+          <label>سعر الوحدة</label>
+          <input name="price" id="price" placeholder="مثال: 3.5 دولار/كغ" />
+        </div>
+        
+        <div class="form-group">
+          <label class="required">الموقع</label>
+          <select name="location" id="location" required>
+            <option value="">اختر موقعك...</option>
+            <optgroup label="بيروت">
+              <option value="Beirut - Achrafieh">الأشرفية</option>
+              <option value="Beirut - Hamra">الحمرا</option>
+              <option value="Beirut - Verdun">الفردان</option>
+              <option value="Beirut - Ras Beirut">رأس بيروت</option>
+              <option value="Beirut - Mar Elias">مار الياس</option>
+              <option value="Beirut - Badaro">البدارو</option>
+            </optgroup>
+            <optgroup label="جبل لبنان">
+              <option value="Baabda">بعبدا</option>
+              <option value="Aley">عاليه</option>
+              <option value="Bhamdoun">بحمدون</option>
+              <option value="Chouf - Deir el Qamar">دير القمر</option>
+              <option value="Chouf - Beiteddine">بيت الدين</option>
+              <option value="Chouf - Baakline">بعقلين</option>
+              <option value="Jbeil - Byblos">جبيل</option>
+              <option value="Jounieh">جونيه</option>
+              <option value="Kesrouan - Harissa">حريصا</option>
+              <option value="Kesrouan - Faraya">فاريا</option>
+              <option value="Metn - Broummana">برمانا</option>
+              <option value="Metn - Beit Mery">بيت مري</option>
+              <option value="Metn - Dhour el Choueir">ضهور الشوير</option>
+            </optgroup>
+            <optgroup label="الشمال">
+              <option value="Tripoli">طرابلس</option>
+              <option value="Mina">الميناء</option>
+              <option value="Zgharta">زغرتا</option>
+              <option value="Bcharre">بشري</option>
+              <option value="Koura - Amioun">أميون</option>
+              <option value="Batroun">البترون</option>
+              <option value="Akkar - Halba">حلبا</option>
+              <option value="Akkar - Qobayat">القبيات</option>
+              <option value="Akkar - Aarsal">عرسال</option>
+            </optgroup>
+            <optgroup label="البقاع">
+              <option value="Zahle">زحلة</option>
+              <option value="Bekaa - Aanjar">عنجر</option>
+              <option value="Bekaa - Chtaura">شتورا</option>
+              <option value="Bekaa - Baalbek">بعلبك</option>
+              <option value="Bekaa - Hermel">الهرمل</option>
+              <option value="West Bekaa - Joub Jannine">جوب جنين</option>
+              <option value="West Bekaa - Rachaya">راشيا</option>
+              <option value="West Bekaa - Kamed el Loz">كامد اللوز</option>
+            </optgroup>
+            <optgroup label="الجنوب">
+              <option value="Saida - Sidon">صيدا</option>
+              <option value="Tyre - Sour">صور</option>
+              <option value="Jezzine">جزين</option>
+              <option value="Nabatieh">النبطية</option>
+              <option value="Bent Jbeil">بنت جبيل</option>
+              <option value="Marjayoun">مرجعيون</option>
+              <option value="Hasbaya">حاصبيا</option>
+            </optgroup>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>تاريخ الحصاد</label>
+          <input name="harvest_date" id="harvest_date" type="date" />
+        </div>
+        
+        <div class="full form-group">
+          <label class="required">التوفر</label>
+          <div class="helper-text" style="margin-bottom: 12px;">📅 اختر الأشهر التي يتوفر فيها هذا المنتج</div>
+          <div class="month-selector" id="monthSelector">
+            <button type="button" class="month-btn" data-month="1">يناير</button>
+            <button type="button" class="month-btn" data-month="2">فبراير</button>
+            <button type="button" class="month-btn" data-month="3">مارس</button>
+            <button type="button" class="month-btn" data-month="4">أبريل</button>
+            <button type="button" class="month-btn" data-month="5">مايو</button>
+            <button type="button" class="month-btn" data-month="6">يونيو</button>
+            <button type="button" class="month-btn" data-month="7">يوليو</button>
+            <button type="button" class="month-btn" data-month="8">أغسطس</button>
+            <button type="button" class="month-btn" data-month="9">سبتمبر</button>
+            <button type="button" class="month-btn" data-month="10">أكتوبر</button>
+            <button type="button" class="month-btn" data-month="11">نوفمبر</button>
+            <button type="button" class="month-btn" data-month="12">ديسمبر</button>
+            <button type="button" class="month-btn all-year" id="allYearBtn">طوال العام</button>
+          </div>
+        </div>
+        
+        <div class="full form-group">
+          <label>صورة المنتج</label>
+          <input name="image" id="image" type="file" accept="image/*" style="display:none;" />
+          <div class="image-upload-area" id="imageUploadArea">
+            <div class="upload-placeholder" id="uploadPlaceholder">
+              <div style="font-size: 48px; margin-bottom: 12px;">📸</div>
+              <div style="font-weight: 600; margin-bottom: 8px;">انقر للرفع أو اسحب وأفلت</div>
+              <div style="font-size: 13px; color: var(--muted);">PNG, JPG, WebP حتى 5 ميجابايت</div>
+            </div>
+            <img id="imagePreview" class="image-preview" style="display:none;" />
+            <button type="button" class="btn-remove-image" id="removeImage" style="display:none;">✕ إزالة</button>
+          </div>
+          <div class="helper-text">🖼️ ارفع صورة للمنتج (اختياري لكن موصى به)</div>
+        </div>
+        
+        <div class="full form-group">
+          <label>الوصف</label>
+          <textarea name="description" id="description" placeholder="تفاصيل قصيرة: النوع، عضوي، خيارات التوصيل، الشهادات، إلخ."></textarea>
+        </div>
+
+        <!-- Consent -->
+        <div class="full">
+          <div class="checkbox-wrapper">
+            <input id="consent" type="checkbox" required />
+            <label for="consent">أوافق على نشر اسمي ومعلومات الاتصال الخاصة بي حتى يتمكن المشترون من التواصل معي في السوق العامة.</label>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="full">
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">✓ إرسال القائمة</button>
+            <button class="btn btn-secondary" type="reset">↺ مسح النموذج</button>
+          </div>
+          <div id="status" class="notice"></div>
+        </div>
+      </form>
+      
+      <div class="footer">
+        <div style="margin-bottom: 16px;">
+          بعد الإرسال، ستظهر قائمتك في <a href="index-ar.html">السوق</a> خلال ثوانٍ.
+        </div>
+        <div style="padding-top: 16px; border-top: 1px solid var(--card-border); text-align: center;">
+          <img src="assets/images/logos/fhf-logo-horizontal.png" alt="مؤسسة التراث الغذائي" style="height: 40px; max-width: 200px; object-fit: contain; margin: 0 auto 8px; display: block;" onerror="this.style.display='none';" />
+          <div style="font-size: 12px; color: var(--muted);">
+            مدعوم من <strong style="color: var(--accent);">مؤسسة التراث الغذائي</strong>
+          </div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">
+            دعم المزارعين اللبنانيين والحفاظ على التراث الغذائي
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/secure-config.js"></script>
+  <script src="assets/js/auth-manager.js"></script>
+  <script>
+    // === SECURE CONFIG ===
+    const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
+    const SUPABASE_KEY = window.SecureConfig.getSupabaseKey();
+    
+    // Security check
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      console.error('🚨 SECURITY ERROR: Missing Supabase configuration');
+      document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red;"><h1>خطأ في التكوين</h1><p>يرجى الاتصال بالمسؤول.</p></div>';
+    }
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// === LANGUAGE PREFERENCE ===
+function setLanguagePreference(lang) {
+  localStorage.setItem('preferredLanguage', lang);
+}
+
+// Check if user prefers English and redirect if on Arabic page
+function checkLanguagePreference() {
+  const preferredLang = localStorage.getItem('preferredLanguage');
+  const currentPage = window.location.pathname;
+  
+  // If user prefers English and is on Arabic page, redirect
+  if (preferredLang === 'en' && currentPage.includes('-ar.html')) {
+    const englishPage = currentPage.replace('-ar.html', '.html');
+    window.location.href = englishPage;
+  }
+}
+
+// Run on page load (but not on first visit to avoid disruption)
+if (localStorage.getItem('preferredLanguage')) {
+  checkLanguagePreference();
+}
+
+// === THEME MANAGEMENT ===
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const htmlEl = document.documentElement;
+
+const savedTheme = localStorage.getItem('theme') || 'light';
+htmlEl.setAttribute('data-theme', savedTheme);
+updateThemeIcon(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = htmlEl.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  htmlEl.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon(newTheme);
+});
+
+function updateThemeIcon(theme) {
+  themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+}
+
+// === STATE ===
+let existingData = { products: [], productsAr: [], locations: [], units: [] };
+let selectedMonths = new Set();
+let currentUser = null; // {id, username, full_name}
+
+// === USER AUTHENTICATION ===
+function checkLoginStatus() {
+  // Use universal auth manager
+  currentUser = window.auth.getUser();
+  updateUIForLoggedInUser();
+}
+
+function updateUIForLoggedInUser() {
+  if (currentUser) {
+    document.getElementById('userInfoBar').style.display = 'flex';
+    document.getElementById('currentUsername').textContent = currentUser.username;
+    document.getElementById('listingForm').style.display = 'grid';
+  } else {
+    document.getElementById('userInfoBar').style.display = 'none';
+    document.getElementById('listingForm').style.display = 'none';
+  }
+}
+
+function showAuthModal() {
+  document.getElementById('authModal').classList.add('show');
+}
+
+function hideAuthModal() {
+  document.getElementById('authModal').classList.remove('show');
+  document.getElementById('signinForm').reset();
+  document.getElementById('signupForm').reset();
+  document.getElementById('signinError').style.display = 'none';
+  document.getElementById('signupError').style.display = 'none';
+}
+
+function setupAuthTabs() {
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      const tabName = tab.dataset.tab;
+      document.querySelectorAll('.auth-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName + 'Tab').classList.add('active');
+    });
+  });
+}
+
+async function handleSignIn(evt) {
+  evt.preventDefault();
+  const username = document.getElementById('signinUsername').value.trim();
+  const password = document.getElementById('signinPassword').value.trim();
+  const errorDiv = document.getElementById('signinError');
+  
+  // Input validation
+  if (!username || !password) {
+    errorDiv.textContent = '❌ الرجاء إدخال اسم المستخدم وكلمة المرور';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  
+  try {
+    // Use secure authentication function
+    const { data: users, error } = await supabase
+      .rpc('authenticate_user', {
+        username_input: username,
+        password_input: password
+      });
+    
+    if (error) {
+      console.error('Authentication error:', error);
+      errorDiv.textContent = '❌ فشل في المصادقة. الرجاء المحاولة مرة أخرى.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (!users || users.length === 0) {
+      errorDiv.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    const user = users[0];
+    
+    if (!user.is_active) {
+      errorDiv.textContent = '❌ حسابك غير نشط. يرجى الاتصال بالمسؤول.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Save user to session with contact info
+    currentUser = { 
+      id: user.id, 
+      username: user.username, 
+      full_name: user.full_name,
+      phone: user.phone,
+      email: user.email
+    };
+    window.auth.setUser(currentUser);
+    
+    // Update UI and autocomplete form
+    updateUIForLoggedInUser();
+    autocompleteFormFields();
+    hideAuthModal();
+    
+  } catch (e) {
+    console.error('Login error:', e);
+    errorDiv.textContent = '❌ فشل تسجيل الدخول: ' + e.message;
+    errorDiv.style.display = 'block';
+  }
+}
+
+async function handleSignUp(evt) {
+  evt.preventDefault();
+  const errorDiv = document.getElementById('signupError');
+  
+  try {
+    const username = document.getElementById('signupUsername').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+    const fullName = document.getElementById('signupFullName').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const wasFhfProject = document.getElementById('signupWasFhfProject').value;
+    const fhfProjectName = document.getElementById('signupFhfProjectName').value;
+    
+    // Enhanced validation
+    if (!username || !password || !fullName) {
+      errorDiv.textContent = '❌ الرجاء ملء جميع الحقول المطلوبة';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Username validation
+    if (username.length < 3 || username.length > 20) {
+      errorDiv.textContent = '❌ يجب أن يكون اسم المستخدم 3-20 حرف';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      errorDiv.textContent = '❌ يمكن أن يحتوي اسم المستخدم على أحرف وأرقام وشرطة سفلية فقط';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Password validation
+    if (password.length < 8) {
+      errorDiv.textContent = '❌ يجب أن تكون كلمة المرور 8 أحرف على الأقل';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      errorDiv.textContent = '❌ يجب أن تحتوي كلمة المرور على أحرف كبيرة وصغيرة ورقم';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Email validation
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errorDiv.textContent = '❌ الرجاء إدخال عنوان بريد إلكتروني صحيح';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Phone validation
+    if (phone && !/^[\+]?[0-9\s\-\(\)]{8,15}$/.test(phone)) {
+      errorDiv.textContent = '❌ الرجاء إدخال رقم هاتف صحيح';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (wasFhfProject === 'yes' && !fhfProjectName) {
+      errorDiv.textContent = '❌ الرجاء اختيار المشروع الذي كنت جزءًا منه تحت FHF';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Check if username already exists
+    const { data: existingUser } = await supabase
+      .from('verified_users')
+      .select('username')
+      .eq('username', username)
+      .single();
+    
+    if (existingUser) {
+      errorDiv.textContent = '❌ اسم المستخدم موجود بالفعل. الرجاء اختيار اسم آخر.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Hash password securely
+    const { data: hashResult, error: hashError } = await supabase
+      .rpc('hash_password', { plain_password: password });
+    
+    if (hashError) {
+      console.error('Password hashing error:', hashError);
+      errorDiv.textContent = '❌ فشل في إنشاء الحساب. الرجاء المحاولة مرة أخرى.';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    // Create user with hashed password
+    const userData = {
+      username,
+      password_hash: hashResult, // Store hashed password
+      password: password, // Keep plain text temporarily for migration
+      full_name: fullName,
+      phone: phone || null,
+      email: email || null,
+      is_active: true,
+      was_part_of_fhf_project: wasFhfProject === 'yes',
+      fhf_project_name: wasFhfProject === 'yes' ? fhfProjectName : null
+    };
+    
+    const { data: newUser, error: insertError } = await supabase
+      .from('verified_users')
+      .insert([userData])
+      .select('id, username, full_name, phone, email')
+      .single();
+    
+    if (insertError) throw insertError;
+    
+    // Auto sign in with full user data
+    window.auth.setUser({
+      id: newUser.id,
+      username: newUser.username,
+      full_name: newUser.full_name,
+      phone: newUser.phone,
+      email: newUser.email
+    });
+    currentUser = window.auth.getUser();
+    
+    // Update UI and autocomplete form
+    updateUIForLoggedInUser();
+    autocompleteFormFields();
+    hideAuthModal();
+    
+    const status = document.getElementById('status');
+    status.textContent = '✅ تم إنشاء الحساب بنجاح! يمكنك الآن إضافة منتجاتك.';
+    status.className = 'notice ok show';
+    setTimeout(() => status.classList.remove('show'), 5000);
+    
+  } catch (e) {
+    errorDiv.textContent = '❌ فشل إنشاء الحساب: ' + e.message;
+    errorDiv.style.display = 'block';
+  }
+}
+
+function handleLogout() {
+  window.auth.logout();
+  currentUser = null;
+  updateUIForLoggedInUser();
+  showAuthModal();
+}
+
+// Setup FHF project dropdown visibility
+function setupFhfProjectToggle() {
+  const wasFhfSelect = document.getElementById('signupWasFhfProject');
+  const projectNameGroup = document.getElementById('fhfProjectNameGroup');
+  const projectNameSelect = document.getElementById('signupFhfProjectName');
+  
+  wasFhfSelect.addEventListener('change', () => {
+    if (wasFhfSelect.value === 'yes') {
+      projectNameGroup.style.display = 'block';
+      projectNameSelect.required = true;
+    } else {
+      projectNameGroup.style.display = 'none';
+      projectNameSelect.required = false;
+      projectNameSelect.value = '';
+    }
+  });
+}
+
+// === FORM AUTOCOMPLETE ===
+function autocompleteFormFields() {
+  if (!currentUser) return;
+  
+  // Autocomplete name field
+  if (currentUser.full_name) {
+    const nameField = document.getElementById('name');
+    if (nameField && !nameField.value) {
+      nameField.value = currentUser.full_name;
+    }
+  }
+  
+  // Autocomplete phone field
+  if (currentUser.phone) {
+    const phoneField = document.getElementById('phone');
+    if (phoneField && !phoneField.value) {
+      phoneField.value = currentUser.phone;
+    }
+  }
+  
+  // Autocomplete email field
+  if (currentUser.email) {
+    const emailField = document.getElementById('email');
+    if (emailField && !emailField.value) {
+      emailField.value = currentUser.email;
+    }
+  }
+}
+
+// === MONTH SELECTOR ===
+function setupMonthSelector() {
+  const monthBtns = document.querySelectorAll('.month-btn:not(.all-year)');
+  const allYearBtn = document.getElementById('allYearBtn');
+  
+  monthBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const month = btn.dataset.month;
+      if (selectedMonths.has('all')) {
+        selectedMonths.clear();
+        allYearBtn.classList.remove('selected');
+      }
+      
+      if (selectedMonths.has(month)) {
+        selectedMonths.delete(month);
+        btn.classList.remove('selected');
+      } else {
+        selectedMonths.add(month);
+        btn.classList.add('selected');
+      }
+    });
+  });
+  
+  allYearBtn.addEventListener('click', () => {
+    if (selectedMonths.has('all')) {
+      selectedMonths.clear();
+      allYearBtn.classList.remove('selected');
+    } else {
+      selectedMonths.clear();
+      monthBtns.forEach(btn => btn.classList.remove('selected'));
+      selectedMonths.add('all');
+      allYearBtn.classList.add('selected');
+    }
+  });
+}
+
+// === AUTOCOMPLETE SYSTEM ===
+class Autocomplete {
+  constructor(inputId, suggestionsId, dataKey) {
+    this.input = document.getElementById(inputId);
+    this.suggestionsBox = document.getElementById(suggestionsId);
+    this.dataKey = dataKey;
+    this.activeIndex = -1;
+    
+    if (!this.input || !this.suggestionsBox) return;
+    
+    this.input.addEventListener('input', () => this.handleInput());
+    this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
+    this.input.addEventListener('blur', () => setTimeout(() => this.hide(), 200));
+    this.input.addEventListener('focus', () => this.handleInput());
+  }
+  
+  handleInput() {
+    const value = this.input.value.trim().toLowerCase();
+    if (value.length === 0) {
+      this.hide();
+      return;
+    }
+    
+    const suggestions = existingData[this.dataKey]
+      .filter(item => item.value.toLowerCase().includes(value))
+      .slice(0, 8);
+    
+    if (suggestions.length === 0) {
+      this.hide();
+      return;
+    }
+    
+    this.render(suggestions);
+  }
+  
+  render(suggestions) {
+    this.suggestionsBox.innerHTML = suggestions.map((item, idx) => 
+      `<div class="autocomplete-item" data-index="${idx}" data-value="${item.value}">
+        ${item.value}
+        <span class="autocomplete-count">(استُخدم ${item.count} مرة)</span>
+      </div>`
+    ).join('');
+    
+    this.suggestionsBox.style.display = 'block';
+    this.activeIndex = -1;
+    
+    this.suggestionsBox.querySelectorAll('.autocomplete-item').forEach(el => {
+      el.addEventListener('click', () => {
+        this.input.value = el.dataset.value;
+        this.hide();
+        this.input.focus();
+      });
+    });
+  }
+  
+  handleKeydown(e) {
+    const items = this.suggestionsBox.querySelectorAll('.autocomplete-item');
+    if (items.length === 0) return;
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.activeIndex = Math.min(this.activeIndex + 1, items.length - 1);
+      this.updateActive(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this.activeIndex = Math.max(this.activeIndex - 1, -1);
+      this.updateActive(items);
+    } else if (e.key === 'Enter' && this.activeIndex >= 0) {
+      e.preventDefault();
+      this.input.value = items[this.activeIndex].dataset.value;
+      this.hide();
+    } else if (e.key === 'Escape') {
+      this.hide();
+    }
+  }
+  
+  updateActive(items) {
+    items.forEach((el, idx) => {
+      el.classList.toggle('active', idx === this.activeIndex);
+    });
+    if (this.activeIndex >= 0) {
+      items[this.activeIndex].scrollIntoView({ block: 'nearest' });
+    }
+  }
+  
+  hide() {
+    this.suggestionsBox.style.display = 'none';
+    this.activeIndex = -1;
+  }
+}
+
+// === DATA FETCHING ===
+async function loadExistingData() {
+  try {
+    const { data: rows, error } = await supabase
+      .from('listings')
+      .select('product, product_ar, location')
+      .order('created_at', { ascending: false })
+      .limit(1000);
+    
+    if (error) throw error;
+    
+    const productMap = {};
+    const productArMap = {};
+    const locationMap = {};
+    
+    (rows || []).forEach(row => {
+      if (row.product) {
+        const product = row.product.trim();
+        productMap[product] = (productMap[product] || 0) + 1;
+      }
+      if (row.product_ar) {
+        const productAr = row.product_ar.trim();
+        productArMap[productAr] = (productArMap[productAr] || 0) + 1;
+      }
+      if (row.location) {
+        const location = row.location.trim();
+        locationMap[location] = (locationMap[location] || 0) + 1;
+      }
+    });
+    
+    existingData.products = Object.entries(productMap)
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => b.count - a.count);
+    
+    existingData.productsAr = Object.entries(productArMap)
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => b.count - a.count);
+    
+    existingData.locations = Object.entries(locationMap)
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => b.count - a.count);
+    
+  } catch (e) {
+    console.warn('Could not load existing data for autocomplete:', e);
+  }
+}
+
+// === IMAGE HANDLING ===
+let selectedImageFile = null;
+
+function setupImageUpload() {
+  const imageInput = document.getElementById('image');
+  const uploadArea = document.getElementById('imageUploadArea');
+  const placeholder = document.getElementById('uploadPlaceholder');
+  const preview = document.getElementById('imagePreview');
+  const removeBtn = document.getElementById('removeImage');
+  
+  uploadArea.addEventListener('click', (e) => {
+    if (e.target !== removeBtn) {
+      imageInput.click();
+    }
+  });
+  
+  imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) handleImageFile(file);
+  });
+  
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+  });
+  
+  uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('drag-over');
+  });
+  
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      handleImageFile(file);
+    }
+  });
+  
+  removeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectedImageFile = null;
+    imageInput.value = '';
+    preview.style.display = 'none';
+    preview.src = '';
+    removeBtn.style.display = 'none';
+    placeholder.style.display = 'block';
+  });
+}
+
+function handleImageFile(file) {
+  if (file.size > 5 * 1024 * 1024) {
+    alert('الصورة كبيرة جداً! الرجاء اختيار صورة أقل من 5 ميجابايت.');
+    return;
+  }
+  
+  if (!file.type.startsWith('image/')) {
+    alert('الرجاء اختيار ملف صورة صالح.');
+    return;
+  }
+  
+  selectedImageFile = file;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const preview = document.getElementById('imagePreview');
+    const placeholder = document.getElementById('uploadPlaceholder');
+    const removeBtn = document.getElementById('removeImage');
+    
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    removeBtn.style.display = 'block';
+    placeholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadImage(file, listingId) {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${listingId}-${Date.now()}.${fileExt}`;
+  const filePath = `${fileName}`;
+  
+  const { data, error} = await supabase.storage
+    .from('product-images')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+  
+  if (error) throw error;
+  
+  const { data: urlData } = supabase.storage
+    .from('product-images')
+    .getPublicUrl(filePath);
+  
+  return urlData.publicUrl;
+}
+
+// === FORM SUBMISSION ===
+async function submitListing(evt) {
+  evt.preventDefault();
+  const form = evt.target;
+  const status = document.getElementById('status');
+  
+  // Check if user is logged in
+  if (!currentUser) {
+    status.textContent = "❌ الرجاء تسجيل الدخول لإضافة منتجات";
+    status.className = "notice err show";
+    setTimeout(() => status.classList.remove('show'), 3000);
+    showAuthModal();
+    return;
+  }
+  
+  // Check availability selection
+  if (selectedMonths.size === 0) {
+    status.textContent = "❌ الرجاء اختيار أشهر التوفر";
+    status.className = "notice err show";
+    setTimeout(() => status.classList.remove('show'), 3000);
+    return;
+  }
+  
+  status.textContent = "جارٍ إرسال القائمة...";
+  status.className = "notice loading show";
+  
+  try {
+    const formData = new FormData(form);
+    const availability = selectedMonths.has('all') ? 'all' : JSON.stringify(Array.from(selectedMonths).map(Number));
+    
+    const payload = {
+      user_id: currentUser.id,
+      name: formData.get('name')?.trim(),
+      phone: formData.get('phone')?.trim(),
+      email: formData.get('email')?.trim() || null,
+      product_ar: formData.get('product_ar')?.trim(),
+      product: formData.get('product')?.trim() || null,
+      quantity: formData.get('quantity')?.trim() || null,
+      price: formData.get('price')?.trim() || null,
+      location: formData.get('location')?.trim(),
+      harvest_date: formData.get('harvest_date') || null,
+      description: formData.get('description')?.trim() || null,
+      availability: availability,
+      image_url: null
+    };
+    
+    if (!payload.name || !payload.phone || !payload.product_ar || !payload.location) {
+      throw new Error('الرجاء ملء جميع الحقول المطلوبة');
+    }
+    
+    const { data: listing, error: insertError } = await supabase
+      .from('listings')
+      .insert([payload])
+      .select()
+      .single();
+    
+    if (insertError) throw insertError;
+    
+    if (selectedImageFile) {
+      status.textContent = "جارٍ رفع الصورة...";
+      const imageUrl = await uploadImage(selectedImageFile, listing.id);
+      
+      const { error: updateError } = await supabase
+        .from('listings')
+        .update({ image_url: imageUrl })
+        .eq('id', listing.id);
+      
+      if (updateError) console.warn('Failed to update image URL:', updateError);
+    }
+    
+    status.textContent = "✅ تم إرسال القائمة بنجاح!";
+    status.className = "notice ok show";
+    
+    form.reset();
+    selectedImageFile = null;
+    selectedMonths.clear();
+    document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('removeImage').style.display = 'none';
+    document.getElementById('uploadPlaceholder').style.display = 'block';
+    
+    await loadExistingData();
+    
+    setTimeout(() => {
+      status.classList.remove('show');
+    }, 5000);
+    
+  } catch (e) {
+    status.textContent = "❌ فشل الإرسال: " + e.message;
+    status.className = "notice err show";
+    console.error('Submission error:', e);
+  }
+}
+
+// === INITIALIZATION ===
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check if user is already logged in
+  checkLoginStatus();
+  
+  // If not logged in, show auth modal
+  if (!currentUser) {
+    showAuthModal();
+  } else {
+    // If already logged in, autocomplete the form
+    autocompleteFormFields();
+  }
+  
+  // Setup auth functionality
+  setupAuthTabs();
+  setupFhfProjectToggle();
+  
+  // Auth form handlers
+  document.getElementById('signinForm').addEventListener('submit', handleSignIn);
+  document.getElementById('signupForm').addEventListener('submit', handleSignUp);
+  document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+  
+  // Modal close handlers - FIXED: Redirect to marketplace if not logged in
+  document.getElementById('cancelAuth').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (currentUser) {
+      // User is logged in, just close the modal
+      hideAuthModal();
+    } else {
+      // User not logged in, redirect to marketplace where they can browse
+      window.location.href = 'index-ar.html';
+    }
+  });
+  
+  document.getElementById('cancelAuthSignup').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (currentUser) {
+      // User is logged in, just close the modal
+      hideAuthModal();
+    } else {
+      // User not logged in, redirect to marketplace where they can browse
+      window.location.href = 'index-ar.html';
+    }
+  });
+  
+  // Close modal when clicking outside - redirect to marketplace if not logged in
+  document.getElementById('authModal').addEventListener('click', (e) => {
+    if (e.target.id === 'authModal') {
+      if (currentUser) {
+        // User is logged in, just close the modal
+        hideAuthModal();
+      } else {
+        // User not logged in, redirect to marketplace where they can browse
+        window.location.href = 'index-ar.html';
+      }
+    }
+  });
+  
+  // Load existing data for autocomplete
+  await loadExistingData();
+  
+  // Setup autocomplete
+  new Autocomplete('product', 'product-suggestions', 'products');
+  new Autocomplete('product_ar', 'product-ar-suggestions', 'productsAr');
+  
+  // Setup image upload and month selector
+  setupImageUpload();
+  setupMonthSelector();
+  
+  // Form submission
+  document.getElementById('listingForm').addEventListener('submit', submitListing);
+});
+</script>
+</body>
+</html>
