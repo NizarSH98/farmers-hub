@@ -824,7 +824,7 @@
       <button class="theme-toggle" id="themeToggle" title="Toggle theme">
         <span id="themeIcon">🌙</span>
       </button>
-      <a href="index-ar.html" class="lang-toggle" title="Switch to Arabic">
+      <a href="index-ar.html" class="lang-toggle" title="Switch to Arabic" onclick="setLanguagePreference('ar')">
         <span>🌐</span>
         <span>العربية</span>
       </a>
@@ -849,12 +849,12 @@
   </div>
   
   <!-- Auth Modal -->
-  <div class="modal-overlay" id="authModal">
+  <div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
     <div class="modal">
       <div style="text-align: center; margin-bottom: 16px;">
         <img src="assets/images/logos/fhf-logo-icon.png" alt="FHF Logo" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto;" onerror="this.style.display='none';" />
       </div>
-      <h2>🌾 Farmer Authentication</h2>
+      <h2 id="authModalTitle">🌾 Farmer Authentication</h2>
       <p class="lead">Please sign in or create an account to submit your listings</p>
       
       <div class="auth-tabs">
@@ -864,40 +864,40 @@
       
       <!-- Sign In Tab -->
       <div id="signinTab" class="auth-tab-content active">
-        <div id="signinError" class="notice err" style="display: none; margin-bottom: 16px;"></div>
+        <div id="signinError" class="notice err" role="alert" aria-live="assertive" style="display: none; margin-bottom: 16px;"></div>
         <form id="signinForm">
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="signinUsername" required placeholder="Your username" autocomplete="username" />
+            <label for="signinUsername">Username</label>
+            <input type="text" id="signinUsername" name="username" required placeholder="Your username" autocomplete="username" aria-required="true" />
           </div>
           <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="signinPassword" required placeholder="Your password" autocomplete="current-password" />
+            <label for="signinPassword">Password</label>
+            <input type="password" id="signinPassword" name="password" required placeholder="Your password" autocomplete="current-password" aria-required="true" />
           </div>
           <div class="modal-actions">
             <button type="submit" class="btn btn-primary">Sign In</button>
-            <button type="button" class="btn btn-secondary" id="cancelAuth">Cancel</button>
+            <button type="button" class="btn btn-secondary" id="cancelAuth" aria-label="Close authentication dialog">Cancel</button>
           </div>
         </form>
       </div>
       
       <!-- Sign Up Tab -->
       <div id="signupTab" class="auth-tab-content">
-        <div id="signupError" class="notice err" style="display: none; margin-bottom: 16px;"></div>
-        <form id="signupForm">
+        <div id="signupError" class="notice err" role="alert" aria-live="assertive" style="display: none; margin-bottom: 16px;"></div>
+        <form id="signupForm" aria-label="Sign up form">
           <div class="form-group">
-            <label class="required">Full Name</label>
-            <input type="text" id="signupFullName" required placeholder="e.g. Ahmad Khoury" />
+            <label for="signupFullName" class="required">Full Name</label>
+            <input type="text" id="signupFullName" name="fullName" required placeholder="e.g. Ahmad Khoury" aria-required="true" />
           </div>
           <div class="form-group">
-            <label class="required">Username</label>
-            <input type="text" id="signupUsername" required placeholder="Choose a username" autocomplete="off" />
-            <div class="helper-text">This will be your login username</div>
+            <label for="signupUsername" class="required">Username</label>
+            <input type="text" id="signupUsername" name="username" required placeholder="Choose a username" autocomplete="off" aria-required="true" aria-describedby="usernameHelp" />
+            <div class="helper-text" id="usernameHelp">This will be your login username</div>
           </div>
           <div class="form-group">
-            <label class="required">Password</label>
-            <input type="password" id="signupPassword" required placeholder="Choose a password" minlength="6" autocomplete="new-password" />
-            <div class="helper-text">At least 6 characters</div>
+            <label for="signupPassword" class="required">Password</label>
+            <input type="password" id="signupPassword" name="password" required placeholder="Choose a password" minlength="6" autocomplete="new-password" aria-required="true" aria-describedby="passwordHelp" />
+            <div class="helper-text" id="passwordHelp">At least 6 characters</div>
           </div>
           <div class="form-group">
             <label>Phone</label>
@@ -933,7 +933,7 @@
           </div>
           <div class="modal-actions">
             <button type="submit" class="btn btn-success">Create Account</button>
-            <button type="button" class="btn btn-secondary" id="cancelAuthSignup">Cancel</button>
+            <button type="button" class="btn btn-secondary" id="cancelAuthSignup" aria-label="Cancel sign up and return to sign in">Cancel</button>
           </div>
         </form>
       </div>
@@ -944,11 +944,11 @@
 
     <div class="card">
       <!-- User Info Bar (shown when logged in) -->
-      <div id="userInfoBar" class="user-info-bar" style="display: none;">
+      <div id="userInfoBar" class="user-info-bar" style="display: none;" role="status" aria-live="polite">
         <div class="user-info-text">
           👤 Logged in as: <strong id="currentUsername"></strong>
         </div>
-        <button class="btn-logout-form" id="logoutBtn">🚪 Logout</button>
+        <button class="btn-logout-form" id="logoutBtn" aria-label="Logout from account">🚪 Logout</button>
       </div>
       
       <div class="card-header">
@@ -1154,6 +1154,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/secure-config.js"></script>
   <script src="assets/js/input-validator.js"></script>
+  <script src="assets/js/auth-manager.js"></script>
   <script>
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
@@ -1166,6 +1167,27 @@
     }
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// === LANGUAGE PREFERENCE ===
+function setLanguagePreference(lang) {
+  localStorage.setItem('preferredLanguage', lang);
+}
+
+// Check if user prefers Arabic and redirect if on English page
+function checkLanguagePreference() {
+  const preferredLang = localStorage.getItem('preferredLanguage');
+  const currentPage = window.location.pathname;
+  
+  // If user prefers Arabic and is on English page, redirect
+  if (preferredLang === 'ar' && (currentPage.endsWith('index.html') || currentPage.endsWith('/'))) {
+    window.location.href = 'index-ar.html';
+  }
+}
+
+// Run on page load (but not on first visit to avoid disruption)
+if (localStorage.getItem('preferredLanguage')) {
+  checkLanguagePreference();
+}
 
 // === THEME MANAGEMENT ===
 const themeToggle = document.getElementById('themeToggle');
@@ -1196,15 +1218,9 @@ let currentUser = null; // {id, username, full_name}
 
 // === USER AUTHENTICATION ===
 function checkLoginStatus() {
-  const userDataStr = sessionStorage.getItem('farmerUser');
-  if (userDataStr) {
-    try {
-      currentUser = JSON.parse(userDataStr);
-      updateUIForLoggedInUser();
-    } catch (e) {
-      sessionStorage.removeItem('farmerUser');
-    }
-  }
+  // Use universal auth manager
+  currentUser = window.auth.getUser();
+  updateUIForLoggedInUser();
 }
 
 function updateUIForLoggedInUser() {
@@ -1252,62 +1268,22 @@ async function handleSignIn(evt) {
   const password = document.getElementById('signinPassword').value.trim();
   const errorDiv = document.getElementById('signinError');
   
-  // Input validation
-  if (!username || !password) {
-    errorDiv.textContent = '❌ Please enter both username and password';
+  // Use universal auth manager
+  const result = await window.auth.authenticate(supabase, username, password);
+  
+  if (!result.success) {
+    errorDiv.textContent = '❌ ' + result.error;
     errorDiv.style.display = 'block';
     return;
   }
   
-  try {
-    // Use secure authentication function
-    const { data: users, error } = await supabase
-      .rpc('authenticate_user', {
-        username_input: username,
-        password_input: password
-      });
-    
-    if (error) {
-      console.error('Authentication error:', error);
-      errorDiv.textContent = '❌ Authentication failed. Please try again.';
-      errorDiv.style.display = 'block';
-      return;
-    }
-    
-    if (!users || users.length === 0) {
-      errorDiv.textContent = '❌ Invalid username or password';
-      errorDiv.style.display = 'block';
-      return;
-    }
-    
-    const user = users[0];
-    
-    if (!user.is_active) {
-      errorDiv.textContent = '❌ Your account is not active. Contact admin.';
-      errorDiv.style.display = 'block';
-      return;
-    }
-    
-    // Save user to session with contact info
-    currentUser = { 
-      id: user.id, 
-      username: user.username, 
-      full_name: user.full_name,
-      phone: user.phone,
-      email: user.email
-    };
-    sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
-    
-    // Update UI and autocomplete form
-    updateUIForLoggedInUser();
-    autocompleteFormFields();
-    hideAuthModal();
-    
-  } catch (e) {
-    console.error('Login error:', e);
-    errorDiv.textContent = '❌ Login failed: ' + e.message;
-    errorDiv.style.display = 'block';
-  }
+  // Update local state
+  currentUser = result.user;
+  
+  // Update UI and autocomplete form
+  updateUIForLoggedInUser();
+  autocompleteFormFields();
+  hideAuthModal();
 }
 
 async function handleSignUp(evt) {
@@ -1385,14 +1361,14 @@ async function handleSignUp(evt) {
     if (insertError) throw insertError;
     
     // Auto sign in with full user data
-    currentUser = { 
-      id: newUser.id, 
-      username: newUser.username, 
+    window.auth.setUser({
+      id: newUser.id,
+      username: newUser.username,
       full_name: newUser.full_name,
       phone: newUser.phone,
       email: newUser.email
-    };
-    sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
+    });
+    currentUser = window.auth.getUser();
     
     // Update UI and autocomplete form
     updateUIForLoggedInUser();
@@ -1411,8 +1387,8 @@ async function handleSignUp(evt) {
 }
 
 function handleLogout() {
+  window.auth.logout();
   currentUser = null;
-  sessionStorage.removeItem('farmerUser');
   updateUIForLoggedInUser();
   showAuthModal();
 }
@@ -1852,23 +1828,42 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('signupForm').addEventListener('submit', handleSignUp);
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   
-  // Modal close handlers
-  document.getElementById('cancelAuth').addEventListener('click', () => {
+  // Modal close handlers - FIXED: Allow cancel anytime, not just when logged in
+  document.getElementById('cancelAuth').addEventListener('click', (e) => {
+    e.preventDefault();
+    // Only close if user is logged in (form is optional after login)
+    // If not logged in, user must authenticate to submit listings
     if (currentUser) {
       hideAuthModal();
+    } else {
+      // Show helpful message
+      const errorDiv = document.getElementById('signinError');
+      errorDiv.textContent = '⚠️ You need to sign in to submit listings. Close this tab if you want to leave.';
+      errorDiv.style.display = 'block';
+      setTimeout(() => errorDiv.style.display = 'none', 3000);
     }
   });
   
-  document.getElementById('cancelAuthSignup').addEventListener('click', () => {
+  document.getElementById('cancelAuthSignup').addEventListener('click', (e) => {
+    e.preventDefault();
     if (currentUser) {
       hideAuthModal();
+    } else {
+      // Switch back to sign in tab
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector('.auth-tab[data-tab="signin"]').classList.add('active');
+      document.getElementById('signinTab').classList.add('active');
     }
   });
   
-  // Close modal when clicking outside (only if logged in)
+  // Close modal when clicking outside (only if logged in or allow navigation away)
   document.getElementById('authModal').addEventListener('click', (e) => {
-    if (e.target.id === 'authModal' && currentUser) {
-      hideAuthModal();
+    if (e.target.id === 'authModal') {
+      if (currentUser) {
+        hideAuthModal();
+      }
+      // If not logged in, don't close - user needs to authenticate or navigate away
     }
   });
   

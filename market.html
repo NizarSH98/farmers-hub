@@ -754,7 +754,7 @@
       <button class="theme-toggle" id="themeToggle" title="Toggle theme">
         <span id="themeIcon">🌙</span>
       </button>
-      <a href="market-ar.html" class="lang-toggle" title="Switch to Arabic">
+      <a href="market-ar.html" class="lang-toggle" title="Switch to Arabic" onclick="setLanguagePreference('ar')">
         <span>🌐</span>
         <span>العربية</span>
       </a>
@@ -765,17 +765,20 @@
   <div class="main-nav">
     <div class="main-nav-content">
       <a href="market.html" class="brand">
-        <div class="brand-icon">🌾</div>
+        <div class="brand-icon">
+          <img src="assets/images/logos/fhf-logo-icon.png" alt="FHF Logo" class="brand-logo-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🌾';" style="width: 100%; height: 100%; object-fit: contain; padding: 4px;" />
+        </div>
         <span>Farmer Hub</span>
       </a>
       <div class="nav-links">
+        <span class="fhf-badge" title="Powered by Food Heritage Foundation">FHF Platform</span>
         <a href="index.html" class="nav-link">+ Submit Listing</a>
         <a href="admin.html" class="nav-link">Admin Panel</a>
         <div id="userStatus">
-          <button class="nav-link btn-login" id="loginBtn">🔓 Login</button>
-          <div class="user-badge" id="userBadge" style="display: none;">
+          <button class="nav-link btn-login" id="loginBtn" aria-label="Login to manage listings">🔓 Login</button>
+          <div class="user-badge" id="userBadge" style="display: none;" role="status" aria-live="polite">
             <span>👤 <span id="usernameDisplay"></span></span>
-            <button class="nav-link" id="logoutBtn" style="padding: 6px 12px; font-size: 12px;">Logout</button>
+            <button class="nav-link" id="logoutBtn" style="padding: 6px 12px; font-size: 12px;" aria-label="Logout from account">Logout</button>
           </div>
         </div>
       </div>
@@ -783,23 +786,26 @@
   </div>
   
   <!-- Login Modal -->
-  <div class="modal-overlay" id="loginModal">
+  <div class="modal-overlay" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
     <div class="modal">
-      <h2>🔐 Farmer Login</h2>
+      <div style="text-align: center; margin-bottom: 16px;">
+        <img src="assets/images/logos/fhf-logo-icon.png" alt="FHF Logo" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto;" onerror="this.style.display='none';" />
+      </div>
+      <h2 id="loginModalTitle">🔐 Farmer Login</h2>
       <p>Login to manage your listings</p>
-      <div id="loginError" style="display: none; padding: 12px; background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); margin-bottom: 16px; font-size: 14px;"></div>
+      <div id="loginError" role="alert" aria-live="assertive" style="display: none; padding: 12px; background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); margin-bottom: 16px; font-size: 14px;"></div>
       <form id="loginForm">
         <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="loginUsername" required placeholder="Your username" autocomplete="username" />
+          <label for="loginUsername">Username</label>
+          <input type="text" id="loginUsername" name="username" required placeholder="Your username" autocomplete="username" aria-required="true" />
         </div>
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="loginPassword" required placeholder="Your password" autocomplete="current-password" />
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" name="password" required placeholder="Your password" autocomplete="current-password" aria-required="true" />
         </div>
         <div class="modal-actions">
           <button type="submit" class="btn btn-primary">Login</button>
-          <button type="button" class="btn btn-secondary" id="cancelLogin">Cancel</button>
+          <button type="button" class="btn btn-secondary" id="cancelLogin" aria-label="Close login dialog">Cancel</button>
         </div>
       </form>
     </div>
@@ -859,12 +865,24 @@
     <div id="results" class="grid"></div>
     
     <div class="footer">
-      Data refreshes automatically every 30 seconds. <a href="index.html">Submit your own listing →</a>
+      <div style="margin-bottom: 16px;">
+        Data refreshes automatically every 30 seconds. <a href="index.html">Submit your own listing →</a>
+      </div>
+      <div style="padding-top: 16px; border-top: 1px solid var(--card-border); text-align: center;">
+        <img src="assets/images/logos/fhf-logo-horizontal.png" alt="Food Heritage Foundation" style="height: 40px; max-width: 200px; object-fit: contain; margin: 0 auto 8px; display: block;" onerror="this.style.display='none';" />
+        <div style="font-size: 12px; color: var(--muted);">
+          Powered by <strong style="color: var(--accent);">Food Heritage Foundation</strong>
+        </div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 4px;">
+          Supporting Lebanese farmers and preserving food heritage
+        </div>
+      </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/secure-config.js"></script>
+  <script src="assets/js/auth-manager.js"></script>
   <script>
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
@@ -877,6 +895,27 @@
     }
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// === LANGUAGE PREFERENCE ===
+function setLanguagePreference(lang) {
+  localStorage.setItem('preferredLanguage', lang);
+}
+
+// Check if user prefers Arabic and redirect if on English page
+function checkLanguagePreference() {
+  const preferredLang = localStorage.getItem('preferredLanguage');
+  const currentPage = window.location.pathname;
+  
+  // If user prefers Arabic and is on English page, redirect
+  if (preferredLang === 'ar' && (currentPage.endsWith('market.html') || currentPage.endsWith('/'))) {
+    window.location.href = 'market-ar.html';
+  }
+}
+
+// Run on page load (but not on first visit to avoid disruption)
+if (localStorage.getItem('preferredLanguage')) {
+  checkLanguagePreference();
+}
 
 // === THEME MANAGEMENT ===
 const themeToggle = document.getElementById('themeToggle');
@@ -906,15 +945,9 @@ let currentUser = null; // {id, username, full_name}
 
 // === USER AUTHENTICATION ===
 function checkLoginStatus() {
-  const userDataStr = sessionStorage.getItem('marketUser');
-  if (userDataStr) {
-    try {
-      currentUser = JSON.parse(userDataStr);
-      updateUIForLoggedInUser();
-    } catch (e) {
-      sessionStorage.removeItem('marketUser');
-    }
-  }
+  // Use universal auth manager
+  currentUser = window.auth.getUser();
+  updateUIForLoggedInUser();
 }
 
 function updateUIForLoggedInUser() {
@@ -934,65 +967,31 @@ async function handleLogin(evt) {
   const password = document.getElementById('loginPassword').value.trim();
   const errorDiv = document.getElementById('loginError');
   
-  // Input validation
-  if (!username || !password) {
-    errorDiv.textContent = '❌ Please enter both username and password';
+  // Use universal auth manager
+  const result = await window.auth.authenticate(supabase, username, password);
+  
+  if (!result.success) {
+    errorDiv.textContent = '❌ ' + result.error;
     errorDiv.style.display = 'block';
     return;
   }
   
-  try {
-    // Use secure authentication function
-    const { data: users, error } = await supabase
-      .rpc('authenticate_user', {
-        username_input: username,
-        password_input: password
-      });
-    
-    if (error) {
-      console.error('Authentication error:', error);
-      errorDiv.textContent = '❌ Authentication failed. Please try again.';
-      errorDiv.style.display = 'block';
-      return;
-    }
-    
-    if (!users || users.length === 0) {
-      errorDiv.textContent = '❌ Invalid username or password';
-      errorDiv.style.display = 'block';
-      return;
-    }
-    
-    const user = users[0];
-    
-    if (!user.is_active) {
-      errorDiv.textContent = '❌ Your account is not active. Contact admin.';
-      errorDiv.style.display = 'block';
-      return;
-    }
-    
-    // Save user to session
-    currentUser = { id: user.id, username: user.username, full_name: user.full_name };
-    sessionStorage.setItem('marketUser', JSON.stringify(currentUser));
-    
-    // Update UI
-    updateUIForLoggedInUser();
-    document.getElementById('loginModal').classList.remove('show');
-    document.getElementById('loginForm').reset();
-    errorDiv.style.display = 'none';
-    
-    // Refresh listings to show delete buttons
-    render(filteredRows);
-    
-  } catch (e) {
-    console.error('Login error:', e);
-    errorDiv.textContent = '❌ Login failed: ' + e.message;
-    errorDiv.style.display = 'block';
-  }
+  // Update local state
+  currentUser = result.user;
+  
+  // Update UI
+  updateUIForLoggedInUser();
+  document.getElementById('loginModal').classList.remove('show');
+  document.getElementById('loginForm').reset();
+  errorDiv.style.display = 'none';
+  
+  // Refresh listings to show delete buttons
+  render(filteredRows);
 }
 
 function handleLogout() {
+  window.auth.logout();
   currentUser = null;
-  sessionStorage.removeItem('marketUser');
   updateUIForLoggedInUser();
   render(filteredRows); // Refresh to hide delete buttons
 }
@@ -1288,6 +1287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('loginModal').classList.add('show');
   });
   
+  // FIXED: Cancel button always works (viewing is public)
   document.getElementById('cancelLogin').addEventListener('click', () => {
     document.getElementById('loginModal').classList.remove('show');
     document.getElementById('loginForm').reset();
@@ -1297,7 +1297,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('loginForm').addEventListener('submit', handleLogin);
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   
-  // Close modal when clicking outside
+  // FIXED: Close modal when clicking outside (always allowed - viewing is public)
   document.getElementById('loginModal').addEventListener('click', (e) => {
     if (e.target.id === 'loginModal') {
       document.getElementById('loginModal').classList.remove('show');

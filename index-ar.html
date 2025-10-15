@@ -821,7 +821,7 @@
   <!-- Top Utility Bar -->
   <div class="top-bar">
     <div class="top-bar-content">
-      <a href="index.html" class="lang-toggle" title="Switch to English">
+      <a href="index.html" class="lang-toggle" title="Switch to English" onclick="setLanguagePreference('en')">
         <span>🌐</span>
         <span>English</span>
       </a>
@@ -1153,6 +1153,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/secure-config.js"></script>
+  <script src="assets/js/auth-manager.js"></script>
   <script>
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
@@ -1165,6 +1166,28 @@
     }
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// === LANGUAGE PREFERENCE ===
+function setLanguagePreference(lang) {
+  localStorage.setItem('preferredLanguage', lang);
+}
+
+// Check if user prefers English and redirect if on Arabic page
+function checkLanguagePreference() {
+  const preferredLang = localStorage.getItem('preferredLanguage');
+  const currentPage = window.location.pathname;
+  
+  // If user prefers English and is on Arabic page, redirect
+  if (preferredLang === 'en' && currentPage.includes('-ar.html')) {
+    const englishPage = currentPage.replace('-ar.html', '.html');
+    window.location.href = englishPage;
+  }
+}
+
+// Run on page load (but not on first visit to avoid disruption)
+if (localStorage.getItem('preferredLanguage')) {
+  checkLanguagePreference();
+}
 
 // === THEME MANAGEMENT ===
 const themeToggle = document.getElementById('themeToggle');
@@ -1194,15 +1217,9 @@ let currentUser = null; // {id, username, full_name}
 
 // === USER AUTHENTICATION ===
 function checkLoginStatus() {
-  const userDataStr = sessionStorage.getItem('farmerUser');
-  if (userDataStr) {
-    try {
-      currentUser = JSON.parse(userDataStr);
-      updateUIForLoggedInUser();
-    } catch (e) {
-      sessionStorage.removeItem('farmerUser');
-    }
-  }
+  // Use universal auth manager
+  currentUser = window.auth.getUser();
+  updateUIForLoggedInUser();
 }
 
 function updateUIForLoggedInUser() {
@@ -1294,7 +1311,7 @@ async function handleSignIn(evt) {
       phone: user.phone,
       email: user.email
     };
-    sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
+    window.auth.setUser(currentUser);
     
     // Update UI and autocomplete form
     updateUIForLoggedInUser();
@@ -1420,14 +1437,14 @@ async function handleSignUp(evt) {
     if (insertError) throw insertError;
     
     // Auto sign in with full user data
-    currentUser = { 
-      id: newUser.id, 
-      username: newUser.username, 
+    window.auth.setUser({
+      id: newUser.id,
+      username: newUser.username,
       full_name: newUser.full_name,
       phone: newUser.phone,
       email: newUser.email
-    };
-    sessionStorage.setItem('farmerUser', JSON.stringify(currentUser));
+    });
+    currentUser = window.auth.getUser();
     
     // Update UI and autocomplete form
     updateUIForLoggedInUser();
@@ -1446,8 +1463,8 @@ async function handleSignUp(evt) {
 }
 
 function handleLogout() {
+  window.auth.logout();
   currentUser = null;
-  sessionStorage.removeItem('farmerUser');
   updateUIForLoggedInUser();
   showAuthModal();
 }
