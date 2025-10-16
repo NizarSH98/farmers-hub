@@ -1152,6 +1152,172 @@
         font-size: 28px;
       }
     }
+    
+    /* ===================================================
+       SHARE BUTTON STYLES
+       =================================================== */
+    
+    .share-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-top: 8px;
+    }
+    
+    .share-button:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    
+    .share-button:active {
+      transform: translateY(0);
+    }
+    
+    /* Share Menu (Dropdown) */
+    .share-menu {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 10px 30px var(--shadow);
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+    
+    .share-menu.show {
+      display: flex;
+    }
+    
+    .share-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      width: 100%;
+    }
+    
+    .share-option:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    
+    .share-option-icon {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .share-option.whatsapp:hover {
+      background: rgba(37, 211, 102, 0.1);
+      color: #25D366;
+    }
+    
+    .share-option.facebook:hover {
+      background: rgba(24, 119, 242, 0.1);
+      color: #1877F2;
+    }
+    
+    .share-option.twitter:hover {
+      background: rgba(29, 155, 240, 0.1);
+      color: #1DA1F2;
+    }
+    
+    .share-option.email:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+    
+    .share-option.copy:hover {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+    
+    .share-wrapper {
+      position: relative;
+    }
+    
+    /* Copy notification */
+    .copy-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--success);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 10000;
+      animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+      pointer-events: none;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .share-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        border-radius: 20px 20px 0 0;
+        padding: 16px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1668,6 +1834,36 @@ function render(items) {
             <div class="reviews-loading">Loading reviews...</div>
           </div>
           
+          <!-- Share Button -->
+          <div class="share-wrapper">
+            <button class="share-button" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}" data-product-url="${window.location.origin + window.location.pathname}?product=${row.id}">
+              <span>🔗</span>
+              <span>Share Product</span>
+            </button>
+            <div class="share-menu" id="share-menu-${row.id}">
+              <button class="share-option whatsapp" data-platform="whatsapp">
+                <span class="share-option-icon">💬</span>
+                <span>Share on WhatsApp</span>
+              </button>
+              <button class="share-option facebook" data-platform="facebook">
+                <span class="share-option-icon">📘</span>
+                <span>Share on Facebook</span>
+              </button>
+              <button class="share-option twitter" data-platform="twitter">
+                <span class="share-option-icon">🐦</span>
+                <span>Share on Twitter</span>
+              </button>
+              <button class="share-option email" data-platform="email">
+                <span class="share-option-icon">✉️</span>
+                <span>Share via Email</span>
+              </button>
+              <button class="share-option copy" data-platform="copy">
+                <span class="share-option-icon">📋</span>
+                <span>Copy Link</span>
+              </button>
+            </div>
+          </div>
+          
           <div class="card-footer">
             <span class="seller-name">${name}</span>
             <span>${date}</span>
@@ -1677,7 +1873,7 @@ function render(items) {
     `;
   }).join('');
   
-  // Attach event listeners to delete buttons and reviews
+  // Attach event listeners to delete buttons, reviews, and share
   setTimeout(() => {
     document.querySelectorAll('.btn-delete-own').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -1692,6 +1888,9 @@ function render(items) {
     
     // Attach reviews toggle listeners
     setupReviewsToggles();
+    
+    // Attach share button listeners
+    setupShareButtons();
   }, 0);
 }
 
@@ -2123,6 +2322,183 @@ function closeReviewModal() {
   document.getElementById('reviewForm').reset();
   document.getElementById('reviewError').style.display = 'none';
   document.getElementById('submitReviewBtn').textContent = 'Submit Review';
+}
+
+// ===================================================
+// SHARE FUNCTIONALITY
+// ===================================================
+
+// Setup share buttons
+function setupShareButtons() {
+  document.querySelectorAll('.share-button').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const listingId = this.dataset.listingId;
+      const productName = this.dataset.productName;
+      const productUrl = this.dataset.productUrl;
+      
+      // Check if Web Share API is available (mostly mobile)
+      if (navigator.share && isMobileDevice()) {
+        shareViaWebAPI(productName, productUrl);
+      } else {
+        // Show share menu
+        toggleShareMenu(listingId);
+      }
+    });
+  });
+  
+  // Attach share option listeners
+  document.querySelectorAll('.share-option').forEach(option => {
+    option.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const platform = this.dataset.platform;
+      const shareBtn = this.closest('.share-wrapper').querySelector('.share-button');
+      const productName = shareBtn.dataset.productName;
+      const productUrl = shareBtn.dataset.productUrl;
+      const listingId = shareBtn.dataset.listingId;
+      
+      shareProduct(platform, productName, productUrl);
+      
+      // Close menu
+      closeAllShareMenus();
+    });
+  });
+  
+  // Close share menus when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.share-wrapper')) {
+      closeAllShareMenus();
+    }
+  });
+}
+
+// Check if device is mobile
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+         (window.innerWidth <= 768);
+}
+
+// Toggle share menu
+function toggleShareMenu(listingId) {
+  const menu = document.getElementById(`share-menu-${listingId}`);
+  
+  // Close all other menus
+  closeAllShareMenus();
+  
+  if (menu) {
+    menu.classList.toggle('show');
+  }
+}
+
+// Close all share menus
+function closeAllShareMenus() {
+  document.querySelectorAll('.share-menu').forEach(menu => {
+    menu.classList.remove('show');
+  });
+}
+
+// Share via Web Share API (native mobile sharing)
+async function shareViaWebAPI(productName, productUrl) {
+  try {
+    await navigator.share({
+      title: `${productName} - Farmers Hub`,
+      text: `Check out this product: ${productName}`,
+      url: productUrl
+    });
+  } catch (error) {
+    // User cancelled or error occurred
+    console.log('Share cancelled or failed:', error);
+  }
+}
+
+// Share product on various platforms
+function shareProduct(platform, productName, productUrl) {
+  const encodedUrl = encodeURIComponent(productUrl);
+  const encodedText = encodeURIComponent(`Check out this product: ${productName}`);
+  const encodedProductName = encodeURIComponent(productName);
+  
+  let shareUrl = '';
+  
+  switch (platform) {
+    case 'whatsapp':
+      shareUrl = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
+      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+      break;
+      
+    case 'facebook':
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+      window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=400');
+      break;
+      
+    case 'twitter':
+      shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+      window.open(shareUrl, '_blank', 'noopener,noreferrer,width=600,height=400');
+      break;
+      
+    case 'email':
+      const subject = `Check out: ${productName}`;
+      const body = `I found this product on Farmers Hub and thought you might be interested:\n\n${productName}\n\n${productUrl}\n\nVisit Farmers Hub for fresh, locally-sourced products!`;
+      shareUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = shareUrl;
+      break;
+      
+    case 'copy':
+      copyToClipboard(productUrl, productName);
+      break;
+      
+    default:
+      console.error('Unknown share platform:', platform);
+  }
+}
+
+// Copy link to clipboard
+async function copyToClipboard(url, productName) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(url);
+      showCopyNotification(`Link copied! Share "${productName}" with others.`);
+    } else {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = url;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        showCopyNotification(`Link copied! Share "${productName}" with others.`);
+      } catch (err) {
+        alert('Failed to copy link. Please copy manually: ' + url);
+      }
+      
+      document.body.removeChild(textArea);
+    }
+  } catch (error) {
+    console.error('Failed to copy:', error);
+    alert('Failed to copy link: ' + error.message);
+  }
+}
+
+// Show copy notification
+function showCopyNotification(message) {
+  // Remove existing notification if any
+  const existing = document.querySelector('.copy-notification');
+  if (existing) {
+    existing.remove();
+  }
+  
+  // Create notification
+  const notification = document.createElement('div');
+  notification.className = 'copy-notification';
+  notification.textContent = `✅ ${message}`;
+  document.body.appendChild(notification);
+  
+  // Remove after animation completes
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
 }
 
 // === FILTERING ===
