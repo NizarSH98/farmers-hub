@@ -1994,56 +1994,51 @@ async function loadReviewsForListing(listingId, productName) {
   const section = document.getElementById(`reviews-section-${listingId}`);
   if (!section) return;
   
-  // Get reviews
-  const result = await reviewsManager.getReviews(listingId, 50, 0, 'newest');
-  
-  if (!result.success) {
-    section.innerHTML = `<div class="reviews-empty"><div class="reviews-empty-icon">⚠️</div><p>فشل تحميل التقييمات</p></div>`;
-    return;
-  }
-  
-  const reviews = result.data;
-  const currentUserId = currentUser ? currentUser.id : null;
-  
-  // Check if user has already reviewed
-  const userReview = currentUserId ? await reviewsManager.getUserReview(listingId) : null;
-  const hasUserReviewed = !!userReview;
-  
-  // Build HTML
-  let html = '<div class="reviews-header">';
-  
-  // Write review button (only if logged in and hasn't reviewed yet)
-  if (currentUserId && !hasUserReviewed) {
-    html += `<button class="btn-write-review" onclick="openReviewModal(${listingId}, '${escapeHtml(productName).replace(/'/g, "\\'")}')">
-      ✍️ اكتب تقييماً
-    </button>`;
-  } else if (currentUserId && hasUserReviewed) {
-    html += `<button class="btn-write-review" style="background: var(--accent);" onclick="openEditReviewModal(${userReview.id}, ${listingId}, '${escapeHtml(productName).replace(/'/g, "\\'")}')">
-      ✏️ تعديل تقييمك
-    </button>`;
-  } else {
-    html += '<p style="color: var(--muted); font-size: 14px;">يجب تسجيل الدخول لكتابة تقييم</p>';
-  }
-  
-  html += '</div>';
-  
-  // Reviews list
-  if (reviews.length === 0) {
-    html += `<div class="reviews-empty">
-      <div class="reviews-empty-icon">📝</div>
-      <p>لا توجد تقييمات حتى الآن</p>
-      <p style="font-size: 13px;">كن أول من يقيّم هذا المنتج!</p>
-    </div>`;
-  } else {
-    html += '<div class="reviews-list">';
-    reviews.forEach(review => {
-      const isOwnReview = currentUserId && review.user_id === currentUserId;
-      html += reviewsManager.generateReviewCard(review, isOwnReview);
-    });
+  try {
+    // Get reviews and user review in parallel
+    const reviews = await reviewsManager.getReviews(listingId, 50, 0, 'newest');
+    const userReview = currentUser ? await reviewsManager.getUserReview(listingId) : null;
+    const hasUserReviewed = !!userReview;
+    
+    // Build HTML
+    let html = '<div class="reviews-header">';
+    
+    // Write review button (only if logged in and hasn't reviewed yet)
+    if (currentUser && !hasUserReviewed) {
+      html += `<button class="btn-write-review" onclick="openReviewModal(${listingId}, '${escapeHtml(productName).replace(/'/g, "\\'")}')">
+        ✍️ اكتب تقييماً
+      </button>`;
+    } else if (currentUser && hasUserReviewed) {
+      html += `<button class="btn-write-review" style="background: var(--accent);" onclick="openEditReviewModal(${userReview.id}, ${listingId}, '${escapeHtml(productName).replace(/'/g, "\\'")}')">
+        ✏️ تعديل تقييمك
+      </button>`;
+    } else {
+      html += '<p style="color: var(--muted); font-size: 14px;">يجب تسجيل الدخول لكتابة تقييم</p>';
+    }
+    
     html += '</div>';
+    
+    // Reviews list
+    if (!reviews || reviews.length === 0) {
+      html += `<div class="reviews-empty">
+        <div class="reviews-empty-icon">📝</div>
+        <p>لا توجد تقييمات حتى الآن</p>
+        <p style="font-size: 13px;">كن أول من يقيّم هذا المنتج!</p>
+      </div>`;
+    } else {
+      html += '<div class="reviews-list">';
+      reviews.forEach(review => {
+        const isOwnReview = currentUser && review.user_id === currentUser.id;
+        html += reviewsManager.generateReviewCard(review, isOwnReview);
+      });
+      html += '</div>';
+    }
+    
+    section.innerHTML = html;
+  } catch (error) {
+    console.error('Error loading reviews:', error);
+    section.innerHTML = `<div class="reviews-empty"><div class="reviews-empty-icon">⚠️</div><p>فشل تحميل التقييمات</p></div>`;
   }
-  
-  section.innerHTML = html;
 }
 
 // Setup reviews event listeners
