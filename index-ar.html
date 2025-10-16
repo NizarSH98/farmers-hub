@@ -708,6 +708,396 @@
       transform: translateY(-1px);
     }
     
+    /* ===================================================
+       REVIEWS & RATINGS SYSTEM STYLES
+       =================================================== */
+    
+    /* Rating Display in Product Cards */
+    .rating-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px 0;
+      direction: rtl;
+    }
+    
+    .rating-display.no-reviews {
+      opacity: 0.6;
+    }
+    
+    .stars-container {
+      display: inline-flex;
+      gap: 2px;
+      font-size: 18px;
+      line-height: 1;
+    }
+    
+    .star {
+      transition: all 0.2s ease;
+    }
+    
+    .star-full {
+      color: #FFD700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .star-half {
+      color: #FFD700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .star-empty {
+      color: var(--muted);
+      opacity: 0.4;
+    }
+    
+    .rating-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .rating-percentage {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 13px;
+    }
+    
+    /* Reviews Toggle Button */
+    .reviews-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--accent-light);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-top: 8px;
+    }
+    
+    .reviews-toggle:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    
+    .reviews-toggle-icon {
+      transition: transform 0.2s ease;
+    }
+    
+    .reviews-toggle.expanded .reviews-toggle-icon {
+      transform: rotate(180deg);
+    }
+    
+    /* Reviews Section */
+    .reviews-section {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+      direction: rtl;
+    }
+    
+    .reviews-section.visible {
+      display: block;
+    }
+    
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .reviews-sort {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .reviews-sort select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    
+    .btn-write-review {
+      padding: 8px 16px;
+      background: var(--success);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    
+    .btn-write-review:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+    
+    /* Review Cards */
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-left: 4px;
+    }
+    
+    .reviews-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .reviews-list::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+      border-radius: 3px;
+    }
+    
+    .reviews-list::-webkit-scrollbar-thumb {
+      background: var(--muted);
+      border-radius: 3px;
+    }
+    
+    .review-card {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .review-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+    
+    .review-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    
+    .review-username {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-bright);
+    }
+    
+    .edited-badge {
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(0,0,0,0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    
+    [data-theme="dark"] .edited-badge {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .review-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .review-meta .stars-container {
+      font-size: 14px;
+    }
+    
+    .review-date {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    
+    .review-comment {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 8px;
+      word-wrap: break-word;
+    }
+    
+    .review-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn-review-edit,
+    .btn-review-delete {
+      padding: 6px 12px;
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-review-edit:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    
+    .btn-review-delete:hover {
+      border-color: var(--danger);
+      background: rgba(239,68,68,0.1);
+      color: var(--danger);
+    }
+    
+    .reviews-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--muted);
+    }
+    
+    .reviews-empty-icon {
+      font-size: 48px;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+    
+    .reviews-loading {
+      text-align: center;
+      padding: 24px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    /* Review Modal */
+    .review-modal {
+      max-width: 600px;
+    }
+    
+    .review-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .rating-input {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      direction: rtl;
+      text-align: right;
+    }
+    
+    .rating-input label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    
+    .rating-stars-input {
+      display: flex;
+      gap: 8px;
+      font-size: 32px;
+      direction: ltr;
+    }
+    
+    .rating-stars-input .star {
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .rating-stars-input .star:hover {
+      transform: scale(1.15);
+    }
+    
+    .rating-stars-input .star-empty:hover,
+    .rating-stars-input .star-empty:hover ~ .star {
+      color: var(--muted);
+    }
+    
+    .rating-stars-input .star:hover,
+    .rating-stars-input .star:hover ~ .star-empty {
+      color: #FFD700;
+      text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+    }
+    
+    .comment-input {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      direction: rtl;
+      text-align: right;
+    }
+    
+    .comment-input label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    
+    .comment-input textarea {
+      min-height: 100px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-bright);
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      direction: rtl;
+      text-align: right;
+    }
+    
+    .comment-input textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--input-focus);
+      outline: none;
+    }
+    
+    .char-count {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: left;
+    }
+    
+    .char-count.warning {
+      color: var(--warning);
+    }
+    
+    .char-count.error {
+      color: var(--danger);
+    }
+    
     @media (max-width: 1024px) {
       .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
       .filters-grid { grid-template-columns: 1fr 1fr; }
@@ -747,6 +1137,29 @@
       }
       .card-actions { flex-direction: column; }
       .btn { width: 100%; }
+      
+      /* Mobile responsive reviews */
+      .reviews-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .btn-write-review {
+        width: 100%;
+      }
+      
+      .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .review-meta {
+        width: 100%;
+      }
+      
+      .rating-stars-input {
+        font-size: 28px;
+      }
     }
     
     /* ===================================================
@@ -1004,6 +1417,43 @@
       </form>
     </div>
   </div>
+
+  <!-- Review Modal -->
+  <div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+    <div class="modal review-modal">
+      <h2 id="reviewModalTitle">✍️ اكتب تقييماً</h2>
+      <p id="reviewModalProductName" style="color: var(--muted); margin-bottom: 24px; font-size: 14px;"></p>
+      <div id="reviewError" role="alert" aria-live="assertive" style="display: none; padding: 12px; background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); margin-bottom: 16px; font-size: 14px;"></div>
+      <form id="reviewForm" class="review-form">
+        <div class="rating-input">
+          <label>تقييمك <span style="color: var(--danger);">*</span></label>
+          <div class="rating-stars-input" id="ratingStarsInput">
+            <span class="star star-empty" data-rating="1">☆</span>
+            <span class="star star-empty" data-rating="2">☆</span>
+            <span class="star star-empty" data-rating="3">☆</span>
+            <span class="star star-empty" data-rating="4">☆</span>
+            <span class="star star-empty" data-rating="5">☆</span>
+          </div>
+          <input type="hidden" id="reviewRatingValue" required />
+        </div>
+        <div class="comment-input">
+          <label for="reviewComment">تعليقك (اختياري)</label>
+          <textarea 
+            id="reviewComment" 
+            placeholder="شارك تجربتك مع هذا المنتج..." 
+            maxlength="500"
+          ></textarea>
+          <div class="char-count">
+            <span id="charCount">0</span> / 500 حرف
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" id="submitReviewBtn">إرسال التقييم</button>
+          <button type="button" class="btn btn-secondary" id="cancelReview">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
   
   <div class="container">
     <div class="header-section">
@@ -1066,6 +1516,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/secure-config.js"></script>
   <script src="assets/js/auth-manager.js"></script>
+  <script src="assets/js/reviews-manager.js"></script>
   <script>
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
@@ -1377,12 +1828,33 @@ function render(items) {
             ${price ? `<span class="meta-item">💰 ${price}</span>` : ''}
           </div>` : ''}
           <div class="card-description">${desc}</div>
+          
+          <!-- Rating Display -->
+          <div class="rating-display-container" id="rating-display-${row.id}">
+            <div class="rating-display no-reviews">
+              <span class="stars-container">☆☆☆☆☆</span>
+              <span class="rating-text">لا توجد تقييمات</span>
+            </div>
+          </div>
+          
           <div class="card-actions">
             ${wa ? `<a class="btn btn-primary" href="${wa}" target="_blank" rel="noopener">💬 واتساب</a>` : ''}
             ${call ? `<a class="btn btn-secondary" href="${call}">📞 اتصال</a>` : ''}
             ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ بريد</a>` : ''}
           </div>
           ${deleteButton}
+          
+          <!-- Reviews Toggle Button -->
+          <button class="reviews-toggle" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">
+            <span>💬</span>
+            <span class="reviews-count">عرض التقييمات</span>
+            <span class="reviews-toggle-icon">▼</span>
+          </button>
+          
+          <!-- Reviews Section (Hidden by default) -->
+          <div class="reviews-section" id="reviews-section-${row.id}">
+            <div class="reviews-loading">جارٍ تحميل التقييمات...</div>
+          </div>
           
           <!-- Share Button -->
           <div class="share-wrapper">
@@ -1433,9 +1905,392 @@ function render(items) {
       });
     });
     
+    // Load ratings for all visible listings
+    loadAllRatings();
+    
+    // Attach reviews toggle listeners
+    setupReviewsToggles();
+    
     // Attach share button listeners
     setupShareButtons();
   }, 0);
+}
+
+// ===================================================
+// REVIEWS SYSTEM INTEGRATION
+// ===================================================
+
+let reviewsManager = null;
+
+// Initialize Reviews Manager
+function initReviewsManager() {
+  if (window.ReviewsManager && supabase && window.auth) {
+    reviewsManager = new window.ReviewsManager(supabase, window.auth);
+  }
+}
+
+// Load ratings for all visible listings
+async function loadAllRatings() {
+  if (!reviewsManager) return;
+  
+  const cards = document.querySelectorAll('.rating-display-container');
+  for (const container of cards) {
+    const listingId = parseInt(container.id.replace('rating-display-', ''));
+    await loadRating(listingId);
+  }
+}
+
+// Load rating for a specific listing
+async function loadRating(listingId) {
+  if (!reviewsManager) return;
+  
+  const container = document.getElementById(`rating-display-${listingId}`);
+  if (!container) return;
+  
+  const summary = await reviewsManager.getRatingSummary(listingId);
+  const ratingHTML = reviewsManager.generateRatingDisplay(summary);
+  container.innerHTML = ratingHTML;
+}
+
+// Setup reviews toggle buttons
+function setupReviewsToggles() {
+  document.querySelectorAll('.reviews-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const listingId = parseInt(this.dataset.listingId);
+      const productName = this.dataset.productName;
+      toggleReviewsSection(listingId, productName);
+    });
+  });
+}
+
+// Toggle reviews section
+async function toggleReviewsSection(listingId, productName) {
+  const section = document.getElementById(`reviews-section-${listingId}`);
+  const toggleBtn = document.querySelector(`.reviews-toggle[data-listing-id="${listingId}"]`);
+  
+  if (!section || !toggleBtn) return;
+  
+  // Toggle visibility
+  const isVisible = section.classList.toggle('visible');
+  toggleBtn.classList.toggle('expanded', isVisible);
+  
+  // Update button text
+  const countSpan = toggleBtn.querySelector('.reviews-count');
+  if (isVisible) {
+    countSpan.textContent = 'إخفاء التقييمات';
+    // Load reviews if not loaded yet
+    if (section.querySelector('.reviews-loading')) {
+      await loadReviewsForListing(listingId, productName);
+    }
+  } else {
+    countSpan.textContent = 'عرض التقييمات';
+  }
+}
+
+// Load reviews for a specific listing
+async function loadReviewsForListing(listingId, productName) {
+  if (!reviewsManager) return;
+  
+  const section = document.getElementById(`reviews-section-${listingId}`);
+  if (!section) return;
+  
+  // Get reviews
+  const result = await reviewsManager.getReviews(listingId, 50, 0, 'newest');
+  
+  if (!result.success) {
+    section.innerHTML = `<div class="reviews-empty"><div class="reviews-empty-icon">⚠️</div><p>فشل تحميل التقييمات</p></div>`;
+    return;
+  }
+  
+  const reviews = result.data;
+  const currentUserId = currentUser ? currentUser.id : null;
+  
+  // Check if user has already reviewed
+  const userReview = currentUserId ? await reviewsManager.getUserReview(listingId) : null;
+  const hasUserReviewed = !!userReview;
+  
+  // Build HTML
+  let html = '<div class="reviews-header">';
+  
+  // Write review button (only if logged in and hasn't reviewed yet)
+  if (currentUserId && !hasUserReviewed) {
+    html += `<button class="btn-write-review" onclick="openReviewModal(${listingId}, '${escapeHtml(productName).replace(/'/g, "\\'")}')">
+      ✍️ اكتب تقييماً
+    </button>`;
+  } else if (currentUserId && hasUserReviewed) {
+    html += `<button class="btn-write-review" style="background: var(--accent);" onclick="openEditReviewModal(${userReview.id}, ${listingId}, '${escapeHtml(productName).replace(/'/g, "\\'")}')">
+      ✏️ تعديل تقييمك
+    </button>`;
+  } else {
+    html += '<p style="color: var(--muted); font-size: 14px;">يجب تسجيل الدخول لكتابة تقييم</p>';
+  }
+  
+  html += '</div>';
+  
+  // Reviews list
+  if (reviews.length === 0) {
+    html += `<div class="reviews-empty">
+      <div class="reviews-empty-icon">📝</div>
+      <p>لا توجد تقييمات حتى الآن</p>
+      <p style="font-size: 13px;">كن أول من يقيّم هذا المنتج!</p>
+    </div>`;
+  } else {
+    html += '<div class="reviews-list">';
+    reviews.forEach(review => {
+      const isOwnReview = currentUserId && review.user_id === currentUserId;
+      html += reviewsManager.generateReviewCard(review, isOwnReview);
+    });
+    html += '</div>';
+  }
+  
+  section.innerHTML = html;
+}
+
+// Setup reviews event listeners
+function setupReviewsEventListeners() {
+  // Cancel review modal
+  document.getElementById('cancelReview').addEventListener('click', closeReviewModal);
+  
+  // Review form submission
+  document.getElementById('reviewForm').addEventListener('submit', handleReviewSubmit);
+  
+  // Setup star rating input
+  setupStarRatingInput();
+  
+  // Character counter
+  document.getElementById('reviewComment').addEventListener('input', updateCharCount);
+  
+  // Close modal when clicking outside
+  document.getElementById('reviewModal').addEventListener('click', (e) => {
+    if (e.target.id === 'reviewModal') {
+      closeReviewModal();
+    }
+  });
+}
+
+// Open review modal for new review
+function openReviewModal(listingId, productName) {
+  if (!currentUser) {
+    alert('يجب تسجيل الدخول لكتابة تقييم');
+    document.getElementById('loginBtn').click();
+    return;
+  }
+  
+  const modal = document.getElementById('reviewModal');
+  const title = document.getElementById('reviewModalTitle');
+  const productNameEl = document.getElementById('reviewModalProductName');
+  const form = document.getElementById('reviewForm');
+  
+  title.textContent = '✍️ اكتب تقييماً';
+  productNameEl.textContent = `تقييم: ${productName}`;
+  
+  // Store listing info in form
+  form.dataset.listingId = listingId;
+  form.dataset.productName = productName;
+  form.dataset.mode = 'create';
+  delete form.dataset.reviewId;
+  
+  // Reset form
+  form.reset();
+  document.getElementById('reviewRatingValue').value = '';
+  document.querySelectorAll('#ratingStarsInput .star').forEach(star => {
+    star.classList.remove('star-full');
+    star.classList.add('star-empty');
+    star.textContent = '☆';
+  });
+  
+  modal.classList.add('show');
+}
+
+// Open review modal for editing
+async function openEditReviewModal(reviewId, listingId, productName) {
+  if (!reviewsManager) return;
+  
+  const userReview = await reviewsManager.getUserReview(listingId);
+  if (!userReview) return;
+  
+  const modal = document.getElementById('reviewModal');
+  const title = document.getElementById('reviewModalTitle');
+  const productNameEl = document.getElementById('reviewModalProductName');
+  const form = document.getElementById('reviewForm');
+  const submitBtn = document.getElementById('submitReviewBtn');
+  
+  title.textContent = '✏️ تعديل تقييمك';
+  productNameEl.textContent = `تعديل التقييم: ${productName}`;
+  submitBtn.textContent = 'تحديث التقييم';
+  
+  // Store listing info in form
+  form.dataset.listingId = listingId;
+  form.dataset.productName = productName;
+  form.dataset.mode = 'edit';
+  form.dataset.reviewId = reviewId;
+  
+  // Populate form with existing data
+  document.getElementById('reviewRatingValue').value = userReview.rating;
+  document.getElementById('reviewComment').value = userReview.comment || '';
+  updateCharCount();
+  
+  // Update stars
+  updateStarDisplay(userReview.rating);
+  
+  modal.classList.add('show');
+}
+
+// Delete a review
+async function deleteReview(reviewId, listingId, productName) {
+  if (!reviewsManager) return;
+  
+  if (!confirm('هل أنت متأكد من حذف تقييمك؟ لا يمكن التراجع عن هذا الإجراء.')) {
+    return;
+  }
+  
+  const result = await reviewsManager.deleteReview(reviewId);
+  
+  if (result.success) {
+    // Reload reviews and rating
+    await loadRating(listingId);
+    await loadReviewsForListing(listingId, productName);
+    alert('✅ تم حذف التقييم بنجاح');
+  } else {
+    alert('❌ فشل حذف التقييم: ' + result.error);
+  }
+}
+
+// Handle review form submission
+async function handleReviewSubmit(evt) {
+  evt.preventDefault();
+  
+  if (!reviewsManager) return;
+  
+  const form = evt.target;
+  const listingId = parseInt(form.dataset.listingId);
+  const productName = form.dataset.productName;
+  const mode = form.dataset.mode;
+  const reviewId = form.dataset.reviewId ? parseInt(form.dataset.reviewId) : null;
+  
+  const rating = parseInt(document.getElementById('reviewRatingValue').value);
+  const comment = document.getElementById('reviewComment').value.trim();
+  
+  const errorDiv = document.getElementById('reviewError');
+  const submitBtn = document.getElementById('submitReviewBtn');
+  
+  // Validation
+  if (!rating || rating < 1 || rating > 5) {
+    errorDiv.textContent = '❌ الرجاء اختيار تقييم من 1 إلى 5 نجوم';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  
+  // Disable button during submission
+  submitBtn.disabled = true;
+  submitBtn.textContent = mode === 'edit' ? 'جارٍ التحديث...' : 'جارٍ الإرسال...';
+  errorDiv.style.display = 'none';
+  
+  try {
+    let result;
+    
+    if (mode === 'edit' && reviewId) {
+      result = await reviewsManager.updateReview(reviewId, rating, comment);
+    } else {
+      result = await reviewsManager.submitReview(listingId, rating, comment);
+    }
+    
+    if (result.success) {
+      // Close modal
+      document.getElementById('reviewModal').classList.remove('show');
+      
+      // Reload reviews and rating
+      await loadRating(listingId);
+      await loadReviewsForListing(listingId, productName);
+      
+      alert(mode === 'edit' ? '✅ تم تحديث التقييم بنجاح!' : '✅ تم إرسال التقييم بنجاح!');
+    } else {
+      errorDiv.textContent = '❌ ' + result.error;
+      errorDiv.style.display = 'block';
+    }
+  } catch (e) {
+    errorDiv.textContent = '❌ حدث خطأ: ' + e.message;
+    errorDiv.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = mode === 'edit' ? 'تحديث التقييم' : 'إرسال التقييم';
+  }
+}
+
+// Setup star rating input
+function setupStarRatingInput() {
+  const stars = document.querySelectorAll('#ratingStarsInput .star');
+  const ratingValue = document.getElementById('reviewRatingValue');
+  
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      const rating = parseInt(this.dataset.rating);
+      ratingValue.value = rating;
+      updateStarDisplay(rating);
+    });
+    
+    star.addEventListener('mouseenter', function() {
+      const rating = parseInt(this.dataset.rating);
+      highlightStars(rating);
+    });
+  });
+  
+  document.getElementById('ratingStarsInput').addEventListener('mouseleave', function() {
+    const currentRating = parseInt(ratingValue.value) || 0;
+    updateStarDisplay(currentRating);
+  });
+}
+
+// Update star display
+function updateStarDisplay(rating) {
+  const stars = document.querySelectorAll('#ratingStarsInput .star');
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.classList.remove('star-empty');
+      star.classList.add('star-full');
+      star.textContent = '★';
+    } else {
+      star.classList.remove('star-full');
+      star.classList.add('star-empty');
+      star.textContent = '☆';
+    }
+  });
+}
+
+// Highlight stars on hover
+function highlightStars(rating) {
+  const stars = document.querySelectorAll('#ratingStarsInput .star');
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.textContent = '★';
+    } else {
+      star.textContent = '☆';
+    }
+  });
+}
+
+// Update character count
+function updateCharCount() {
+  const textarea = document.getElementById('reviewComment');
+  const charCount = document.getElementById('charCount');
+  const count = textarea.value.length;
+  
+  charCount.textContent = count;
+  charCount.parentElement.classList.remove('warning', 'error');
+  
+  if (count > 500) {
+    charCount.parentElement.classList.add('error');
+  } else if (count > 400) {
+    charCount.parentElement.classList.add('warning');
+  }
+}
+
+// Close review modal
+function closeReviewModal() {
+  document.getElementById('reviewModal').classList.remove('show');
+  document.getElementById('reviewForm').reset();
+  document.getElementById('reviewError').style.display = 'none';
+  document.getElementById('submitReviewBtn').textContent = 'إرسال التقييم';
 }
 
 // ===================================================
@@ -1695,6 +2550,9 @@ async function fetchData() {
 
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize reviews manager
+  initReviewsManager();
+  
   // Check login status on page load
   checkLoginStatus();
   
@@ -1720,6 +2578,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('loginError').style.display = 'none';
     }
   });
+  
+  // Setup reviews event listeners
+  setupReviewsEventListeners();
   
   // Setup filter listeners
   ['q', 'region', 'maxPrice', 'sort'].forEach(id => {
