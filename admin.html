@@ -566,6 +566,7 @@
       <div class="tabs">
         <button class="tab active" data-tab="users">👥 Verified Users</button>
         <button class="tab" data-tab="listings">📦 Manage Listings</button>
+        <button class="tab" data-tab="reviews">⭐ Reviews</button>
       </div>
 
       <!-- Users Tab -->
@@ -657,6 +658,49 @@
           </table>
         </div>
       </div>
+
+      <!-- Reviews Tab -->
+      <div id="reviewsTab" class="tab-content">
+        <h2>Reviews Management</h2>
+        <div style="margin-bottom: 20px; padding: 16px; background: var(--accent-light); border-radius: 12px; border: 1px solid var(--card-border);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
+            <div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--accent);" id="reviewsTotalCount">-</div>
+              <div style="font-size: 13px; color: var(--muted);">Total Reviews</div>
+            </div>
+            <div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--success);" id="reviewsAvgRating">-</div>
+              <div style="font-size: 13px; color: var(--muted);">Average Rating</div>
+            </div>
+            <div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--text);" id="reviewsUniqueUsers">-</div>
+              <div style="font-size: 13px; color: var(--muted);">Unique Reviewers</div>
+            </div>
+            <div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--text);" id="reviewsProductsReviewed">-</div>
+              <div style="font-size: 13px; color: var(--muted);">Products Reviewed</div>
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table id="reviewsTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product</th>
+                <th>Reviewer</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsTableBody">
+              <tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--muted);">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
     </div>
   </div>
@@ -664,6 +708,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/secure-config.js"></script>
 <script src="assets/js/input-validator.js"></script>
+<script src="assets/js/reviews-manager.js"></script>
 <script>
 // === SECURE CONFIG ===
 const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
@@ -839,10 +884,18 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // === LOAD DASHBOARD ===
+let reviewsManager = null;
+
 async function loadDashboard() {
+  // Initialize reviews manager
+  if (window.ReviewsManager) {
+    reviewsManager = new window.ReviewsManager(supabase, window.auth);
+  }
+  
   await loadStats();
   await loadUsers();
   await loadListings();
+  await loadReviews();
 }
 
 async function loadStats() {
@@ -1034,6 +1087,111 @@ window.deleteListing = async function(listingId, productName) {
     alert('✅ Listing deleted successfully');
   } catch (e) {
     alert('❌ Failed to delete listing: ' + e.message);
+  }
+};
+
+// === REVIEWS MANAGEMENT ===
+async function loadReviews() {
+  if (!reviewsManager) return;
+  
+  try {
+    // Load all reviews
+    const reviews = await reviewsManager.getAllReviews(100, 0);
+    
+    // Calculate statistics
+    const { data: stats, error: statsError } = await supabase
+      .rpc('get_review_statistics');
+    
+    if (!statsError && stats && stats.length > 0) {
+      const stat = stats[0];
+      document.getElementById('reviewsTotalCount').textContent = stat.total_reviews || 0;
+      document.getElementById('reviewsAvgRating').textContent = stat.average_rating 
+        ? `${stat.average_rating.toFixed(1)} ⭐` 
+        : 'N/A';
+      document.getElementById('reviewsUniqueUsers').textContent = stat.unique_reviewers || 0;
+      document.getElementById('reviewsProductsReviewed').textContent = stat.reviewed_products || 0;
+    } else {
+      // Calculate manually if function doesn't exist
+      const uniqueUsers = new Set(reviews.map(r => r.user_id)).size;
+      const uniqueProducts = new Set(reviews.map(r => r.listing_id)).size;
+      const avgRating = reviews.length > 0 
+        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+        : 0;
+      
+      document.getElementById('reviewsTotalCount').textContent = reviews.length;
+      document.getElementById('reviewsAvgRating').textContent = avgRating > 0 ? `${avgRating} ⭐` : 'N/A';
+      document.getElementById('reviewsUniqueUsers').textContent = uniqueUsers;
+      document.getElementById('reviewsProductsReviewed').textContent = uniqueProducts;
+    }
+    
+    // Populate reviews table
+    const tbody = document.getElementById('reviewsTableBody');
+    
+    if (!reviews || reviews.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--muted);">No reviews yet</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = reviews.map(review => {
+      const productName = review.listing?.product_ar || review.listing?.product || 'Unknown Product';
+      const userName = review.user?.full_name || review.user?.username || 'Unknown User';
+      const stars = '⭐'.repeat(review.rating);
+      const comment = review.comment 
+        ? (review.comment.length > 50 ? review.comment.substring(0, 50) + '...' : review.comment)
+        : '<em style="color: var(--muted);">No comment</em>';
+      const date = formatDate(review.created_at);
+      
+      return `
+        <tr>
+          <td style="font-weight: 600;">#${review.id}</td>
+          <td>${escapeHtml(productName)}</td>
+          <td>${escapeHtml(userName)}</td>
+          <td style="font-size: 16px;">${stars}</td>
+          <td style="max-width: 200px;">${comment}</td>
+          <td>${date}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.id}, ${review.listing_id || 'null'})">Delete</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    
+  } catch (e) {
+    console.error('Failed to load reviews:', e);
+    document.getElementById('reviewsTableBody').innerHTML = `
+      <tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--danger);">Error loading reviews</td></tr>
+    `;
+  }
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Delete Review (Admin)
+window.deleteReview = async function(reviewId, listingId) {
+  if (!confirm('Delete this review? This cannot be undone.')) return;
+  
+  if (!reviewsManager) {
+    alert('❌ Reviews manager not initialized');
+    return;
+  }
+  
+  try {
+    const result = await reviewsManager.adminDeleteReview(reviewId, listingId);
+    
+    if (result.success) {
+      await loadReviews();
+      alert('✅ Review deleted successfully');
+    } else {
+      alert('❌ Failed to delete review: ' + result.error);
+    }
+  } catch (e) {
+    alert('❌ Failed to delete review: ' + e.message);
   }
 };
 </script>

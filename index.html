@@ -708,6 +708,387 @@
       transform: translateY(-1px);
     }
     
+    /* ===================================================
+       REVIEWS & RATINGS SYSTEM STYLES
+       =================================================== */
+    
+    /* Rating Display in Product Cards */
+    .rating-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px 0;
+    }
+    
+    .rating-display.no-reviews {
+      opacity: 0.6;
+    }
+    
+    .stars-container {
+      display: inline-flex;
+      gap: 2px;
+      font-size: 18px;
+      line-height: 1;
+    }
+    
+    .star {
+      transition: all 0.2s ease;
+    }
+    
+    .star-full {
+      color: #FFD700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .star-half {
+      color: #FFD700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    .star-empty {
+      color: var(--muted);
+      opacity: 0.4;
+    }
+    
+    .rating-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .rating-percentage {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 13px;
+    }
+    
+    /* Reviews Toggle Button */
+    .reviews-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--accent-light);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-top: 8px;
+    }
+    
+    .reviews-toggle:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    
+    .reviews-toggle-icon {
+      transition: transform 0.2s ease;
+    }
+    
+    .reviews-toggle.expanded .reviews-toggle-icon {
+      transform: rotate(180deg);
+    }
+    
+    /* Reviews Section */
+    .reviews-section {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+    }
+    
+    .reviews-section.visible {
+      display: block;
+    }
+    
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .reviews-sort {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .reviews-sort select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    
+    .btn-write-review {
+      padding: 8px 16px;
+      background: var(--success);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    
+    .btn-write-review:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+    
+    /* Review Cards */
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    
+    .reviews-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .reviews-list::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+      border-radius: 3px;
+    }
+    
+    .reviews-list::-webkit-scrollbar-thumb {
+      background: var(--muted);
+      border-radius: 3px;
+    }
+    
+    .review-card {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .review-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+    
+    .review-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    
+    .review-username {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-bright);
+    }
+    
+    .edited-badge {
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(0,0,0,0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    
+    [data-theme="dark"] .edited-badge {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .review-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .review-meta .stars-container {
+      font-size: 14px;
+    }
+    
+    .review-date {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    
+    .review-comment {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 8px;
+      word-wrap: break-word;
+    }
+    
+    .review-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn-review-edit,
+    .btn-review-delete {
+      padding: 6px 12px;
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-review-edit:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    
+    .btn-review-delete:hover {
+      border-color: var(--danger);
+      background: rgba(239,68,68,0.1);
+      color: var(--danger);
+    }
+    
+    .reviews-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--muted);
+    }
+    
+    .reviews-empty-icon {
+      font-size: 48px;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+    
+    .reviews-loading {
+      text-align: center;
+      padding: 24px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    /* Review Modal */
+    .review-modal {
+      max-width: 600px;
+    }
+    
+    .review-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .rating-input {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .rating-input label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    
+    .rating-stars-input {
+      display: flex;
+      gap: 8px;
+      font-size: 32px;
+    }
+    
+    .rating-stars-input .star {
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .rating-stars-input .star:hover {
+      transform: scale(1.15);
+    }
+    
+    .rating-stars-input .star-empty:hover,
+    .rating-stars-input .star-empty:hover ~ .star {
+      color: var(--muted);
+    }
+    
+    .rating-stars-input .star:hover,
+    .rating-stars-input .star:hover ~ .star-empty {
+      color: #FFD700;
+      text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+    }
+    
+    .comment-input {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .comment-input label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    
+    .comment-input textarea {
+      min-height: 100px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-bright);
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+    }
+    
+    .comment-input textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--input-focus);
+      outline: none;
+    }
+    
+    .char-count {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+    }
+    
+    .char-count.warning {
+      color: var(--warning);
+    }
+    
+    .char-count.error {
+      color: var(--danger);
+    }
+    
     @media (max-width: 1024px) {
       .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
       .filters-grid { grid-template-columns: 1fr 1fr; }
@@ -747,6 +1128,29 @@
       }
       .card-actions { flex-direction: column; }
       .btn { width: 100%; }
+      
+      /* Mobile responsive reviews */
+      .reviews-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .btn-write-review {
+        width: 100%;
+      }
+      
+      .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .review-meta {
+        width: 100%;
+      }
+      
+      .rating-stars-input {
+        font-size: 28px;
+      }
     }
   </style>
 </head>
@@ -842,6 +1246,43 @@
     </div>
   </div>
 
+  <!-- Review Modal -->
+  <div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+    <div class="modal review-modal">
+      <h2 id="reviewModalTitle">✍️ Write a Review</h2>
+      <p id="reviewModalProductName" style="color: var(--muted); margin-bottom: 24px; font-size: 14px;"></p>
+      <div id="reviewError" role="alert" aria-live="assertive" style="display: none; padding: 12px; background: rgba(239,68,68,0.15); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); margin-bottom: 16px; font-size: 14px;"></div>
+      <form id="reviewForm" class="review-form">
+        <div class="rating-input">
+          <label>Your Rating <span style="color: var(--danger);">*</span></label>
+          <div class="rating-stars-input" id="ratingStarsInput">
+            <span class="star star-empty" data-rating="1">☆</span>
+            <span class="star star-empty" data-rating="2">☆</span>
+            <span class="star star-empty" data-rating="3">☆</span>
+            <span class="star star-empty" data-rating="4">☆</span>
+            <span class="star star-empty" data-rating="5">☆</span>
+          </div>
+          <input type="hidden" id="reviewRatingValue" required />
+        </div>
+        <div class="comment-input">
+          <label for="reviewComment">Your Review (Optional)</label>
+          <textarea 
+            id="reviewComment" 
+            placeholder="Share your experience with this product..." 
+            maxlength="500"
+          ></textarea>
+          <div class="char-count">
+            <span id="charCount">0</span> / 500 characters
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" id="submitReviewBtn">Submit Review</button>
+          <button type="button" class="btn btn-secondary" id="cancelReview">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="container">
     <div class="header-section">
       <h1>Local Produce Marketplace</h1>
@@ -916,6 +1357,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/secure-config.js"></script>
   <script src="assets/js/auth-manager.js"></script>
+  <script src="assets/js/reviews-manager.js"></script>
   <script>
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
@@ -1178,7 +1620,7 @@ function render(items) {
       : '';
     
     return `
-      <div class="card ${outOfSeasonClass}">
+      <div class="card ${outOfSeasonClass}" data-listing-id="${row.id}">
         <div class="card-img" ${imgStyle}></div>
         <div class="card-content">
           <div class="card-header">
@@ -1187,6 +1629,21 @@ function render(items) {
           </div>
           ${outOfSeasonBadge}
           ${availBadge}
+          
+          <!-- Rating Display - Will be populated by JS -->
+          <div class="rating-display-container" data-listing-id="${row.id}">
+            <div class="rating-display">
+              <span class="stars-container">
+                <span class="star star-empty">☆</span>
+                <span class="star star-empty">☆</span>
+                <span class="star star-empty">☆</span>
+                <span class="star star-empty">☆</span>
+                <span class="star star-empty">☆</span>
+              </span>
+              <span class="rating-text">Loading...</span>
+            </div>
+          </div>
+          
           ${priceQty ? `<div class="card-meta">
             ${qty ? `<span class="meta-item">📦 ${qty}</span>` : ''}
             ${price ? `<span class="meta-item">💰 ${price}</span>` : ''}
@@ -1198,6 +1655,19 @@ function render(items) {
             ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ Email</a>` : ''}
           </div>
           ${deleteButton}
+          
+          <!-- Reviews Toggle Button -->
+          <button class="reviews-toggle" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">
+            <span>💬</span>
+            <span class="reviews-count">View Reviews</span>
+            <span class="reviews-toggle-icon">▼</span>
+          </button>
+          
+          <!-- Reviews Section (Hidden by default) -->
+          <div class="reviews-section" id="reviews-section-${row.id}">
+            <div class="reviews-loading">Loading reviews...</div>
+          </div>
+          
           <div class="card-footer">
             <span class="seller-name">${name}</span>
             <span>${date}</span>
@@ -1207,7 +1677,7 @@ function render(items) {
     `;
   }).join('');
   
-  // Attach event listeners to delete buttons
+  // Attach event listeners to delete buttons and reviews
   setTimeout(() => {
     document.querySelectorAll('.btn-delete-own').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -1216,7 +1686,443 @@ function render(items) {
         deleteOwnListing(listingId, productName);
       });
     });
+    
+    // Load ratings for all visible listings
+    loadAllRatings();
+    
+    // Attach reviews toggle listeners
+    setupReviewsToggles();
   }, 0);
+}
+
+// ===================================================
+// REVIEWS SYSTEM INTEGRATION
+// ===================================================
+
+let reviewsManager = null;
+
+// Initialize Reviews Manager
+function initReviewsManager() {
+  if (window.ReviewsManager && supabase && window.auth) {
+    reviewsManager = new window.ReviewsManager(supabase, window.auth);
+  }
+}
+
+// Load ratings for all visible listings
+async function loadAllRatings() {
+  if (!reviewsManager) return;
+  
+  const ratingContainers = document.querySelectorAll('.rating-display-container');
+  
+  for (const container of ratingContainers) {
+    const listingId = parseInt(container.dataset.listingId);
+    await loadRating(listingId);
+  }
+}
+
+// Load rating for a single listing
+async function loadRating(listingId) {
+  if (!reviewsManager) return;
+  
+  try {
+    const summary = await reviewsManager.getRatingSummary(listingId);
+    const container = document.querySelector(`.rating-display-container[data-listing-id="${listingId}"]`);
+    
+    if (container) {
+      container.innerHTML = reviewsManager.generateRatingDisplay(summary);
+    }
+    
+    // Update reviews toggle button text
+    const toggleBtn = document.querySelector(`.reviews-toggle[data-listing-id="${listingId}"] .reviews-count`);
+    if (toggleBtn && summary) {
+      const count = summary.total_reviews || 0;
+      toggleBtn.textContent = count === 0 ? 'No reviews yet' : `${count} review${count !== 1 ? 's' : ''}`;
+    }
+  } catch (e) {
+    console.error(`Failed to load rating for listing ${listingId}:`, e);
+  }
+}
+
+// Setup reviews toggle buttons
+function setupReviewsToggles() {
+  document.querySelectorAll('.reviews-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const listingId = parseInt(this.dataset.listingId);
+      const productName = this.dataset.productName;
+      toggleReviewsSection(listingId, productName, this);
+    });
+  });
+}
+
+// Toggle reviews section open/closed
+async function toggleReviewsSection(listingId, productName, toggleBtn) {
+  const section = document.getElementById(`reviews-section-${listingId}`);
+  
+  if (!section) return;
+  
+  const isVisible = section.classList.contains('visible');
+  
+  if (isVisible) {
+    // Close the section
+    section.classList.remove('visible');
+    toggleBtn.classList.remove('expanded');
+  } else {
+    // Open the section
+    section.classList.add('visible');
+    toggleBtn.classList.add('expanded');
+    
+    // Load reviews if not already loaded
+    if (section.querySelector('.reviews-loading')) {
+      await loadReviewsForListing(listingId, productName);
+    }
+  }
+}
+
+// Load and display reviews for a listing
+async function loadReviewsForListing(listingId, productName) {
+  if (!reviewsManager) return;
+  
+  const section = document.getElementById(`reviews-section-${listingId}`);
+  if (!section) return;
+  
+  try {
+    const [reviews, userReview] = await Promise.all([
+      reviewsManager.getReviews(listingId, 50, 0, 'newest'),
+      reviewsManager.getUserReview(listingId)
+    ]);
+    
+    // Build reviews section HTML
+    let html = `
+      <div class="reviews-header">
+        <div class="reviews-sort">
+          <label style="font-size: 13px; color: var(--muted);">Sort by:</label>
+          <select class="reviews-sort-select" data-listing-id="${listingId}">
+            <option value="newest">Newest First</option>
+            <option value="highest">Highest Rated</option>
+            <option value="lowest">Lowest Rated</option>
+          </select>
+        </div>
+    `;
+    
+    // Show write review button if user is logged in and hasn't reviewed
+    if (currentUser && !userReview) {
+      html += `
+        <button class="btn-write-review" data-listing-id="${listingId}" data-product-name="${escapeHtml(productName)}">
+          ✍️ Write Review
+        </button>
+      `;
+    } else if (!currentUser) {
+      html += `
+        <button class="btn-write-review" onclick="document.getElementById('loginModal').classList.add('show');">
+          🔓 Login to Review
+        </button>
+      `;
+    }
+    
+    html += '</div>';
+    
+    // Display reviews
+    if (reviews && reviews.length > 0) {
+      html += '<div class="reviews-list">';
+      reviews.forEach(review => {
+        const isOwnReview = currentUser && review.user_id === currentUser.id;
+        html += reviewsManager.generateReviewCard(review, isOwnReview);
+      });
+      html += '</div>';
+    } else {
+      html += `
+        <div class="reviews-empty">
+          <div class="reviews-empty-icon">💭</div>
+          <p>No reviews yet. Be the first to review this product!</p>
+        </div>
+      `;
+    }
+    
+    section.innerHTML = html;
+    
+    // Attach event listeners for sort, write review, edit, delete
+    setupReviewsEventListeners(listingId, productName);
+    
+  } catch (e) {
+    console.error('Failed to load reviews:', e);
+    section.innerHTML = `
+      <div class="reviews-empty">
+        <div class="reviews-empty-icon">⚠️</div>
+        <p>Failed to load reviews. Please try again later.</p>
+      </div>
+    `;
+  }
+}
+
+// Setup event listeners for reviews section
+function setupReviewsEventListeners(listingId, productName) {
+  // Sort select
+  const sortSelect = document.querySelector(`.reviews-sort-select[data-listing-id="${listingId}"]`);
+  if (sortSelect) {
+    sortSelect.addEventListener('change', async function() {
+      const section = document.getElementById(`reviews-section-${listingId}`);
+      if (section) {
+        section.innerHTML = '<div class="reviews-loading">Loading reviews...</div>';
+        await loadReviewsForListing(listingId, productName);
+        
+        // Restore sort value
+        const newSortSelect = document.querySelector(`.reviews-sort-select[data-listing-id="${listingId}"]`);
+        if (newSortSelect) {
+          newSortSelect.value = this.value;
+        }
+      }
+    });
+  }
+  
+  // Write review button
+  const writeBtn = document.querySelector(`.btn-write-review[data-listing-id="${listingId}"]`);
+  if (writeBtn) {
+    writeBtn.addEventListener('click', function() {
+      openReviewModal(listingId, productName);
+    });
+  }
+  
+  // Edit buttons
+  document.querySelectorAll('.btn-review-edit').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const reviewId = parseInt(this.dataset.reviewId);
+      const listingIdFromBtn = parseInt(this.dataset.listingId);
+      openEditReviewModal(reviewId, listingIdFromBtn || listingId, productName);
+    });
+  });
+  
+  // Delete buttons
+  document.querySelectorAll('.btn-review-delete').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const reviewId = parseInt(this.dataset.reviewId);
+      await deleteReview(reviewId, listingId, productName);
+    });
+  });
+}
+
+// Open review modal for new review
+function openReviewModal(listingId, productName) {
+  if (!currentUser) {
+    document.getElementById('loginModal').classList.add('show');
+    return;
+  }
+  
+  const modal = document.getElementById('reviewModal');
+  const title = document.getElementById('reviewModalTitle');
+  const productNameEl = document.getElementById('reviewModalProductName');
+  const form = document.getElementById('reviewForm');
+  
+  title.textContent = '✍️ Write a Review';
+  productNameEl.textContent = `Reviewing: ${productName}`;
+  
+  // Store listing info in form
+  form.dataset.listingId = listingId;
+  form.dataset.productName = productName;
+  form.dataset.mode = 'create';
+  delete form.dataset.reviewId;
+  
+  // Reset form
+  form.reset();
+  document.getElementById('reviewRatingValue').value = '';
+  document.querySelectorAll('#ratingStarsInput .star').forEach(star => {
+    star.classList.remove('star-full');
+    star.classList.add('star-empty');
+    star.textContent = '☆';
+  });
+  
+  modal.classList.add('show');
+}
+
+// Open review modal for editing
+async function openEditReviewModal(reviewId, listingId, productName) {
+  if (!reviewsManager) return;
+  
+  const userReview = await reviewsManager.getUserReview(listingId);
+  if (!userReview) return;
+  
+  const modal = document.getElementById('reviewModal');
+  const title = document.getElementById('reviewModalTitle');
+  const productNameEl = document.getElementById('reviewModalProductName');
+  const form = document.getElementById('reviewForm');
+  const submitBtn = document.getElementById('submitReviewBtn');
+  
+  title.textContent = '✏️ Edit Your Review';
+  productNameEl.textContent = `Editing review for: ${productName}`;
+  submitBtn.textContent = 'Update Review';
+  
+  // Store listing info in form
+  form.dataset.listingId = listingId;
+  form.dataset.productName = productName;
+  form.dataset.mode = 'edit';
+  form.dataset.reviewId = reviewId;
+  
+  // Populate form with existing data
+  document.getElementById('reviewRatingValue').value = userReview.rating;
+  document.getElementById('reviewComment').value = userReview.comment || '';
+  updateCharCount();
+  
+  // Update stars
+  updateStarDisplay(userReview.rating);
+  
+  modal.classList.add('show');
+}
+
+// Delete a review
+async function deleteReview(reviewId, listingId, productName) {
+  if (!reviewsManager) return;
+  
+  if (!confirm('Are you sure you want to delete your review? This cannot be undone.')) {
+    return;
+  }
+  
+  const result = await reviewsManager.deleteReview(reviewId);
+  
+  if (result.success) {
+    // Reload reviews and rating
+    await loadRating(listingId);
+    await loadReviewsForListing(listingId, productName);
+    alert('✅ Review deleted successfully');
+  } else {
+    alert('❌ Failed to delete review: ' + result.error);
+  }
+}
+
+// Handle review form submission
+async function handleReviewSubmit(evt) {
+  evt.preventDefault();
+  
+  if (!reviewsManager) return;
+  
+  const form = evt.target;
+  const rating = parseInt(document.getElementById('reviewRatingValue').value);
+  const comment = document.getElementById('reviewComment').value.trim() || null;
+  const listingId = parseInt(form.dataset.listingId);
+  const productName = form.dataset.productName;
+  const mode = form.dataset.mode;
+  const reviewId = form.dataset.reviewId ? parseInt(form.dataset.reviewId) : null;
+  
+  const errorDiv = document.getElementById('reviewError');
+  const submitBtn = document.getElementById('submitReviewBtn');
+  
+  // Validation
+  if (!rating) {
+    errorDiv.textContent = '❌ Please select a rating';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  
+  // Disable submit button
+  submitBtn.disabled = true;
+  submitBtn.textContent = mode === 'edit' ? 'Updating...' : 'Submitting...';
+  errorDiv.style.display = 'none';
+  
+  try {
+    let result;
+    
+    if (mode === 'edit' && reviewId) {
+      result = await reviewsManager.updateReview(reviewId, rating, comment);
+    } else {
+      result = await reviewsManager.submitReview(listingId, rating, comment);
+    }
+    
+    if (result.success) {
+      // Close modal
+      document.getElementById('reviewModal').classList.remove('show');
+      
+      // Reload reviews and rating
+      await loadRating(listingId);
+      await loadReviewsForListing(listingId, productName);
+      
+      alert(mode === 'edit' ? '✅ Review updated successfully!' : '✅ Review submitted successfully!');
+    } else {
+      errorDiv.textContent = '❌ ' + result.error;
+      errorDiv.style.display = 'block';
+    }
+  } catch (e) {
+    errorDiv.textContent = '❌ An error occurred: ' + e.message;
+    errorDiv.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = mode === 'edit' ? 'Update Review' : 'Submit Review';
+  }
+}
+
+// Setup star rating input
+function setupStarRatingInput() {
+  const stars = document.querySelectorAll('#ratingStarsInput .star');
+  const ratingValue = document.getElementById('reviewRatingValue');
+  
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      const rating = parseInt(this.dataset.rating);
+      ratingValue.value = rating;
+      updateStarDisplay(rating);
+    });
+    
+    star.addEventListener('mouseenter', function() {
+      const rating = parseInt(this.dataset.rating);
+      highlightStars(rating);
+    });
+  });
+  
+  document.getElementById('ratingStarsInput').addEventListener('mouseleave', function() {
+    const currentRating = parseInt(ratingValue.value) || 0;
+    updateStarDisplay(currentRating);
+  });
+}
+
+// Update star display
+function updateStarDisplay(rating) {
+  const stars = document.querySelectorAll('#ratingStarsInput .star');
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.classList.remove('star-empty');
+      star.classList.add('star-full');
+      star.textContent = '★';
+    } else {
+      star.classList.remove('star-full');
+      star.classList.add('star-empty');
+      star.textContent = '☆';
+    }
+  });
+}
+
+// Highlight stars on hover
+function highlightStars(rating) {
+  const stars = document.querySelectorAll('#ratingStarsInput .star');
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.style.color = '#FFD700';
+      star.style.textShadow = '0 2px 4px rgba(255, 215, 0, 0.3)';
+    } else {
+      star.style.color = '';
+      star.style.textShadow = '';
+    }
+  });
+}
+
+// Character count for comment
+function updateCharCount() {
+  const textarea = document.getElementById('reviewComment');
+  const charCount = document.getElementById('charCount');
+  const count = textarea.value.length;
+  
+  charCount.textContent = count;
+  charCount.parentElement.classList.remove('warning', 'error');
+  
+  if (count > 450) {
+    charCount.parentElement.classList.add('error');
+  } else if (count > 400) {
+    charCount.parentElement.classList.add('warning');
+  }
+}
+
+// Close review modal
+function closeReviewModal() {
+  document.getElementById('reviewModal').classList.remove('show');
+  document.getElementById('reviewForm').reset();
+  document.getElementById('reviewError').style.display = 'none';
+  document.getElementById('submitReviewBtn').textContent = 'Submit Review';
 }
 
 // === FILTERING ===
@@ -1301,6 +2207,22 @@ async function fetchData() {
 document.addEventListener('DOMContentLoaded', () => {
   // Check login status on page load
   checkLoginStatus();
+  
+  // Initialize Reviews Manager
+  initReviewsManager();
+  
+  // Setup review modal event listeners
+  setupStarRatingInput();
+  document.getElementById('reviewForm').addEventListener('submit', handleReviewSubmit);
+  document.getElementById('cancelReview').addEventListener('click', closeReviewModal);
+  document.getElementById('reviewComment').addEventListener('input', updateCharCount);
+  
+  // Close review modal when clicking outside
+  document.getElementById('reviewModal').addEventListener('click', (e) => {
+    if (e.target.id === 'reviewModal') {
+      closeReviewModal();
+    }
+  });
   
   // Login/Logout handlers
   document.getElementById('loginBtn').addEventListener('click', () => {
