@@ -6,71 +6,68 @@
   <title>مركز المزارعين — إضافة منتج</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { 
-      /* FHF Brand Colors - Light Mode */
+      /* Light Mode */
       --bg-primary:#ffffff;
       --bg-secondary:#f9fafb;
       --card-bg:rgba(255,255,255,0.9);
-      --card-border:rgba(45,80,22,0.15);
+      --card-border:rgba(193,29,47,0.2);
       --muted:#6b7280;
       --text:#1f2937;
       --text-bright:#000000;
       
-      /* FHF Primary Brand Colors */
-      --fhf-green:#2d5016;
-      --fhf-green-hover:#234010;
-      --fhf-gold:#d4af37;
-      --fhf-gold-hover:#b8972f;
-      --fhf-brown:#6b4423;
+      /* Primary Brand Colors */
+      --accent:#C11d2F;
+      --accent-hover:#a0182a;
+      --accent-light:rgba(193,29,47,0.1);
+      --brown:#7e571b;
+      --brown-hover:#6b4a16;
+      --brown-light:rgba(126,87,27,0.1);
       
       /* System Colors */
-      --accent:var(--fhf-green);
-      --accent-hover:var(--fhf-green-hover);
-      --accent-light:rgba(45,80,22,0.1);
       --success:#10b981;
-      --danger:#ef4444;
+      --danger:#C11d2F;
       --warning:#f59e0b;
       --input-bg:#ffffff;
       --input-border:#d1d5db;
-      --input-focus:rgba(45,80,22,0.3);
+      --input-focus:rgba(193,29,47,0.3);
       --shadow:rgba(0,0,0,0.1);
     }
     
     [data-theme="dark"] {
-      /* FHF Brand Colors - Dark Mode */
+      /* Dark Mode */
       --bg-primary:#0a0e1a;
       --bg-secondary:#111827;
       --card-bg:rgba(17,24,39,0.7);
-      --card-border:rgba(212,175,55,0.2);
+      --card-border:rgba(193,29,47,0.2);
       --muted:#9ca3af;
       --text:#f3f4f6;
       --text-bright:#ffffff;
       
-      /* FHF Colors adjusted for dark mode */
-      --fhf-green:#4a7a2a;
-      --fhf-green-hover:#5a8a3a;
-      --fhf-gold:#d4af37;
-      --fhf-gold-hover:#e4bf47;
-      --fhf-brown:#8b6433;
+      /* Primary Brand Colors */
+      --accent:#C11d2F;
+      --accent-hover:#d42a3f;
+      --accent-light:rgba(193,29,47,0.1);
+      --brown:#7e571b;
+      --brown-hover:#8f6320;
+      --brown-light:rgba(126,87,27,0.1);
       
-      --accent:var(--fhf-gold);
-      --accent-hover:var(--fhf-gold-hover);
-      --accent-light:rgba(212,175,55,0.15);
+      /* System Colors */
       --success:#10b981;
-      --danger:#ef4444;
+      --danger:#C11d2F;
       --warning:#f59e0b;
       --input-bg:rgba(31,41,55,0.8);
       --input-border:rgba(75,85,99,0.5);
-      --input-focus:rgba(212,175,55,0.3);
+      --input-focus:rgba(193,29,47,0.3);
       --shadow:rgba(0,0,0,0.3);
     }
     
     * { box-sizing:border-box; margin:0; padding:0; }
     
     body {
-      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text);
       background: var(--bg-primary);
       min-height: 100vh;
