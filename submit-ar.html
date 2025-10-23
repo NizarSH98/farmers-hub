@@ -938,6 +938,11 @@
             <label>البريد الإلكتروني</label>
             <input type="email" id="signupEmail" placeholder="example@email.com (اختياري)" />
           </div>
+          <div class="form-group">
+            <label>اسم العلامة التجارية (اختياري)</label>
+            <input type="text" id="signupBrandName" placeholder="اسم العلامة التجارية الم established (اختياري)" />
+            <div class="helper-text">💡 إذا كان لديك علامة تجارية established، أدخلها هنا</div>
+          </div>
           <div class="full">
             <div class="section-divider" style="margin: 20px 0;">
               <span class="section-title">معلومات مشاريع FHF</span>
@@ -1010,6 +1015,12 @@
           <label>البريد الإلكتروني</label>
           <input name="email" id="email" type="email" placeholder="example@email.com (اختياري)" />
         </div>
+        
+        <div class="form-group">
+          <label>اسم العلامة التجارية (اختياري)</label>
+          <input name="brand_name" id="brand_name" placeholder="اسم العلامة التجارية الم established (اختياري)" />
+          <div class="helper-text">💡 إذا كان لديك علامة تجارية established، أدخلها هنا</div>
+        </div>
 
         <!-- Product Details -->
         <div class="full">
@@ -1047,6 +1058,7 @@
           <select name="location" id="location" required>
             <option value="">اختر موقعك...</option>
             <optgroup label="بيروت">
+              <option value="Beirut">بيروت</option>
               <option value="Beirut - Achrafieh">الأشرفية</option>
               <option value="Beirut - Hamra">الحمرا</option>
               <option value="Beirut - Verdun">الفردان</option>
@@ -1055,6 +1067,11 @@
               <option value="Beirut - Badaro">البدارو</option>
             </optgroup>
             <optgroup label="جبل لبنان">
+              <option value="Baabda">بعبدا</option>
+              <option value="Metn">المتن</option>
+              <option value="Keserwan">كسروان</option>
+              <option value="Chouf">الشوف</option>
+              <option value="Aley">عاليه</option>
               <option value="Baabda">بعبدا</option>
               <option value="Aley">عاليه</option>
               <option value="Bhamdoun">بحمدون</option>
@@ -1071,33 +1088,50 @@
             </optgroup>
             <optgroup label="الشمال">
               <option value="Tripoli">طرابلس</option>
-              <option value="Mina">الميناء</option>
               <option value="Zgharta">زغرتا</option>
+              <option value="Koura">الكورة</option>
               <option value="Bcharre">بشري</option>
-              <option value="Koura - Amioun">أميون</option>
               <option value="Batroun">البترون</option>
+              <option value="Minieh-Dinnieh">المنية الضنية</option>
+              <option value="Mina">الميناء</option>
+              <option value="Koura - Amioun">أميون</option>
+              <option value="Akkar - Halba">حلبا</option>
+              <option value="Akkar - Qobayat">القبيات</option>
+              <option value="Akkar - Aarsal">عرسال</option>
+            </optgroup>
+            <optgroup label="عكار">
+              <option value="Akkar">عكار</option>
               <option value="Akkar - Halba">حلبا</option>
               <option value="Akkar - Qobayat">القبيات</option>
               <option value="Akkar - Aarsal">عرسال</option>
             </optgroup>
             <optgroup label="البقاع">
               <option value="Zahle">زحلة</option>
+              <option value="West Bekaa">البقاع الغربي</option>
+              <option value="Rachaya">راشيا</option>
               <option value="Bekaa - Aanjar">عنجر</option>
               <option value="Bekaa - Chtaura">شتورا</option>
-              <option value="Bekaa - Baalbek">بعلبك</option>
-              <option value="Bekaa - Hermel">الهرمل</option>
               <option value="West Bekaa - Joub Jannine">جوب جنين</option>
-              <option value="West Bekaa - Rachaya">راشيا</option>
               <option value="West Bekaa - Kamed el Loz">كامد اللوز</option>
             </optgroup>
+            <optgroup label="بعلبك الهرمل">
+              <option value="Baalbek">بعلبك</option>
+              <option value="Hermel">الهرمل</option>
+              <option value="Bekaa - Baalbek">بعلبك</option>
+              <option value="Bekaa - Hermel">الهرمل</option>
+            </optgroup>
             <optgroup label="الجنوب">
+              <option value="Sidon">صيدا</option>
+              <option value="Jezzine">جزين</option>
+              <option value="Tyre">صور</option>
               <option value="Saida - Sidon">صيدا</option>
               <option value="Tyre - Sour">صور</option>
-              <option value="Jezzine">جزين</option>
+            </optgroup>
+            <optgroup label="النبطية">
               <option value="Nabatieh">النبطية</option>
-              <option value="Bent Jbeil">بنت جبيل</option>
               <option value="Marjayoun">مرجعيون</option>
               <option value="Hasbaya">حاصبيا</option>
+              <option value="Bent Jbeil">بنت جبيل</option>
             </optgroup>
           </select>
         </div>
@@ -1354,6 +1388,7 @@ async function handleSignUp(evt) {
     const fullName = document.getElementById('signupFullName').value.trim();
     const phone = document.getElementById('signupPhone').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
+    const brandName = document.getElementById('signupBrandName').value.trim();
     const wasFhfProject = document.getElementById('signupWasFhfProject').value;
     const fhfProjectName = document.getElementById('signupFhfProjectName').value;
     
@@ -1442,6 +1477,7 @@ async function handleSignUp(evt) {
       full_name: fullName,
       phone: phone || null,
       email: email || null,
+      brand_name: brandName || null,
       is_active: true,
       was_part_of_fhf_project: wasFhfProject === 'yes',
       fhf_project_name: wasFhfProject === 'yes' ? fhfProjectName : null
@@ -1531,6 +1567,14 @@ function autocompleteFormFields() {
     const emailField = document.getElementById('email');
     if (emailField && !emailField.value) {
       emailField.value = currentUser.email;
+    }
+  }
+  
+  // Autocomplete brand name field
+  if (currentUser.brand_name) {
+    const brandField = document.getElementById('brand_name');
+    if (brandField && !brandField.value) {
+      brandField.value = currentUser.brand_name;
     }
   }
 }
@@ -1842,6 +1886,7 @@ async function submitListing(evt) {
       name: formData.get('name')?.trim(),
       phone: formData.get('phone')?.trim(),
       email: formData.get('email')?.trim() || null,
+      brand_name: formData.get('brand_name')?.trim() || null,
       product_ar: formData.get('product_ar')?.trim(),
       product: formData.get('product')?.trim() || null,
       quantity: formData.get('quantity')?.trim() || null,

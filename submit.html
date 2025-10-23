@@ -938,6 +938,11 @@
             <label>Email</label>
             <input type="email" id="signupEmail" placeholder="optional@example.com" />
           </div>
+          <div class="form-group">
+            <label>Brand Name (Optional)</label>
+            <input type="text" id="signupBrandName" placeholder="Your established brand name (optional)" />
+            <div class="helper-text">💡 If you have an established brand, enter it here</div>
+          </div>
           <div class="full">
             <div class="section-divider" style="margin: 20px 0;">
               <span class="section-title">FHF Project Information</span>
@@ -1010,6 +1015,12 @@
           <label>Email</label>
           <input name="email" id="email" type="email" placeholder="optional@example.com" />
         </div>
+        
+        <div class="form-group">
+          <label>Brand Name (Optional)</label>
+          <input name="brand_name" id="brand_name" placeholder="Your established brand name (optional)" />
+          <div class="helper-text">💡 If you have an established brand, enter it here</div>
+        </div>
 
         <!-- Product Details -->
         <div class="full">
@@ -1047,6 +1058,7 @@
           <select name="location" id="location" required>
             <option value="">Select your location...</option>
             <optgroup label="Beirut">
+              <option value="Beirut">Beirut</option>
               <option value="Beirut - Achrafieh">Achrafieh</option>
               <option value="Beirut - Hamra">Hamra</option>
               <option value="Beirut - Verdun">Verdun</option>
@@ -1055,6 +1067,11 @@
               <option value="Beirut - Badaro">Badaro</option>
             </optgroup>
             <optgroup label="Mount Lebanon">
+              <option value="Baabda">Baabda</option>
+              <option value="Metn">Metn</option>
+              <option value="Keserwan">Keserwan</option>
+              <option value="Chouf">Chouf</option>
+              <option value="Aley">Aley</option>
               <option value="Baabda">Baabda</option>
               <option value="Aley">Aley</option>
               <option value="Bhamdoun">Bhamdoun</option>
@@ -1071,33 +1088,50 @@
             </optgroup>
             <optgroup label="North Lebanon">
               <option value="Tripoli">Tripoli</option>
-              <option value="Mina">Mina</option>
               <option value="Zgharta">Zgharta</option>
+              <option value="Koura">Koura</option>
               <option value="Bcharre">Bcharre</option>
-              <option value="Koura - Amioun">Amioun</option>
               <option value="Batroun">Batroun</option>
+              <option value="Minieh-Dinnieh">Minieh-Dinnieh</option>
+              <option value="Mina">Mina</option>
+              <option value="Koura - Amioun">Amioun</option>
+              <option value="Akkar - Halba">Halba</option>
+              <option value="Akkar - Qobayat">Qobayat</option>
+              <option value="Akkar - Aarsal">Aarsal</option>
+            </optgroup>
+            <optgroup label="Akkar">
+              <option value="Akkar">Akkar</option>
               <option value="Akkar - Halba">Halba</option>
               <option value="Akkar - Qobayat">Qobayat</option>
               <option value="Akkar - Aarsal">Aarsal</option>
             </optgroup>
             <optgroup label="Bekaa">
               <option value="Zahle">Zahle</option>
+              <option value="West Bekaa">West Bekaa</option>
+              <option value="Rachaya">Rachaya</option>
               <option value="Bekaa - Aanjar">Aanjar</option>
               <option value="Bekaa - Chtaura">Chtaura</option>
-              <option value="Bekaa - Baalbek">Baalbek</option>
-              <option value="Bekaa - Hermel">Hermel</option>
               <option value="West Bekaa - Joub Jannine">Joub Jannine</option>
-              <option value="West Bekaa - Rachaya">Rachaya</option>
               <option value="West Bekaa - Kamed el Loz">Kamed el Loz</option>
             </optgroup>
+            <optgroup label="Baalbek-Hermel">
+              <option value="Baalbek">Baalbek</option>
+              <option value="Hermel">Hermel</option>
+              <option value="Bekaa - Baalbek">Baalbek</option>
+              <option value="Bekaa - Hermel">Hermel</option>
+            </optgroup>
             <optgroup label="South Lebanon">
+              <option value="Sidon">Sidon</option>
+              <option value="Jezzine">Jezzine</option>
+              <option value="Tyre">Tyre</option>
               <option value="Saida - Sidon">Sidon (Saida)</option>
               <option value="Tyre - Sour">Tyre (Sour)</option>
-              <option value="Jezzine">Jezzine</option>
+            </optgroup>
+            <optgroup label="Nabatieh">
               <option value="Nabatieh">Nabatieh</option>
-              <option value="Bent Jbeil">Bent Jbeil</option>
               <option value="Marjayoun">Marjayoun</option>
               <option value="Hasbaya">Hasbaya</option>
+              <option value="Bent Jbeil">Bent Jbeil</option>
             </optgroup>
           </select>
         </div>
@@ -1318,6 +1352,7 @@ async function handleSignUp(evt) {
       fullName: document.getElementById('signupFullName').value,
       phone: document.getElementById('signupPhone').value,
       email: document.getElementById('signupEmail').value,
+      brandName: document.getElementById('signupBrandName').value,
       wasFhfProject: document.getElementById('signupWasFhfProject').value,
       fhfProjectName: document.getElementById('signupFhfProjectName').value
     };
@@ -1367,6 +1402,7 @@ async function handleSignUp(evt) {
       full_name: validatedData.fullName,
       phone: validatedData.phone,
       email: validatedData.email,
+      brand_name: validatedData.brandName || null,
       is_active: true,
       was_part_of_fhf_project: validatedData.fhfProject.wasFhfProject === 'yes',
       fhf_project_name: validatedData.fhfProject.wasFhfProject === 'yes' ? validatedData.fhfProject.fhfProjectName : null
@@ -1456,6 +1492,14 @@ function autocompleteFormFields() {
     const emailField = document.getElementById('email');
     if (emailField && !emailField.value) {
       emailField.value = currentUser.email;
+    }
+  }
+  
+  // Autocomplete brand name field
+  if (currentUser.brand_name) {
+    const brandField = document.getElementById('brand_name');
+    if (brandField && !brandField.value) {
+      brandField.value = currentUser.brand_name;
     }
   }
 }
@@ -1767,6 +1811,7 @@ async function submitListing(evt) {
       name: formData.get('name')?.trim(),
       phone: formData.get('phone')?.trim(),
       email: formData.get('email')?.trim() || null,
+      brand_name: formData.get('brand_name')?.trim() || null,
       product_ar: formData.get('product_ar')?.trim(),
       product: formData.get('product')?.trim() || null,
       quantity: formData.get('quantity')?.trim() || null,

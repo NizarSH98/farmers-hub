@@ -399,6 +399,17 @@
       display: none;
     }
     
+    .brand-name {
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      border-bottom: 1px solid var(--card-border);
+      margin: 0;
+    }
+    
     .card-content {
       padding: 20px;
       flex: 1;
@@ -1788,6 +1799,7 @@ function render(items) {
     return `
       <div class="card ${outOfSeasonClass}" data-listing-id="${row.id}">
         <div class="card-img" ${imgStyle}></div>
+        ${row.brand_name ? `<div class="brand-name">🏷️ ${escapeHtml(row.brand_name)}</div>` : ''}
         <div class="card-content">
           <div class="card-header">
             <h3 class="card-title">${productDisplay}</h3>
