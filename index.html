@@ -706,9 +706,15 @@
       gap: 8px;
     }
     
+    .own-listing-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn-edit-own,
     .btn-delete-own {
-      background: var(--danger);
-      color: white;
+      flex: 1;
       padding: 8px 16px;
       border-radius: 8px;
       border: none;
@@ -716,8 +722,21 @@
       font-size: 13px;
       cursor: pointer;
       transition: all 0.2s ease;
-      margin-top: 8px;
-      width: 100%;
+    }
+    
+    .btn-edit-own {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .btn-edit-own:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    
+    .btn-delete-own {
+      background: var(--danger);
+      color: white;
     }
     
     .btn-delete-own:hover {
@@ -1494,7 +1513,80 @@
         </div>
         <div class="filter-group">
           <label>Location</label>
-          <input id="region" placeholder="e.g. Bekaa, Tripoli..." />
+          <select id="region">
+            <option value="">All Locations</option>
+            <optgroup label="Beirut">
+              <option value="Beirut">Beirut</option>
+              <option value="Beirut - Achrafieh">Achrafieh</option>
+              <option value="Beirut - Hamra">Hamra</option>
+              <option value="Beirut - Verdun">Verdun</option>
+              <option value="Beirut - Ras Beirut">Ras Beirut</option>
+              <option value="Beirut - Mar Elias">Mar Elias</option>
+              <option value="Beirut - Badaro">Badaro</option>
+            </optgroup>
+            <optgroup label="Mount Lebanon">
+              <option value="Baabda">Baabda</option>
+              <option value="Metn">Metn</option>
+              <option value="Keserwan">Keserwan</option>
+              <option value="Chouf">Chouf</option>
+              <option value="Aley">Aley</option>
+              <option value="Bhamdoun">Bhamdoun</option>
+              <option value="Chouf - Deir el Qamar">Deir el Qamar</option>
+              <option value="Chouf - Beiteddine">Beiteddine</option>
+              <option value="Chouf - Baakline">Baakline</option>
+              <option value="Jbeil - Byblos">Byblos (Jbeil)</option>
+              <option value="Jounieh">Jounieh</option>
+              <option value="Kesrouan - Harissa">Harissa</option>
+              <option value="Kesrouan - Faraya">Faraya</option>
+              <option value="Metn - Broummana">Broummana</option>
+              <option value="Metn - Beit Mery">Beit Mery</option>
+              <option value="Metn - Dhour el Choueir">Dhour el Choueir</option>
+            </optgroup>
+            <optgroup label="North Lebanon">
+              <option value="Tripoli">Tripoli</option>
+              <option value="Zgharta">Zgharta</option>
+              <option value="Koura">Koura</option>
+              <option value="Bcharre">Bcharre</option>
+              <option value="Batroun">Batroun</option>
+              <option value="Minieh-Dinnieh">Minieh-Dinnieh</option>
+              <option value="Mina">Mina</option>
+              <option value="Koura - Amioun">Amioun</option>
+            </optgroup>
+            <optgroup label="Akkar">
+              <option value="Akkar">Akkar</option>
+              <option value="Akkar - Halba">Halba</option>
+              <option value="Akkar - Qobayat">Qobayat</option>
+              <option value="Akkar - Aarsal">Aarsal</option>
+            </optgroup>
+            <optgroup label="Bekaa">
+              <option value="Zahle">Zahle</option>
+              <option value="West Bekaa">West Bekaa</option>
+              <option value="Rachaya">Rachaya</option>
+              <option value="Bekaa - Aanjar">Aanjar</option>
+              <option value="Bekaa - Chtaura">Chtaura</option>
+              <option value="West Bekaa - Joub Jannine">Joub Jannine</option>
+              <option value="West Bekaa - Kamed el Loz">Kamed el Loz</option>
+            </optgroup>
+            <optgroup label="Baalbek-Hermel">
+              <option value="Baalbek">Baalbek</option>
+              <option value="Hermel">Hermel</option>
+              <option value="Bekaa - Baalbek">Baalbek</option>
+              <option value="Bekaa - Hermel">Hermel</option>
+            </optgroup>
+            <optgroup label="South Lebanon">
+              <option value="Sidon">Sidon</option>
+              <option value="Jezzine">Jezzine</option>
+              <option value="Tyre">Tyre</option>
+              <option value="Saida - Sidon">Sidon (Saida)</option>
+              <option value="Tyre - Sour">Tyre (Sour)</option>
+            </optgroup>
+            <optgroup label="Nabatieh">
+              <option value="Nabatieh">Nabatieh</option>
+              <option value="Marjayoun">Marjayoun</option>
+              <option value="Hasbaya">Hasbaya</option>
+              <option value="Bent Jbeil">Bent Jbeil</option>
+            </optgroup>
+          </select>
         </div>
         <div class="filter-group">
           <label>Max Price</label>
@@ -1639,6 +1731,45 @@ function handleLogout() {
   currentUser = null;
     updateUIForLoggedInUser();
   render(filteredRows); // Refresh to hide delete buttons
+}
+
+// === EDIT LISTING ===
+async function editOwnListing(listingId) {
+  if (!currentUser) {
+    alert('You must be logged in to edit listings');
+    return;
+  }
+  
+  try {
+    // Fetch the listing data
+    const { data: listing, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('id', listingId)
+      .single();
+    
+    if (error) throw error;
+    
+    if (!listing) {
+      alert('❌ Listing not found');
+      return;
+    }
+    
+    if (listing.user_id !== currentUser.id) {
+      alert('❌ You can only edit your own listings');
+      return;
+    }
+    
+    // Store listing data in sessionStorage for the submit page
+    sessionStorage.setItem('editListing', JSON.stringify(listing));
+    
+    // Redirect to submit page
+    window.location.href = 'submit.html?edit=' + listingId;
+    
+  } catch (e) {
+    console.error('Failed to load listing for edit:', e);
+    alert('❌ Failed to load listing: ' + e.message);
+  }
 }
 
 async function deleteOwnListing(listingId, productName) {
@@ -1798,8 +1929,11 @@ function render(items) {
     
     // Check if current user owns this listing
     const isOwnListing = currentUser && row.user_id === currentUser.id;
+    const editButton = isOwnListing 
+      ? `<button class="btn-edit-own" data-listing-id="${row.id}">✏️ Edit</button>`
+      : '';
     const deleteButton = isOwnListing 
-      ? `<button class="btn-delete-own" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">🗑️ Delete My Listing</button>`
+      ? `<button class="btn-delete-own" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">🗑️ Delete</button>`
       : '';
     
     return `
@@ -1838,7 +1972,10 @@ function render(items) {
             ${call ? `<a class="btn btn-secondary" href="${call}">📞 Call</a>` : ''}
             ${mail ? `<a class="btn btn-secondary" href="${mail}">✉️ Email</a>` : ''}
           </div>
-          ${deleteButton}
+          <div class="own-listing-buttons">
+            ${editButton}
+            ${deleteButton}
+          </div>
           
           <!-- Reviews Toggle Button -->
           <button class="reviews-toggle" data-listing-id="${row.id}" data-product-name="${escapeHtml(productDisplay)}">
@@ -1893,6 +2030,13 @@ function render(items) {
   
   // Attach event listeners to delete buttons, reviews, and share
   setTimeout(() => {
+    document.querySelectorAll('.btn-edit-own').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const listingId = parseInt(this.dataset.listingId);
+        editOwnListing(listingId);
+      });
+    });
+    
     document.querySelectorAll('.btn-delete-own').forEach(btn => {
       btn.addEventListener('click', function() {
         const listingId = parseInt(this.dataset.listingId);

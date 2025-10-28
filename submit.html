@@ -1029,7 +1029,7 @@
         <div class="form-group autocomplete-wrapper">
           <label class="required">Product Name (Arabic)</label>
           <input name="product_ar" id="product_ar" required placeholder="مثال: زيت زيتون، تفاح، زعتر..." />
-          <div class="helper-text">💡 Arabic name is required</div>
+          <div class="helper-text" id="product-ar-helper">💡 Arabic name is required</div>
           <div id="product-ar-suggestions" class="autocomplete-list" style="display:none;"></div>
         </div>
         
@@ -1136,6 +1136,13 @@
         <div class="form-group">
           <label>Harvest Date</label>
           <input name="harvest_date" id="harvest_date" type="date" />
+          <div class="helper-text">📅 When the product was harvested</div>
+        </div>
+        
+        <div class="form-group">
+          <label>Production Date</label>
+          <input name="production_date" id="production_date" type="date" />
+          <div class="helper-text">🏭 For processed products (oil, cheese, etc.)</div>
         </div>
         
         <div class="full form-group">
@@ -1773,6 +1780,32 @@ async function uploadImage(file, listingId) {
   return urlData.publicUrl;
 }
 
+// === ARABIC VALIDATION ===
+function hasArabicCharacters(text) {
+  if (!text || text.trim().length === 0) return false;
+  // Arabic Unicode range: \u0600-\u06FF, \u0750-\u077F, \u08A0-\u08FF
+  const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+  return arabicPattern.test(text);
+}
+
+function validateArabicInput() {
+  const productArInput = document.getElementById('product_ar');
+  const helperText = document.getElementById('product-ar-helper');
+  const value = productArInput.value.trim();
+  
+  if (value.length > 0 && !hasArabicCharacters(value)) {
+    productArInput.style.borderColor = 'var(--danger)';
+    helperText.textContent = '⚠️ Please use Arabic characters for the product name';
+    helperText.style.color = 'var(--danger)';
+    return false;
+  } else {
+    productArInput.style.borderColor = '';
+    helperText.textContent = '💡 Arabic name is required';
+    helperText.style.color = '';
+    return true;
+  }
+}
+
 // === FORM SUBMISSION ===
 async function submitListing(evt) {
   evt.preventDefault();
@@ -1788,6 +1821,17 @@ async function submitListing(evt) {
     return;
   }
   
+  // Validate Arabic product name
+  const productAr = document.getElementById('product_ar').value.trim();
+  if (!productAr || !hasArabicCharacters(productAr)) {
+    status.textContent = "❌ Product name must be written in Arabic";
+    status.className = "notice err show";
+    setTimeout(() => status.classList.remove('show'), 3000);
+    validateArabicInput(); // Show visual feedback
+    document.getElementById('product_ar').focus();
+    return;
+  }
+  
   // Check availability selection
   if (selectedMonths.size === 0) {
     status.textContent = "❌ Please select availability months";
@@ -1796,7 +1840,7 @@ async function submitListing(evt) {
     return;
   }
   
-  status.textContent = "Submitting listing...";
+  status.textContent = isEditMode ? "Updating listing..." : "Submitting listing...";
   status.className = "notice loading show";
   
   try {
@@ -1815,56 +1859,170 @@ async function submitListing(evt) {
       price: formData.get('price')?.trim() || null,
       location: formData.get('location')?.trim(),
       harvest_date: formData.get('harvest_date') || null,
+      production_date: formData.get('production_date') || null,
       description: formData.get('description')?.trim() || null,
-      availability: availability,
-      image_url: null
+      availability: availability
     };
     
     if (!payload.name || !payload.phone || !payload.product_ar || !payload.location) {
       throw new Error('Please fill in all required fields');
     }
     
-    const { data: listing, error: insertError } = await supabase
-      .from('listings')
-      .insert([payload])
-      .select()
-      .single();
+    let listing;
     
-    if (insertError) throw insertError;
-    
-    if (selectedImageFile) {
-      status.textContent = "Uploading image...";
-      const imageUrl = await uploadImage(selectedImageFile, listing.id);
-      
-      const { error: updateError } = await supabase
+    if (isEditMode && editListingId) {
+      // UPDATE existing listing
+      const { data, error: updateError } = await supabase
         .from('listings')
-        .update({ image_url: imageUrl })
-        .eq('id', listing.id);
+        .update(payload)
+        .eq('id', editListingId)
+        .eq('user_id', currentUser.id) // Security: ensure ownership
+        .select()
+        .single();
       
-      if (updateError) console.warn('Failed to update image URL:', updateError);
+      if (updateError) throw updateError;
+      listing = data;
+      
+      // Handle image update
+      if (selectedImageFile) {
+        status.textContent = "Uploading new image...";
+        const imageUrl = await uploadImage(selectedImageFile, listing.id);
+        
+        const { error: imgUpdateError } = await supabase
+          .from('listings')
+          .update({ image_url: imageUrl })
+          .eq('id', listing.id);
+        
+        if (imgUpdateError) console.warn('Failed to update image URL:', imgUpdateError);
+      }
+      
+      status.textContent = "✅ Listing updated successfully!";
+      sessionStorage.removeItem('editListing'); // Clean up
+      
+      // Redirect to marketplace after short delay
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1500);
+      
+    } else {
+      // CREATE new listing
+      payload.image_url = null;
+      
+      const { data, error: insertError } = await supabase
+        .from('listings')
+        .insert([payload])
+        .select()
+        .single();
+      
+      if (insertError) throw insertError;
+      listing = data;
+      
+      if (selectedImageFile) {
+        status.textContent = "Uploading image...";
+        const imageUrl = await uploadImage(selectedImageFile, listing.id);
+        
+        const { error: updateError } = await supabase
+          .from('listings')
+          .update({ image_url: imageUrl })
+          .eq('id', listing.id);
+        
+        if (updateError) console.warn('Failed to update image URL:', updateError);
+      }
+      
+      status.textContent = "✅ Listing submitted successfully!";
+      
+      form.reset();
+      selectedImageFile = null;
+      selectedMonths.clear();
+      document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
+      document.getElementById('imagePreview').style.display = 'none';
+      document.getElementById('removeImage').style.display = 'none';
+      document.getElementById('uploadPlaceholder').style.display = 'block';
+      
+      await loadExistingData();
+      
+      setTimeout(() => {
+        status.classList.remove('show');
+      }, 5000);
     }
     
-    status.textContent = "✅ Listing submitted successfully!";
     status.className = "notice ok show";
-    
-    form.reset();
-    selectedImageFile = null;
-    selectedMonths.clear();
-    document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
-    document.getElementById('imagePreview').style.display = 'none';
-    document.getElementById('removeImage').style.display = 'none';
-    document.getElementById('uploadPlaceholder').style.display = 'block';
-    
-    await loadExistingData();
-    
-    setTimeout(() => {
-      status.classList.remove('show');
-    }, 5000);
     
   } catch (e) {
     status.textContent = "❌ Submission failed: " + e.message;
     status.className = "notice err show";
     console.error('Submission error:', e);
+  }
+}
+
+// === EDIT MODE ===
+let isEditMode = false;
+let editListingId = null;
+
+async function loadEditData() {
+  // Check if we're in edit mode
+  const urlParams = new URLSearchParams(window.location.search);
+  editListingId = urlParams.get('edit');
+  
+  if (!editListingId) return;
+  
+  // Retrieve listing from sessionStorage
+  const listingJSON = sessionStorage.getItem('editListing');
+  if (!listingJSON) {
+    alert('❌ Edit session expired. Please try again from the marketplace.');
+    window.location.href = 'index.html';
+    return;
+  }
+  
+  try {
+    const listing = JSON.parse(listingJSON);
+    isEditMode = true;
+    
+    // Update page title
+    document.title = 'Farmer Hub — Edit Your Listing';
+    document.querySelector('h1').textContent = 'Edit Your Listing';
+    document.querySelector('.lead').textContent = 'Update the information below to modify your product listing.';
+    
+    // Populate form fields
+    document.getElementById('name').value = listing.name || '';
+    document.getElementById('phone').value = listing.phone || '';
+    document.getElementById('email').value = listing.email || '';
+    document.getElementById('brand_name').value = listing.brand_name || '';
+    document.getElementById('product_ar').value = listing.product_ar || '';
+    document.getElementById('product').value = listing.product || '';
+    document.getElementById('quantity').value = listing.quantity || '';
+    document.getElementById('price').value = listing.price || '';
+    document.getElementById('location').value = listing.location || '';
+    document.getElementById('harvest_date').value = listing.harvest_date || '';
+    document.getElementById('production_date').value = listing.production_date || '';
+    document.getElementById('description').value = listing.description || '';
+    
+    // Handle availability months
+    if (listing.availability) {
+      if (listing.availability === 'all') {
+        selectedMonths.add('all');
+        document.getElementById('allYearBtn').classList.add('selected');
+      } else {
+        try {
+          const months = JSON.parse(listing.availability);
+          months.forEach(month => {
+            selectedMonths.add(String(month));
+            const btn = document.querySelector(`.month-btn[data-month="${month}"]`);
+            if (btn) btn.classList.add('selected');
+          });
+        } catch (e) {
+          console.warn('Could not parse availability months:', e);
+        }
+      }
+    }
+    
+    // Update submit button text
+    document.querySelector('.btn-primary[type="submit"]').innerHTML = '✓ Update Listing';
+    
+  } catch (e) {
+    console.error('Failed to load edit data:', e);
+    alert('❌ Failed to load listing data: ' + e.message);
+    window.location.href = 'index.html';
   }
 }
 
@@ -1880,6 +2038,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // If already logged in, autocomplete the form
     autocompleteFormFields();
   }
+  
+  // Load edit data if in edit mode
+  await loadEditData();
   
   // Setup auth functionality
   setupAuthTabs();
@@ -1932,6 +2093,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup autocomplete
   new Autocomplete('product', 'product-suggestions', 'products');
   new Autocomplete('product_ar', 'product-ar-suggestions', 'productsAr');
+  
+  // Setup real-time Arabic validation
+  document.getElementById('product_ar').addEventListener('blur', validateArabicInput);
+  document.getElementById('product_ar').addEventListener('input', function() {
+    if (this.value.trim().length > 0) {
+      validateArabicInput();
+    }
+  });
   
   // Setup image upload and month selector
   setupImageUpload();
