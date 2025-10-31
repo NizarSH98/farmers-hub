@@ -198,14 +198,14 @@
       align-items: center;
       gap: 6px;
       padding: 6px 12px;
-      background: linear-gradient(135deg, var(--fhf-green) 0%, var(--fhf-brown) 100%);
+      background: var(--accent);
       color: white;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 8px rgba(45,80,22,0.3);
+      box-shadow: 0 2px 8px rgba(193,29,47,0.3);
     }
     
     .fhf-badge::before {
@@ -513,6 +513,29 @@
       background: rgba(255,255,255,0.05);
     }
     
+    /* Price Unit Selector */
+    .price-unit-wrapper {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+    
+    .price-input-wrapper {
+      flex: 1;
+    }
+    
+    .price-input-wrapper input {
+      width: 100%;
+    }
+    
+    .unit-select-wrapper {
+      min-width: 160px;
+    }
+    
+    .unit-select-wrapper select {
+      width: 100%;
+    }
+    
     .notice {
       margin-top: 20px;
       padding: 14px 18px;
@@ -748,7 +771,7 @@
     }
     
     .user-info-bar {
-      background: var(--success);
+      background: var(--accent);
       color: white;
       padding: 12px 20px;
       border-radius: 12px;
@@ -756,7 +779,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+      box-shadow: 0 4px 12px rgba(193,29,47,0.3);
     }
     
     .user-info-text {
@@ -1045,9 +1068,71 @@
           <input name="quantity" id="quantity" placeholder="e.g. 50 kg, 200 L" />
         </div>
         
-        <div class="form-group">
+        <div class="form-group full">
           <label>Unit Price</label>
-          <input name="price" id="price" placeholder="e.g. 3.5 USD/kg" />
+          <div class="price-unit-wrapper">
+            <div class="price-input-wrapper">
+              <input type="number" name="price_number" id="price_number" step="0.01" min="0" placeholder="e.g. 3.5" />
+            </div>
+            <div class="unit-select-wrapper">
+              <select name="price_unit" id="price_unit" required>
+                <option value="">Select unit...</option>
+                <optgroup label="USD per Unit">
+                  <option value="USD/kg">USD/kg</option>
+                  <option value="USD/g">USD/g</option>
+                  <option value="USD/lb">USD/lb</option>
+                  <option value="USD/ton">USD/ton</option>
+                  <option value="USD/L">USD/Liter</option>
+                  <option value="USD/mL">USD/mL</option>
+                  <option value="USD/gallon">USD/gallon</option>
+                  <option value="USD/bushel">USD/bushel</option>
+                  <option value="USD/piece">USD/piece</option>
+                  <option value="USD/dozen">USD/dozen</option>
+                  <option value="USD/box">USD/box</option>
+                  <option value="USD/bag">USD/bag</option>
+                  <option value="USD/container-small">USD/container (small)</option>
+                  <option value="USD/container-medium">USD/container (medium)</option>
+                  <option value="USD/container-large">USD/container (large)</option>
+                </optgroup>
+                <optgroup label="Lebanese Lira per Unit">
+                  <option value="LBP/kg">LBP/kg</option>
+                  <option value="LBP/g">LBP/g</option>
+                  <option value="LBP/lb">LBP/lb</option>
+                  <option value="LBP/ton">LBP/ton</option>
+                  <option value="LBP/L">LBP/Liter</option>
+                  <option value="LBP/mL">LBP/mL</option>
+                  <option value="LBP/gallon">LBP/gallon</option>
+                  <option value="LBP/bushel">LBP/bushel</option>
+                  <option value="LBP/piece">LBP/piece</option>
+                  <option value="LBP/dozen">LBP/dozen</option>
+                  <option value="LBP/box">LBP/box</option>
+                  <option value="LBP/bag">LBP/bag</option>
+                  <option value="LBP/container-small">LBP/container (small)</option>
+                  <option value="LBP/container-medium">LBP/container (medium)</option>
+                  <option value="LBP/container-large">LBP/container (large)</option>
+                </optgroup>
+                <optgroup label="EUR per Unit">
+                  <option value="EUR/kg">EUR/kg</option>
+                  <option value="EUR/g">EUR/g</option>
+                  <option value="EUR/lb">EUR/lb</option>
+                  <option value="EUR/ton">EUR/ton</option>
+                  <option value="EUR/L">EUR/Liter</option>
+                  <option value="EUR/mL">EUR/mL</option>
+                  <option value="EUR/gallon">EUR/gallon</option>
+                  <option value="EUR/bushel">EUR/bushel</option>
+                  <option value="EUR/piece">EUR/piece</option>
+                  <option value="EUR/dozen">EUR/dozen</option>
+                  <option value="EUR/box">EUR/box</option>
+                  <option value="EUR/bag">EUR/bag</option>
+                  <option value="EUR/container-small">EUR/container (small)</option>
+                  <option value="EUR/container-medium">EUR/container (medium)</option>
+                  <option value="EUR/container-large">EUR/container (large)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="helper-text">💡 Enter the price number and select the unit</div>
+          <input type="hidden" name="price" id="price" />
         </div>
         
         <div class="form-group">
@@ -1847,6 +1932,16 @@ async function submitListing(evt) {
     const formData = new FormData(form);
     const availability = selectedMonths.has('all') ? 'all' : JSON.stringify(Array.from(selectedMonths).map(Number));
     
+    // Combine price number and unit
+    const priceNumber = formData.get('price_number')?.trim();
+    const priceUnit = formData.get('price_unit')?.trim();
+    let combinedPrice = null;
+    if (priceNumber && priceUnit) {
+      combinedPrice = `${priceNumber} ${priceUnit}`;
+    } else if (priceNumber) {
+      combinedPrice = priceNumber;
+    }
+    
     const payload = {
       user_id: currentUser.id,
       name: formData.get('name')?.trim(),
@@ -1856,7 +1951,7 @@ async function submitListing(evt) {
       product_ar: formData.get('product_ar')?.trim(),
       product: formData.get('product')?.trim() || null,
       quantity: formData.get('quantity')?.trim() || null,
-      price: formData.get('price')?.trim() || null,
+      price: combinedPrice || null,
       location: formData.get('location')?.trim(),
       harvest_date: formData.get('harvest_date') || null,
       production_date: formData.get('production_date') || null,
@@ -1991,7 +2086,35 @@ async function loadEditData() {
     document.getElementById('product_ar').value = listing.product_ar || '';
     document.getElementById('product').value = listing.product || '';
     document.getElementById('quantity').value = listing.quantity || '';
-    document.getElementById('price').value = listing.price || '';
+    
+    // Parse price into number and unit
+    if (listing.price) {
+      const priceMatch = listing.price.match(/^([\d.]+)\s*(.+)?$/);
+      if (priceMatch) {
+        document.getElementById('price_number').value = priceMatch[1] || '';
+        if (priceMatch[2]) {
+          const unitValue = priceMatch[2].trim();
+          const unitSelect = document.getElementById('price_unit');
+          // Try to find exact match first
+          const exactOption = Array.from(unitSelect.options).find(opt => opt.value === unitValue);
+          if (exactOption) {
+            unitSelect.value = unitValue;
+          } else {
+            // Try partial match
+            const partialOption = Array.from(unitSelect.options).find(opt => opt.value.includes(unitValue) || unitValue.includes(opt.value));
+            if (partialOption) {
+              unitSelect.value = partialOption.value;
+            }
+          }
+        }
+      } else {
+        // Fallback: try to set as number if it's just a number
+        if (!isNaN(listing.price)) {
+          document.getElementById('price_number').value = listing.price;
+        }
+      }
+    }
+    
     document.getElementById('location').value = listing.location || '';
     document.getElementById('harvest_date').value = listing.harvest_date || '';
     document.getElementById('production_date').value = listing.production_date || '';

@@ -696,7 +696,7 @@
     
     .user-badge {
       padding: 8px 16px;
-      background: var(--success);
+      background: var(--accent);
       color: white;
       border-radius: 10px;
       font-size: 13px;
@@ -704,6 +704,23 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 4px 12px rgba(193,29,47,0.25);
+    }
+
+    /* Ensure logout button is readable on accent background */
+    .user-badge .nav-link {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .user-badge .nav-link:hover {
+      background: rgba(255,255,255,0.26);
+      border-color: rgba(255,255,255,0.55);
+      color: #ffffff;
     }
     
     .own-listing-buttons {
