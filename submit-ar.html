@@ -473,6 +473,22 @@
       background: #047857;
     }
     
+    .month-btn.unavailable {
+      grid-column: 1 / -1;
+      background: var(--muted);
+      border-color: var(--muted);
+      color: white;
+    }
+    
+    .month-btn.unavailable:hover {
+      background: #4b5563;
+    }
+    
+    .month-btn.unavailable.selected {
+      background: #374151;
+      border-color: #374151;
+    }
+    
     .actions {
       display: flex;
       gap: 16px;
@@ -1030,8 +1046,10 @@
         </div>
         
         <div class="full form-group">
-          <label class="required">الاسم الكامل</label>
-          <input name="name" id="name" required placeholder="مثال: أحمد خوري" />
+          <label class="required">اسم العلامة التجارية</label>
+          <input name="brand_name" id="brand_name" required placeholder="اسم العلامة التجارية" />
+          <div class="helper-text" id="brand-helper">💡 إذا كان لديك علامة تجارية، أدخلها هنا</div>
+          <div class="helper-text" id="brand-error" style="display: none; color: var(--danger);"></div>
         </div>
         
         <div class="form-group">
@@ -1046,9 +1064,8 @@
         </div>
         
         <div class="form-group">
-          <label>اسم العلامة التجارية (اختياري)</label>
-          <input name="brand_name" id="brand_name" placeholder="اسم العلامة التجارية الم established (اختياري)" />
-          <div class="helper-text">💡 إذا كان لديك علامة تجارية established، أدخلها هنا</div>
+          <label>الاسم الكامل (اختياري)</label>
+          <input name="name" id="name" placeholder="مثال: أحمد خوري (اختياري)" />
         </div>
 
         <!-- Product Details -->
@@ -1256,6 +1273,7 @@
             <button type="button" class="month-btn" data-month="11">تشرين الثاني</button>
             <button type="button" class="month-btn" data-month="12">كانون الأول</button>
             <button type="button" class="month-btn all-year" id="allYearBtn">طوال العام</button>
+            <button type="button" class="month-btn unavailable" id="unavailableBtn">غير متوفر (قريباً)</button>
           </div>
         </div>
         
@@ -1555,6 +1573,21 @@ async function handleSignUp(evt) {
       errorDiv.style.display = 'block';
       return;
     }
+
+    // Check if brand name is taken (if provided)
+    if (brandName) {
+      const { data: existingBrand } = await supabase
+        .from('brands')
+        .select('id')
+        .eq('name', brandName)
+        .single();
+      
+      if (existingBrand) {
+        errorDiv.textContent = '❌ اسم العلامة التجارية مستخدم بالفعل من قبل مستخدم آخر.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+    }
     
     // Hash password securely
     const { data: hashResult, error: hashError } = await supabase
@@ -1588,6 +1621,14 @@ async function handleSignUp(evt) {
       .single();
     
     if (insertError) throw insertError;
+
+    // Create brand if provided
+    if (brandName) {
+      await supabase.from('brands').insert({
+        name: brandName,
+        owner_id: newUser.id
+      });
+    }
     
     // Auto sign in with full user data
     window.auth.setUser({
@@ -1679,12 +1720,20 @@ function autocompleteFormFields() {
 
 // === MONTH SELECTOR ===
 function setupMonthSelector() {
-  const monthBtns = document.querySelectorAll('.month-btn:not(.all-year)');
+  const monthBtns = document.querySelectorAll('.month-btn:not(.all-year):not(.unavailable)');
   const allYearBtn = document.getElementById('allYearBtn');
+  const unavailableBtn = document.getElementById('unavailableBtn');
   
   monthBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const month = btn.dataset.month;
+      
+      // Clear unavailable if selecting a month
+      if (selectedMonths.has('unavailable')) {
+        selectedMonths.clear();
+        unavailableBtn.classList.remove('selected');
+      }
+      
       if (selectedMonths.has('all')) {
         selectedMonths.clear();
         allYearBtn.classList.remove('selected');
@@ -1701,6 +1750,12 @@ function setupMonthSelector() {
   });
   
   allYearBtn.addEventListener('click', () => {
+    // Clear unavailable if selecting all year
+    if (selectedMonths.has('unavailable')) {
+      selectedMonths.clear();
+      unavailableBtn.classList.remove('selected');
+    }
+    
     if (selectedMonths.has('all')) {
       selectedMonths.clear();
       allYearBtn.classList.remove('selected');
@@ -1709,6 +1764,19 @@ function setupMonthSelector() {
       monthBtns.forEach(btn => btn.classList.remove('selected'));
       selectedMonths.add('all');
       allYearBtn.classList.add('selected');
+    }
+  });
+  
+  unavailableBtn.addEventListener('click', () => {
+    if (selectedMonths.has('unavailable')) {
+      selectedMonths.clear();
+      unavailableBtn.classList.remove('selected');
+    } else {
+      selectedMonths.clear();
+      monthBtns.forEach(btn => btn.classList.remove('selected'));
+      allYearBtn.classList.remove('selected');
+      selectedMonths.add('unavailable');
+      unavailableBtn.classList.add('selected');
     }
   });
 }
@@ -2014,7 +2082,54 @@ async function submitListing(evt) {
   
   try {
     const formData = new FormData(form);
-    const availability = selectedMonths.has('all') ? 'all' : JSON.stringify(Array.from(selectedMonths).map(Number));
+    const brandName = formData.get('brand_name').trim();
+
+    // Brand Ownership Check
+    if (brandName) {
+      const { data: existingBrand, error: brandCheckError } = await supabase
+        .from('brands')
+        .select('owner_id, name')
+        .eq('name', brandName)
+        .maybeSingle();
+        
+      if (existingBrand) {
+        if (existingBrand.owner_id != currentUser.id) {
+          status.textContent = `❌ اسم العلامة التجارية "${brandName}" مسجل بالفعل لمستخدم آخر. الرجاء اختيار اسم علامة تجارية مختلف.`;
+          status.className = "notice err show";
+          document.getElementById('brand_name').focus();
+          return;
+        }
+      } else {
+        // Create new brand with proper error handling for race conditions
+        const { data: newBrand, error: brandError } = await supabase
+          .from('brands')
+          .insert({
+            name: brandName,
+            owner_id: currentUser.id,
+            description: `اكتشف منتجات من ${brandName}`
+          })
+          .select()
+          .maybeSingle();
+          
+        if (brandError) {
+          // Check if it's a unique constraint violation (race condition)
+          if (brandError.code === '23505' || brandError.message?.includes('duplicate') || brandError.message?.includes('unique')) {
+            status.textContent = `❌ تم تسجيل اسم العلامة التجارية "${brandName}" من قبل مستخدم آخر للتو. الرجاء اختيار اسم مختلف.`;
+            status.className = "notice err show";
+            document.getElementById('brand_name').focus();
+            return;
+          }
+          console.error('Brand creation error:', brandError);
+          status.textContent = `❌ فشل تسجيل اسم العلامة التجارية. يرجى المحاولة مرة أخرى.`;
+          status.className = "notice err show";
+          return;
+        }
+      }
+    }
+
+    const availability = selectedMonths.has('all') ? 'all' : 
+                         selectedMonths.has('unavailable') ? '[0]' :
+                         JSON.stringify(Array.from(selectedMonths).map(Number));
     
     // Combine price number and unit
     const priceNumber = formData.get('price_number')?.trim();
@@ -2042,9 +2157,15 @@ async function submitListing(evt) {
       description: formData.get('description')?.trim() || null,
       availability: availability
     };
+
+    // Generate random ID if name is missing
+    if (!payload.name) {
+      const randomId = Math.floor(1000 + Math.random() * 9000);
+      payload.name = `Farmer-${randomId}`;
+    }
     
-    if (!payload.name || !payload.phone || !payload.product_ar || !payload.location) {
-      throw new Error('الرجاء ملء جميع الحقول المطلوبة');
+    if (!payload.brand_name || !payload.phone || !payload.product_ar || !payload.location) {
+      throw new Error('الرجاء ملء جميع الحقول المطلوبة (اسم العلامة التجارية، الهاتف، اسم المنتج، الموقع)');
     }
     
     let listing;
@@ -2209,6 +2330,9 @@ async function loadEditData() {
       if (listing.availability === 'all') {
         selectedMonths.add('all');
         document.getElementById('allYearBtn').classList.add('selected');
+      } else if (listing.availability === 'unavailable' || listing.availability === '[0]') {
+        selectedMonths.add('unavailable');
+        document.getElementById('unavailableBtn').classList.add('selected');
       } else {
         try {
           const months = JSON.parse(listing.availability);
@@ -2312,6 +2436,56 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup image upload and month selector
   setupImageUpload();
   setupMonthSelector();
+  
+  // Brand name validation on blur
+  document.getElementById('brand_name').addEventListener('blur', async function() {
+    const brandName = this.value.trim();
+    const brandError = document.getElementById('brand-error');
+    const brandHelper = document.getElementById('brand-helper');
+    
+    if (!brandName || !currentUser) {
+      brandError.style.display = 'none';
+      brandHelper.style.display = 'block';
+      this.style.borderColor = '';
+      return;
+    }
+    
+    try {
+      const { data: existingBrand, error } = await supabase
+        .from('brands')
+        .select('owner_id, name')
+        .eq('name', brandName)
+        .maybeSingle();
+      
+      if (existingBrand && existingBrand.owner_id != currentUser.id) {
+        brandError.textContent = `❌ اسم العلامة التجارية مستخدم من قبل مستخدم آخر`;
+        brandError.style.display = 'block';
+        brandHelper.style.display = 'none';
+        this.style.borderColor = 'var(--danger)';
+      } else if (existingBrand && existingBrand.owner_id == currentUser.id) {
+        brandError.textContent = `✅ هذه علامتك التجارية`;
+        brandError.style.color = 'var(--success)';
+        brandError.style.display = 'block';
+        brandHelper.style.display = 'none';
+        this.style.borderColor = 'var(--success)';
+      } else {
+        brandError.textContent = `✅ اسم العلامة التجارية متاح`;
+        brandError.style.color = 'var(--success)';
+        brandError.style.display = 'block';
+        brandHelper.style.display = 'none';
+        this.style.borderColor = 'var(--success)';
+      }
+    } catch (err) {
+      console.error('Brand check error:', err);
+    }
+  });
+  
+  // Clear validation on focus
+  document.getElementById('brand_name').addEventListener('focus', function() {
+    document.getElementById('brand-error').style.display = 'none';
+    document.getElementById('brand-helper').style.display = 'block';
+    this.style.borderColor = '';
+  });
   
   // Form submission
   document.getElementById('listingForm').addEventListener('submit', submitListing);

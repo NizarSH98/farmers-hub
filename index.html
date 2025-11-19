@@ -282,9 +282,19 @@
     
     .filters-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 12px;
       align-items: end;
+    }
+    
+    .filter-group.search-group {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 768px) {
+      .filter-group.search-group {
+        grid-column: span 1;
+      }
     }
     
     .filter-group label {
@@ -1533,7 +1543,7 @@
         
     <div class="filters-card">
       <div class="filters-grid">
-        <div class="filter-group">
+        <div class="filter-group search-group">
           <label>Search Products</label>
           <input id="q" placeholder="e.g. apples, olive oil, thyme..." />
         </div>
@@ -1612,6 +1622,19 @@
               <option value="Hasbaya">Hasbaya</option>
               <option value="Bent Jbeil">Bent Jbeil</option>
             </optgroup>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Brand</label>
+          <select id="brandFilter">
+            <option value="">All Brands</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Availability</label>
+          <select id="availabilityFilter">
+            <option value="all">All Statuses</option>
+            <option value="now">Available Now Only</option>
           </select>
         </div>
         <div class="filter-group">
@@ -1848,6 +1871,7 @@ async function deleteOwnListing(listingId, productName) {
 // === AVAILABILITY FUNCTIONS ===
 function isInSeason(availability) {
   if (!availability || availability === 'all') return true;
+  if (availability === 'unavailable' || availability === '[0]') return false;
   try {
     const currentMonth = new Date().getMonth() + 1; // 1-12
     const months = JSON.parse(availability);
@@ -1860,6 +1884,9 @@ function isInSeason(availability) {
 function getAvailabilityBadge(availability) {
   if (!availability || availability === 'all') {
     return '<span class="badge badge-success">Available All Year</span>';
+  }
+  if (availability === 'unavailable' || availability === '[0]') {
+    return '<span class="badge badge-danger">Currently Unavailable</span>';
   }
   try {
     const months = JSON.parse(availability);
@@ -1944,7 +1971,7 @@ function render(items) {
     const inSeason = isInSeason(row.availability);
     const availBadge = getAvailabilityBadge(row.availability);
     const outOfSeasonClass = inSeason ? '' : 'out-of-season';
-    const outOfSeasonBadge = inSeason ? '' : '<span class="badge badge-danger">Out of Season</span>';
+    const outOfSeasonBadge = (inSeason || row.availability === 'unavailable' || row.availability === '[0]') ? '' : '<span class="badge badge-danger">Out of Season</span>';
     
     const imgStyle = imageUrl ? `style="background-image:url('${escapeHtml(imageUrl)}');"` : '';
     const wa = phone ? phoneToWhatsApp(phone, `Hello ${name}, I'm interested in your ${productDisplay}.`) : null;
@@ -1965,7 +1992,7 @@ function render(items) {
     return `
       <div class="card ${outOfSeasonClass}" data-listing-id="${row.id}">
         <div class="card-img" ${imgStyle}></div>
-        ${row.brand_name ? `<div class="brand-name">🏷️ ${escapeHtml(row.brand_name)}</div>` : ''}
+        ${row.brand_name ? `<a href="brand.html?name=${encodeURIComponent(row.brand_name)}" class="brand-name" style="text-decoration:none; display:block;">🏷️ ${escapeHtml(row.brand_name)}</a>` : ''}
         <div class="card-content">
           <div class="card-header">
             <h3 class="card-title">${productDisplay}</h3>
@@ -2693,6 +2720,8 @@ function showCopyNotification(message) {
 function applyFilters(rows) {
   const q = document.getElementById('q').value.trim().toLowerCase();
   const region = document.getElementById('region').value.trim().toLowerCase();
+  const brand = document.getElementById('brandFilter').value;
+  const availability = document.getElementById('availabilityFilter').value;
   const maxPrice = parseFloat(document.getElementById('maxPrice').value);
   const sort = document.getElementById('sort').value;
 
@@ -2704,12 +2733,16 @@ function applyFilters(rows) {
     
     const matchesRegion = !region || 
       (r.location && r.location.toLowerCase().includes(region));
+      
+    const matchesBrand = !brand || r.brand_name === brand;
+    
+    const matchesAvailability = availability === 'all' || (availability === 'now' && isInSeason(r.availability));
     
     const priceNum = currencyToNumber(r.price);
     const matchesPrice = !maxPrice || 
       (!isNaN(priceNum) && priceNum <= maxPrice);
     
-    return matchesQ && matchesRegion && matchesPrice;
+    return matchesQ && matchesRegion && matchesPrice && matchesBrand && matchesAvailability;
   });
 
   // Sort
@@ -2735,12 +2768,35 @@ function applyFilters(rows) {
 function clearFilters() {
   document.getElementById('q').value = '';
   document.getElementById('region').value = '';
+  document.getElementById('brandFilter').value = '';
+  document.getElementById('availabilityFilter').value = 'all';
   document.getElementById('maxPrice').value = '';
   document.getElementById('sort').value = 'newest';
   applyFilters(ROWS);
 }
 
 // === DATA FETCHING ===
+function populateBrands(rows) {
+  const brandSelect = document.getElementById('brandFilter');
+  const currentVal = brandSelect.value;
+  const brands = [...new Set(rows.map(r => r.brand_name).filter(b => b && b.trim() !== ''))].sort();
+  
+  // Keep "All Brands" option
+  brandSelect.innerHTML = '<option value="">All Brands</option>';
+  
+  brands.forEach(brand => {
+    const option = document.createElement('option');
+    option.value = brand;
+    option.textContent = brand;
+    brandSelect.appendChild(option);
+  });
+  
+  // Restore selection if possible
+  if (brands.includes(currentVal)) {
+    brandSelect.value = currentVal;
+  }
+}
+
 async function fetchData() {
   try {
     const { data, error } = await supabase
@@ -2752,6 +2808,7 @@ async function fetchData() {
     
     ROWS = data || [];
     
+    populateBrands(ROWS);
     updateStats(ROWS);
     applyFilters(ROWS);
   } catch (e) {
@@ -2813,7 +2870,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // Setup filter listeners
-  ['q', 'region', 'maxPrice', 'sort'].forEach(id => {
+  ['q', 'region', 'brandFilter', 'availabilityFilter', 'maxPrice', 'sort'].forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener('input', () => applyFilters(ROWS));
     el.addEventListener('change', () => applyFilters(ROWS));

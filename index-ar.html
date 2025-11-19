@@ -282,9 +282,19 @@
     
     .filters-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 12px;
       align-items: end;
+    }
+    
+    .filter-group.search-group {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 768px) {
+      .filter-group.search-group {
+        grid-column: span 1;
+      }
     }
     
     .filter-group label {
@@ -1539,7 +1549,7 @@
 
     <div class="filters-card">
       <div class="filters-grid">
-        <div class="filter-group">
+        <div class="filter-group search-group">
           <label>البحث عن منتجات</label>
           <input id="q" placeholder="مثال: تفاح، زيت زيتون، زعتر..." />
         </div>
@@ -1618,6 +1628,19 @@
               <option value="Hasbaya">حاصبيا</option>
               <option value="Bent Jbeil">بنت جبيل</option>
             </optgroup>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>العلامة التجارية</label>
+          <select id="brandFilter">
+            <option value="">جميع العلامات التجارية</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>التوفر</label>
+          <select id="availabilityFilter">
+            <option value="all">جميع الحالات</option>
+            <option value="now">متاح الآن فقط</option>
           </select>
         </div>
         <div class="filter-group">
@@ -1875,6 +1898,7 @@ async function deleteOwnListing(listingId, productName) {
 // === AVAILABILITY FUNCTIONS ===
 function isInSeason(availability) {
   if (!availability || availability === 'all') return true;
+  if (availability === 'unavailable' || availability === '[0]') return false;
   try {
     const currentMonth = new Date().getMonth() + 1; // 1-12
     const months = JSON.parse(availability);
@@ -1887,6 +1911,9 @@ function isInSeason(availability) {
 function getAvailabilityBadge(availability) {
   if (!availability || availability === 'all') {
     return '<span class="badge badge-success">متاح طوال العام</span>';
+  }
+  if (availability === 'unavailable' || availability === '[0]') {
+    return '<span class="badge badge-danger">غير متوفر حالياً</span>';
   }
   try {
     const months = JSON.parse(availability);
@@ -1972,7 +1999,7 @@ function render(items) {
     const inSeason = isInSeason(row.availability);
     const availBadge = getAvailabilityBadge(row.availability);
     const outOfSeasonClass = inSeason ? '' : 'out-of-season';
-    const outOfSeasonBadge = inSeason ? '' : '<span class="badge badge-danger">خارج الموسم</span>';
+    const outOfSeasonBadge = (inSeason || row.availability === 'unavailable' || row.availability === '[0]') ? '' : '<span class="badge badge-danger">خارج الموسم</span>';
     
     const imgStyle = imageUrl ? `style="background-image:url('${escapeHtml(imageUrl)}');"` : '';
     const wa = phone ? phoneToWhatsApp(phone, `مرحباً ${name}، أنا مهتم بمنتجك ${productDisplay}.`) : null;
@@ -1993,7 +2020,7 @@ function render(items) {
     return `
       <div class="card ${outOfSeasonClass}">
         <div class="card-img" ${imgStyle}></div>
-        ${row.brand_name ? `<div class="brand-name">🏷️ ${escapeHtml(row.brand_name)}</div>` : ''}
+        ${row.brand_name ? `<a href="brand-ar.html?name=${encodeURIComponent(row.brand_name)}" class="brand-name" style="text-decoration:none; display:block;">🏷️ ${escapeHtml(row.brand_name)}</a>` : ''}
         <div class="card-content">
           <div class="card-header">
             <h3 class="card-title">${productDisplay}</h3>
@@ -2657,6 +2684,8 @@ function showCopyNotification(message) {
 function applyFilters(rows) {
   const q = document.getElementById('q').value.trim().toLowerCase();
   const region = document.getElementById('region').value.trim().toLowerCase();
+  const brand = document.getElementById('brandFilter').value;
+  const availability = document.getElementById('availabilityFilter').value;
   const maxPrice = parseFloat(document.getElementById('maxPrice').value);
   const sort = document.getElementById('sort').value;
 
@@ -2668,12 +2697,16 @@ function applyFilters(rows) {
     
     const matchesRegion = !region || 
       (r.location && r.location.toLowerCase().includes(region));
+      
+    const matchesBrand = !brand || r.brand_name === brand;
+    
+    const matchesAvailability = availability === 'all' || (availability === 'now' && isInSeason(r.availability));
     
     const priceNum = currencyToNumber(r.price);
     const matchesPrice = !maxPrice || 
       (!isNaN(priceNum) && priceNum <= maxPrice);
     
-    return matchesQ && matchesRegion && matchesPrice;
+    return matchesQ && matchesRegion && matchesPrice && matchesBrand && matchesAvailability;
   });
 
   // Sort
@@ -2699,12 +2732,35 @@ function applyFilters(rows) {
 function clearFilters() {
   document.getElementById('q').value = '';
   document.getElementById('region').value = '';
+  document.getElementById('brandFilter').value = '';
+  document.getElementById('availabilityFilter').value = 'all';
   document.getElementById('maxPrice').value = '';
   document.getElementById('sort').value = 'newest';
   applyFilters(ROWS);
 }
 
 // === DATA FETCHING ===
+function populateBrands(rows) {
+  const brandSelect = document.getElementById('brandFilter');
+  const currentVal = brandSelect.value;
+  const brands = [...new Set(rows.map(r => r.brand_name).filter(b => b && b.trim() !== ''))].sort();
+  
+  // Keep "All Brands" option
+  brandSelect.innerHTML = '<option value="">جميع العلامات التجارية</option>';
+  
+  brands.forEach(brand => {
+    const option = document.createElement('option');
+    option.value = brand;
+    option.textContent = brand;
+    brandSelect.appendChild(option);
+  });
+  
+  // Restore selection if possible
+  if (brands.includes(currentVal)) {
+    brandSelect.value = currentVal;
+  }
+}
+
 async function fetchData() {
   try {
     const { data, error } = await supabase
@@ -2716,6 +2772,7 @@ async function fetchData() {
     
     ROWS = data || [];
     
+    populateBrands(ROWS);
     updateStats(ROWS);
     applyFilters(ROWS);
   } catch (e) {
@@ -2766,7 +2823,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupReviewsEventListeners();
   
   // Setup filter listeners
-  ['q', 'region', 'maxPrice', 'sort'].forEach(id => {
+  ['q', 'region', 'brandFilter', 'availabilityFilter', 'maxPrice', 'sort'].forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener('input', () => applyFilters(ROWS));
     el.addEventListener('change', () => applyFilters(ROWS));

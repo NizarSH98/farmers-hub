@@ -473,6 +473,22 @@
       background: #047857;
     }
     
+    .month-btn.unavailable {
+      grid-column: 1 / -1;
+      background: var(--muted);
+      border-color: var(--muted);
+      color: white;
+    }
+    
+    .month-btn.unavailable:hover {
+      background: #4b5563;
+    }
+    
+    .month-btn.unavailable.selected {
+      background: #374151;
+      border-color: #374151;
+    }
+    
     .actions {
       display: flex;
       gap: 16px;
@@ -1030,8 +1046,10 @@
         </div>
         
         <div class="full form-group">
-          <label class="required">Full Name</label>
-          <input name="name" id="name" required placeholder="e.g. Ahmad Khoury" />
+          <label class="required">Brand Name</label>
+          <input name="brand_name" id="brand_name" required placeholder="Your established brand name" />
+          <div class="helper-text" id="brand-helper">💡 If you have an established brand, enter it here</div>
+          <div class="helper-text" id="brand-error" style="display: none; color: var(--danger);"></div>
         </div>
         
         <div class="form-group">
@@ -1046,9 +1064,8 @@
         </div>
         
         <div class="form-group">
-          <label>Brand Name (Optional)</label>
-          <input name="brand_name" id="brand_name" placeholder="Your established brand name (optional)" />
-          <div class="helper-text">💡 If you have an established brand, enter it here</div>
+          <label>Full Name (Optional)</label>
+          <input name="name" id="name" placeholder="e.g. Ahmad Khoury (Optional)" />
         </div>
 
         <!-- Product Details -->
@@ -1256,6 +1273,7 @@
             <button type="button" class="month-btn" data-month="11">Nov</button>
             <button type="button" class="month-btn" data-month="12">Dec</button>
             <button type="button" class="month-btn all-year" id="allYearBtn">All Year</button>
+            <button type="button" class="month-btn unavailable" id="unavailableBtn">Unavailable (Coming Soon)</button>
           </div>
         </div>
         
@@ -1480,6 +1498,21 @@ async function handleSignUp(evt) {
       errorDiv.style.display = 'block';
       return;
     }
+
+    // Check if brand name is taken (if provided)
+    if (validatedData.brandName) {
+      const { data: existingBrand } = await supabase
+        .from('brands')
+        .select('id')
+        .eq('name', validatedData.brandName)
+        .single();
+      
+      if (existingBrand) {
+        errorDiv.textContent = '❌ Brand name is already taken by another user.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+    }
     
     // Hash password securely
     const { data: hashResult, error: hashError } = await supabase
@@ -1513,6 +1546,14 @@ async function handleSignUp(evt) {
       .single();
     
     if (insertError) throw insertError;
+
+    // Create brand if provided
+    if (validatedData.brandName) {
+      await supabase.from('brands').insert({
+        name: validatedData.brandName,
+        owner_id: newUser.id
+      });
+    }
     
     // Auto sign in with full user data
     window.auth.setUser({
@@ -1604,12 +1645,20 @@ function autocompleteFormFields() {
 
 // === MONTH SELECTOR ===
 function setupMonthSelector() {
-  const monthBtns = document.querySelectorAll('.month-btn:not(.all-year)');
+  const monthBtns = document.querySelectorAll('.month-btn:not(.all-year):not(.unavailable)');
   const allYearBtn = document.getElementById('allYearBtn');
+  const unavailableBtn = document.getElementById('unavailableBtn');
   
   monthBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const month = btn.dataset.month;
+      
+      // Clear unavailable if selecting a month
+      if (selectedMonths.has('unavailable')) {
+        selectedMonths.clear();
+        unavailableBtn.classList.remove('selected');
+      }
+      
       if (selectedMonths.has('all')) {
         selectedMonths.clear();
         allYearBtn.classList.remove('selected');
@@ -1626,6 +1675,12 @@ function setupMonthSelector() {
   });
   
   allYearBtn.addEventListener('click', () => {
+    // Clear unavailable if selecting all year
+    if (selectedMonths.has('unavailable')) {
+      selectedMonths.clear();
+      unavailableBtn.classList.remove('selected');
+    }
+    
     if (selectedMonths.has('all')) {
       selectedMonths.clear();
       allYearBtn.classList.remove('selected');
@@ -1634,6 +1689,19 @@ function setupMonthSelector() {
       monthBtns.forEach(btn => btn.classList.remove('selected'));
       selectedMonths.add('all');
       allYearBtn.classList.add('selected');
+    }
+  });
+  
+  unavailableBtn.addEventListener('click', () => {
+    if (selectedMonths.has('unavailable')) {
+      selectedMonths.clear();
+      unavailableBtn.classList.remove('selected');
+    } else {
+      selectedMonths.clear();
+      monthBtns.forEach(btn => btn.classList.remove('selected'));
+      allYearBtn.classList.remove('selected');
+      selectedMonths.add('unavailable');
+      unavailableBtn.classList.add('selected');
     }
   });
 }
@@ -1939,7 +2007,54 @@ async function submitListing(evt) {
   
   try {
     const formData = new FormData(form);
-    const availability = selectedMonths.has('all') ? 'all' : JSON.stringify(Array.from(selectedMonths).map(Number));
+    const brandName = formData.get('brand_name').trim();
+
+    // Brand Ownership Check
+    if (brandName) {
+      const { data: existingBrand, error: brandCheckError } = await supabase
+        .from('brands')
+        .select('owner_id, name')
+        .eq('name', brandName)
+        .maybeSingle();
+        
+      if (existingBrand) {
+        if (existingBrand.owner_id != currentUser.id) {
+          status.textContent = `❌ The brand name "${brandName}" is already registered to another user. Please choose a different brand name.`;
+          status.className = "notice err show";
+          document.getElementById('brand_name').focus();
+          return;
+        }
+      } else {
+        // Create new brand with proper error handling for race conditions
+        const { data: newBrand, error: brandError } = await supabase
+          .from('brands')
+          .insert({
+            name: brandName,
+            owner_id: currentUser.id,
+            description: `Discover products from ${brandName}`
+          })
+          .select()
+          .maybeSingle();
+          
+        if (brandError) {
+          // Check if it's a unique constraint violation (race condition)
+          if (brandError.code === '23505' || brandError.message?.includes('duplicate') || brandError.message?.includes('unique')) {
+            status.textContent = `❌ The brand name "${brandName}" was just registered by another user. Please choose a different brand name.`;
+            status.className = "notice err show";
+            document.getElementById('brand_name').focus();
+            return;
+          }
+          console.error('Brand creation error:', brandError);
+          status.textContent = `❌ Failed to register brand name. Please try again.`;
+          status.className = "notice err show";
+          return;
+        }
+      }
+    }
+
+    const availability = selectedMonths.has('all') ? 'all' : 
+                         selectedMonths.has('unavailable') ? '[0]' :
+                         JSON.stringify(Array.from(selectedMonths).map(Number));
     
     // Combine price number and unit
     const priceNumber = formData.get('price_number')?.trim();
@@ -1967,9 +2082,15 @@ async function submitListing(evt) {
       description: formData.get('description')?.trim() || null,
       availability: availability
     };
+
+    // Generate random ID if name is missing
+    if (!payload.name) {
+      const randomId = Math.floor(1000 + Math.random() * 9000);
+      payload.name = `Farmer-${randomId}`;
+    }
     
-    if (!payload.name || !payload.phone || !payload.product_ar || !payload.location) {
-      throw new Error('Please fill in all required fields');
+    if (!payload.brand_name || !payload.phone || !payload.product_ar || !payload.location) {
+      throw new Error('Please fill in all required fields (Brand Name, Phone, Product Name, Location)');
     }
     
     let listing;
@@ -2134,6 +2255,9 @@ async function loadEditData() {
       if (listing.availability === 'all') {
         selectedMonths.add('all');
         document.getElementById('allYearBtn').classList.add('selected');
+      } else if (listing.availability === 'unavailable' || listing.availability === '[0]') {
+        selectedMonths.add('unavailable');
+        document.getElementById('unavailableBtn').classList.add('selected');
       } else {
         try {
           const months = JSON.parse(listing.availability);
@@ -2237,6 +2361,56 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup image upload and month selector
   setupImageUpload();
   setupMonthSelector();
+  
+  // Brand name validation on blur
+  document.getElementById('brand_name').addEventListener('blur', async function() {
+    const brandName = this.value.trim();
+    const brandError = document.getElementById('brand-error');
+    const brandHelper = document.getElementById('brand-helper');
+    
+    if (!brandName || !currentUser) {
+      brandError.style.display = 'none';
+      brandHelper.style.display = 'block';
+      this.style.borderColor = '';
+      return;
+    }
+    
+    try {
+      const { data: existingBrand, error } = await supabase
+        .from('brands')
+        .select('owner_id, name')
+        .eq('name', brandName)
+        .maybeSingle();
+      
+      if (existingBrand && existingBrand.owner_id != currentUser.id) {
+        brandError.textContent = `❌ This brand name is already taken by another user`;
+        brandError.style.display = 'block';
+        brandHelper.style.display = 'none';
+        this.style.borderColor = 'var(--danger)';
+      } else if (existingBrand && existingBrand.owner_id == currentUser.id) {
+        brandError.textContent = `✅ This is your brand`;
+        brandError.style.color = 'var(--success)';
+        brandError.style.display = 'block';
+        brandHelper.style.display = 'none';
+        this.style.borderColor = 'var(--success)';
+      } else {
+        brandError.textContent = `✅ Brand name available`;
+        brandError.style.color = 'var(--success)';
+        brandError.style.display = 'block';
+        brandHelper.style.display = 'none';
+        this.style.borderColor = 'var(--success)';
+      }
+    } catch (err) {
+      console.error('Brand check error:', err);
+    }
+  });
+  
+  // Clear validation on focus
+  document.getElementById('brand_name').addEventListener('focus', function() {
+    document.getElementById('brand-error').style.display = 'none';
+    document.getElementById('brand-helper').style.display = 'block';
+    this.style.borderColor = '';
+  });
   
   // Form submission
   document.getElementById('listingForm').addEventListener('submit', submitListing);

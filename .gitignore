@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Database files - contains sensitive credentials and setup
+database/
+
 # OS files
 .DS_Store
 Thumbs.db
