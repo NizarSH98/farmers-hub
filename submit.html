@@ -1335,6 +1335,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="assets/js/secure-config.js"></script>
   <script src="assets/js/input-validator.js"></script>
   <script src="assets/js/auth-manager.js"></script>
@@ -1342,6 +1343,7 @@
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
     const SUPABASE_KEY = window.SecureConfig.getSupabaseKey();
+    console.log("[Config] Supabase URL resolved:", !!SUPABASE_URL, "Key resolved:", !!SUPABASE_KEY);
     
     // Security check
     if (!SUPABASE_URL || !SUPABASE_KEY) {
@@ -1349,7 +1351,7 @@
       document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red;"><h1>Configuration Error</h1><p>Please contact the administrator.</p></div>';
     }
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // === LANGUAGE PREFERENCE ===
 function setLanguagePreference(lang) {
@@ -1439,7 +1441,7 @@ async function handleSignIn(evt) {
   const errorDiv = document.getElementById('signinError');
   
   // Use universal auth manager
-  const result = await window.auth.authenticate(supabase, username, password);
+  const result = await window.auth.authenticate(supabaseClient, username, password);
   
   if (!result.success) {
     errorDiv.textContent = '❌ ' + result.error;
@@ -1487,7 +1489,7 @@ async function handleSignUp(evt) {
     const validatedData = validation.data;
     
     // Check if username already exists
-    const { data: existingUser } = await supabase
+    const { data: existingUser } = await supabaseClient
       .from('verified_users')
       .select('username')
       .eq('username', validatedData.username)
@@ -1501,7 +1503,7 @@ async function handleSignUp(evt) {
 
     // Check if brand name is taken (if provided)
     if (validatedData.brandName) {
-      const { data: existingBrand } = await supabase
+      const { data: existingBrand } = await supabaseClient
         .from('brands')
         .select('id')
         .eq('name', validatedData.brandName)
@@ -1515,7 +1517,7 @@ async function handleSignUp(evt) {
     }
     
     // Hash password securely
-    const { data: hashResult, error: hashError } = await supabase
+    const { data: hashResult, error: hashError } = await supabaseClient
       .rpc('hash_password', { plain_password: validatedData.password });
     
     if (hashError) {
@@ -1539,7 +1541,7 @@ async function handleSignUp(evt) {
       fhf_project_name: validatedData.fhfProject.wasFhfProject === 'yes' ? validatedData.fhfProject.fhfProjectName : null
     };
     
-    const { data: newUser, error: insertError } = await supabase
+    const { data: newUser, error: insertError } = await supabaseClient
       .from('verified_users')
       .insert([userData])
       .select('id, username, full_name, phone, email')
@@ -1549,7 +1551,7 @@ async function handleSignUp(evt) {
 
     // Create brand if provided
     if (validatedData.brandName) {
-      await supabase.from('brands').insert({
+      await supabaseClient.from('brands').insert({
         name: validatedData.brandName,
         owner_id: newUser.id
       });
@@ -1800,7 +1802,7 @@ class Autocomplete {
 // === DATA FETCHING ===
 async function loadExistingData() {
   try {
-    const { data: rows, error } = await supabase
+    const { data: rows, error } = await supabaseClient
       .from('listings')
       .select('product, product_ar, location')
       .order('created_at', { ascending: false })
@@ -1926,7 +1928,7 @@ async function uploadImage(file, listingId) {
   const fileName = `${listingId}-${Date.now()}.${fileExt}`;
   const filePath = `${fileName}`;
   
-  const { data, error } = await supabase.storage
+  const { data, error } = await supabaseClient.storage
     .from('product-images')
     .upload(filePath, file, {
       cacheControl: '3600',
@@ -1935,7 +1937,7 @@ async function uploadImage(file, listingId) {
   
   if (error) throw error;
   
-  const { data: urlData } = supabase.storage
+  const { data: urlData } = supabaseClient.storage
     .from('product-images')
     .getPublicUrl(filePath);
   
@@ -2011,7 +2013,7 @@ async function submitListing(evt) {
 
     // Brand Ownership Check
     if (brandName) {
-      const { data: existingBrand, error: brandCheckError } = await supabase
+      const { data: existingBrand, error: brandCheckError } = await supabaseClient
         .from('brands')
         .select('owner_id, name')
         .eq('name', brandName)
@@ -2026,7 +2028,7 @@ async function submitListing(evt) {
         }
       } else {
         // Create new brand with proper error handling for race conditions
-        const { data: newBrand, error: brandError } = await supabase
+        const { data: newBrand, error: brandError } = await supabaseClient
           .from('brands')
           .insert({
             name: brandName,
@@ -2097,7 +2099,7 @@ async function submitListing(evt) {
     
     if (isEditMode && editListingId) {
       // UPDATE existing listing
-      const { data, error: updateError } = await supabase
+      const { data, error: updateError } = await supabaseClient
         .from('listings')
         .update(payload)
         .eq('id', editListingId)
@@ -2113,7 +2115,7 @@ async function submitListing(evt) {
         status.textContent = "Uploading new image...";
         const imageUrl = await uploadImage(selectedImageFile, listing.id);
         
-        const { error: imgUpdateError } = await supabase
+        const { error: imgUpdateError } = await supabaseClient
           .from('listings')
           .update({ image_url: imageUrl })
           .eq('id', listing.id);
@@ -2133,7 +2135,7 @@ async function submitListing(evt) {
       // CREATE new listing
       payload.image_url = null;
       
-      const { data, error: insertError } = await supabase
+      const { data, error: insertError } = await supabaseClient
         .from('listings')
         .insert([payload])
         .select()
@@ -2146,7 +2148,7 @@ async function submitListing(evt) {
         status.textContent = "Uploading image...";
         const imageUrl = await uploadImage(selectedImageFile, listing.id);
         
-        const { error: updateError } = await supabase
+        const { error: updateError } = await supabaseClient
           .from('listings')
           .update({ image_url: imageUrl })
           .eq('id', listing.id);
@@ -2376,7 +2378,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     try {
-      const { data: existingBrand, error } = await supabase
+      const { data: existingBrand, error } = await supabaseClient
         .from('brands')
         .select('owner_id, name')
         .eq('name', brandName)

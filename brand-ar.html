@@ -1043,6 +1043,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="assets/js/secure-config.js"></script>
   <script src="assets/js/auth-manager.js"></script>
   <script src="assets/js/reviews-manager.js"></script>
@@ -1050,14 +1051,15 @@
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
     const SUPABASE_KEY = window.SecureConfig.getSupabaseKey();
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log("[Config] Supabase URL resolved:", !!SUPABASE_URL, "Key resolved:", !!SUPABASE_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // === REVIEWS MANAGER ===
     let reviewsManager = null;
     
     function initReviewsManager() {
-      if (window.ReviewsManager && supabase && window.auth) {
-        reviewsManager = new window.ReviewsManager(supabase, window.auth);
+      if (window.ReviewsManager && supabaseClient && window.auth) {
+        reviewsManager = new window.ReviewsManager(supabaseClient, window.auth);
       }
     }
 
@@ -1110,7 +1112,7 @@
       const password = document.getElementById('loginPassword').value.trim();
       const errorDiv = document.getElementById('loginError');
       
-      const result = await window.auth.authenticate(supabase, username, password);
+      const result = await window.auth.authenticate(supabaseClient, username, password);
       
       if (!result.success) {
         errorDiv.textContent = '❌ ' + result.error;
@@ -1168,7 +1170,7 @@
       // 1. Fetch Brand Details (with error handling for 406)
       let brand = null;
       try {
-        const result = await supabase
+        const result = await supabaseClient
           .from('brands')
           .select('*')
           .eq('name', brandNameParam)
@@ -1202,7 +1204,7 @@
       }
 
       // 2. Fetch Products
-      const { data: products, error: prodError } = await supabase
+      const { data: products, error: prodError } = await supabaseClient
         .from('listings')
         .select('*')
         .eq('brand_name', brandNameParam)
@@ -1214,7 +1216,7 @@
         if (userOwnsProducts) {
           // Try to create brand entry for this user
           try {
-            const { data: newBrand, error: createError } = await supabase
+            const { data: newBrand, error: createError } = await supabaseClient
               .from('brands')
               .insert({
                 name: brandNameParam,
@@ -1676,7 +1678,7 @@
       }
       
       try {
-        const { data: listing, error } = await supabase
+        const { data: listing, error } = await supabaseClient
           .from('listings')
           .select('*')
           .eq('id', listingId)
@@ -1714,7 +1716,7 @@
       }
       
       try {
-        const { data: listing } = await supabase
+        const { data: listing } = await supabaseClient
           .from('listings')
           .select('user_id, image_url')
           .eq('id', listingId)
@@ -1732,10 +1734,10 @@
         
         if (listing.image_url) {
           const fileName = listing.image_url.split('/').pop();
-          await supabase.storage.from('product-images').remove([fileName]);
+          await supabaseClient.storage.from('product-images').remove([fileName]);
         }
         
-        const { error } = await supabase.from('listings').delete().eq('id', listingId);
+        const { error } = await supabaseClient.from('listings').delete().eq('id', listingId);
         
         if (error) throw error;
         
@@ -1826,7 +1828,7 @@
           
           progressBar.style.width = '60%';
           
-          const { data: uploadData, error: uploadError } = await supabase.storage
+          const { data: uploadData, error: uploadError } = await supabaseClient.storage
             .from('product-images')
             .upload(filePath, imageFile, {
               cacheControl: '3600',
@@ -1837,7 +1839,7 @@
           
           progressBar.style.width = '90%';
           
-          const { data: urlData } = supabase.storage
+          const { data: urlData } = supabaseClient.storage
             .from('product-images')
             .getPublicUrl(filePath);
           
@@ -1850,7 +1852,7 @@
         }
       }
 
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('brands')
         .update({ description: newDesc, image_url: imageUrl })
         .eq('id', currentBrand.id)
