@@ -1672,6 +1672,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="assets/js/secure-config.js"></script>
   <script src="assets/js/auth-manager.js"></script>
   <script src="assets/js/reviews-manager.js"></script>
@@ -1679,6 +1680,7 @@
     // === SECURE CONFIG ===
     const SUPABASE_URL = window.SecureConfig.getSupabaseUrl();
     const SUPABASE_KEY = window.SecureConfig.getSupabaseKey();
+    console.log("[Config] Supabase URL resolved:", !!SUPABASE_URL, "Key resolved:", !!SUPABASE_KEY);
     
     // Security check
     if (!SUPABASE_URL || !SUPABASE_KEY) {
@@ -1686,7 +1688,7 @@
       document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red;"><h1>خطأ في التكوين</h1><p>يرجى الاتصال بالمسؤول.</p></div>';
     }
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // === LANGUAGE PREFERENCE ===
 function setLanguagePreference(lang) {
@@ -1755,7 +1757,7 @@ async function handleLogin(evt) {
   
   try {
     // Use secure authentication function
-    const { data: users, error } = await supabase
+    const { data: users, error } = await supabaseClient
       .rpc('authenticate_user', {
         username_input: username,
         password_input: password
@@ -1818,7 +1820,7 @@ async function editOwnListing(listingId) {
   
   try {
     // Fetch the listing data
-    const { data: listing, error } = await supabase
+    const { data: listing, error } = await supabaseClient
       .from('listings')
       .select('*')
       .eq('id', listingId)
@@ -1860,7 +1862,7 @@ async function deleteOwnListing(listingId, productName) {
   
   try {
     // Verify ownership before deleting
-    const { data: listing } = await supabase
+    const { data: listing } = await supabaseClient
       .from('listings')
       .select('user_id, image_url')
       .eq('id', listingId)
@@ -1879,11 +1881,11 @@ async function deleteOwnListing(listingId, productName) {
     // Delete image from storage if exists
     if (listing.image_url) {
       const fileName = listing.image_url.split('/').pop();
-      await supabase.storage.from('product-images').remove([fileName]);
+      await supabaseClient.storage.from('product-images').remove([fileName]);
     }
     
     // Delete listing
-    const { error } = await supabase.from('listings').delete().eq('id', listingId);
+    const { error } = await supabaseClient.from('listings').delete().eq('id', listingId);
     
     if (error) throw error;
     
@@ -2139,8 +2141,8 @@ let reviewsManager = null;
 
 // Initialize Reviews Manager
 function initReviewsManager() {
-  if (window.ReviewsManager && supabase && window.auth) {
-    reviewsManager = new window.ReviewsManager(supabase, window.auth);
+  if (window.ReviewsManager && supabaseClient && window.auth) {
+    reviewsManager = new window.ReviewsManager(supabaseClient, window.auth);
   }
 }
 
@@ -2763,13 +2765,15 @@ function populateBrands(rows) {
 
 async function fetchData() {
   try {
-    const { data, error } = await supabase
+    console.log("[Supabase] fetchData request started");
+    const { data, error } = await supabaseClient
       .from('listings')
       .select('*, user_id')
       .order('created_at', { ascending: false });
     
     if (error) throw error;
-    
+    console.log("[Supabase] fetchData request completed, rows:", (data || []).length);
+
     ROWS = data || [];
     
     populateBrands(ROWS);
